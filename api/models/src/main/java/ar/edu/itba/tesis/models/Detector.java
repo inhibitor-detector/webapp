@@ -1,0 +1,56 @@
+package ar.edu.itba.tesis.models;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Entity
+@Table(name = "detectors")
+@Getter
+@Setter
+public class Detector {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "detectors_id_seq")
+    @SequenceGenerator(name = "detectors_id_seq", sequenceName = "detectors_id_seq", allocationSize = 1)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    /*
+        Builder for User
+     */
+    public static Detector.Builder builder() {
+        return new Detector.Builder();
+    }
+
+    public static class Builder {
+        private final Detector detector;
+
+        public Builder() {
+            detector = new Detector();
+        }
+
+        public Detector build() {
+            return detector;
+        }
+
+        public Detector.Builder owner(User owner) {
+            detector.setOwner(owner);
+            return this;
+        }
+
+        public Detector.Builder user(User user) {
+            detector.setUser(user);
+            return this;
+        }
+    }
+}

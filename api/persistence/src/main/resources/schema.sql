@@ -17,3 +17,12 @@ CREATE TABLE IF NOT EXISTS user_role
     PRIMARY KEY (user_id, role),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS detectors
+(
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    owner_id INT,
+    FOREIGN KEY (user_id) REFERENCES users (id) on DELETE CASCADE,
+    FOREIGN KEY (owner_id) REFERENCES users (id)
+)
