@@ -1,6 +1,6 @@
 package ar.edu.itba.tesis.webapp.auth;
 
-import ar.edu.itba.tesis.interfaces.UserService;
+import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

@@ -31,7 +31,8 @@ public record UserDto(
 
         String createdAt,
 
-        Set<Role> roles) {
+        Set<Role> roles) // TODO: Set role to DETECTOR if present
+{
 
     public static UserDto fromUser(User user) {
         return new UserDto(

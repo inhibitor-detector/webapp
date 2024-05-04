@@ -1,6 +1,6 @@
 package ar.edu.itba.tesis.persistence;
 
-import ar.edu.itba.tesis.interfaces.UserDao;
+import ar.edu.itba.tesis.interfaces.persistence.UserDao;
 import ar.edu.itba.tesis.interfaces.exceptions.*;
 import ar.edu.itba.tesis.models.User;
 import jakarta.persistence.EntityManager;
@@ -99,7 +99,6 @@ public class UserHibernateDao implements UserDao {
      */
     private void validateUserUniqueness(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {
         checkDuplicateUsername(user);
-        checkDuplicateEmail(user);
     }
 
     private void updateUser(User user, User newValues) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {

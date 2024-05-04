@@ -1,7 +1,7 @@
 package ar.edu.itba.tesis.services;
 
-import ar.edu.itba.tesis.interfaces.UserDao;
-import ar.edu.itba.tesis.interfaces.UserService;
+import ar.edu.itba.tesis.interfaces.persistence.UserDao;
+import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.models.Role;

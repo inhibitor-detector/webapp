@@ -1,11 +1,11 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
-import ar.edu.itba.tesis.interfaces.DetectorService;
-import ar.edu.itba.tesis.interfaces.UserService;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
+import ar.edu.itba.tesis.interfaces.service.SignalService;
+import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
-import ar.edu.itba.tesis.interfaces.exceptions.UserNotFoundException;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
@@ -17,6 +17,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Path("/detectors")
 public class DetectorController {
@@ -32,6 +34,22 @@ public class DetectorController {
         this.userService = userService;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsers() {
+        final List<Detector> detectors = detectorService.findAll();
+
+        if (detectors.isEmpty()) {
+            return Response
+                    .noContent()
+                    .build();
+        }
+
+        return Response
+                .ok(DetectorDto.fromDetectors(detectors))
+                .build();
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -39,7 +57,16 @@ public class DetectorController {
         final User ownerUser = userService.findById(detectorDto.ownerId()).orElseThrow(() -> new DetectorNotFoundException(detectorDto.ownerId()));
         final User user = userService.findById(detectorDto.userId()).orElseThrow(() -> new DetectorNotFoundException(detectorDto.userId()));
 
-        final Detector detector = detectorService.create(Detector.builder().owner(ownerUser).user(user).build());
+        final Detector detector = detectorService.
+                create(Detector.builder()
+                        .owner(ownerUser)
+                        .user(user)
+                        .isOnline(detectorDto.isOnline())
+                        .version(detectorDto.version())
+                        .name(detectorDto.name())
+                        .description(detectorDto.description())
+                        .build());
+
         return Response
                 .created(uriInfo
                         .getAbsolutePathBuilder()
@@ -48,23 +75,6 @@ public class DetectorController {
                 .entity(DetectorDto.fromDetector(detector))
                 .build();
     }
-
-    /*
-    @POST
-    @Path("/{id}/heartbeats")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response saveHeartbeat(@Valid HeartbeatDto heartbeatDto) throws NotFoundException {
-        final Detector user = detectorService.saveHeartbeat(buildNewDetector(heartbeatDto));
-
-        return Response
-                .created(uriInfo
-                        .getAbsolutePathBuilder()
-                        .path(user.getId().toString())
-                        .build())
-                .entity(UserDto.fromUser(user))
-                .build();
-    }*/
 
     @GET
     @Path("/{id}")

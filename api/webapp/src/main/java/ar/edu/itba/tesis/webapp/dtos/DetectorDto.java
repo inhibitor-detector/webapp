@@ -18,7 +18,19 @@ public record DetectorDto(
         Long ownerId,
 
         @NotNull
-        Long userId
+        Long userId,
+
+        @NotNull
+        Boolean isOnline,
+
+        @NotNull
+        String version,
+
+        @NotNull
+        String name,
+
+        @NotNull
+        String description
 
         ) {
 
@@ -26,7 +38,11 @@ public record DetectorDto(
         return new DetectorDto(
                 detector.getId(),
                 detector.getOwner().getId(),
-                detector.getUser().getId()
+                detector.getUser().getId(),
+                detector.getIsOnline(),
+                detector.getVersion(),
+                detector.getName(),
+                detector.getDescription()
         );
     }
 

@@ -1,13 +1,11 @@
 package ar.edu.itba.tesis.services;
 
-import ar.edu.itba.tesis.interfaces.DetectorDao;
-import ar.edu.itba.tesis.interfaces.DetectorService;
+import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
-import ar.edu.itba.tesis.models.Role;
 import ar.edu.itba.tesis.models.Detector;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

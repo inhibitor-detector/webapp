@@ -25,8 +25,20 @@ public class Detector {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "is_online", nullable = false)
+    private Boolean isOnline;
+
+    @Column(name = "version", nullable = false)
+    private String version;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "description", nullable = false)
+    private String description;
+
     /*
-        Builder for User
+        Builder for Detector
      */
     public static Detector.Builder builder() {
         return new Detector.Builder();
@@ -50,6 +62,24 @@ public class Detector {
 
         public Detector.Builder user(User user) {
             detector.setUser(user);
+            return this;
+        }
+        public Detector.Builder isOnline(Boolean isOnline) {
+            detector.setIsOnline(isOnline);
+            return this;
+        }
+        public Detector.Builder version(String version) {
+            detector.setVersion(version);
+            return this;
+        }
+
+        public Detector.Builder name(String name) {
+            detector.setName(name);
+            return this;
+        }
+
+        public Detector.Builder description(String description) {
+            detector.setDescription(description);
             return this;
         }
     }

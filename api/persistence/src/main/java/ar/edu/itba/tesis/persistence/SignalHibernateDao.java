@@ -1,8 +1,9 @@
 package ar.edu.itba.tesis.persistence;
 
-import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
-import ar.edu.itba.tesis.interfaces.exceptions.*;
-import ar.edu.itba.tesis.models.Detector;
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
+import ar.edu.itba.tesis.models.Signal;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -15,40 +16,40 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class DetectorHibernateDao implements DetectorDao {
+public class SignalHibernateDao implements SignalDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public Detector create(Detector entity) {
-        entityManager.persist(entity); // TODO: Validate user_id unique
+    public Signal create(Signal entity) {
+        entityManager.persist(entity);
         return entity;
     }
 
     @Override
-    public Optional<Detector> findById(Long id) {
-        return Optional.ofNullable(entityManager.find(Detector.class, id));
+    public Optional<Signal> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Signal.class, id));
 
     }
 
     // Refactor this
     @Override
-    public List<Detector> findAll() {
+    public List<Signal> findAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Detector> criteriaQuery = criteriaBuilder.createQuery(Detector.class);
-        Root<Detector> root = criteriaQuery.from(Detector.class);
+        CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
+        Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
 
-        TypedQuery<Detector> query = entityManager.createQuery(criteriaQuery);
+        TypedQuery<Signal> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
     }
 
     @Override
-    public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {
-        Detector user = findById(id).orElseThrow(() -> new DetectorNotFoundException(id));
-        updateDetector(user, entity);
+    public Signal update(Long id, Signal entity) throws NotFoundException, AlreadyExistsException {
+        Signal user = findById(id).orElseThrow(() -> new NotFoundException("Heartbeat not found"));
+        updateHeartbeat(user, entity);
         entityManager.persist(user);
         return user;
     }
@@ -61,7 +62,7 @@ public class DetectorHibernateDao implements DetectorDao {
     }
 
     @Override
-    public void delete(Detector entity) {
+    public void delete(Signal entity) {
         deleteById(entity.getId());
     }
 
@@ -73,11 +74,11 @@ public class DetectorHibernateDao implements DetectorDao {
     // TODO
     @Override
     public long count() {
-        return entityManager.createQuery("SELECT COUNT(*) FROM Detector", Long.class)
+        return entityManager.createQuery("SELECT COUNT(*) FROM Signal", Long.class)
                 .getSingleResult();
     }
 
-    private void updateDetector(Detector user, Detector newValues) {
-        // TODO Update detector
+    private void updateHeartbeat(Signal user, Signal newValues) {
+        // TODO Update heartbeat
     }
 }

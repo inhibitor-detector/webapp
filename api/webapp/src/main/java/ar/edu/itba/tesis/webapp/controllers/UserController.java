@@ -1,6 +1,6 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
-import ar.edu.itba.tesis.interfaces.UserService;
+import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.exceptions.UserNotFoundException;
