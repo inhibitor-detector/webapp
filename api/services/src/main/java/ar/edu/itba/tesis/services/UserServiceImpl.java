@@ -50,6 +50,12 @@ public class UserServiceImpl implements UserService {
         return userDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<User> findAllPaginated(Integer page, Integer pageSize) {
+        return userDao.findAllPaginated(page, pageSize);
+    }
+
     @Transactional
     @Override
     public User update(Long id, User entity) throws NotFoundException, AlreadyExistsException {

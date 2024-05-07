@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Supplier;
+
 /**
  * <a href="https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#_migrating_expressions">migrating_expressions</a>
  * <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/AntPathMatcher.html">AntPathMatcher</a>
@@ -41,7 +43,7 @@ public class AccessControl {
 
     public boolean isAuthenticatedUser(Authentication authentication, Long id) {
         final User user = getAuthenticatedUser(authentication);
-        return user != null && user.getId().equals(id);
+        return user != null && (user.getRoles().contains(Role.ADMIN) || user.getId().equals(id));
     }
 
     public boolean canPostSignal(Authentication authentication) {
@@ -53,5 +55,10 @@ public class AccessControl {
     public boolean canPostSignalCheckDetectorId(Authentication authentication, Detector detector) {
         final User user = getAuthenticatedUser(authentication);
         return user != null && user.getId().equals(detector.getUser().getId());
+    }
+
+    public boolean isAdminUser(Authentication authentication) {
+        final User user = getAuthenticatedUser(authentication);
+        return user != null && user.getRoles().contains(Role.ADMIN);
     }
 }

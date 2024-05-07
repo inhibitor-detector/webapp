@@ -48,6 +48,21 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
+    public List<User> findAllPaginated(Integer page, Integer pageSize) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+
+        criteriaQuery.select(root);
+
+        TypedQuery<User> query = entityManager.createQuery(criteriaQuery);
+
+        query.setMaxResults(pageSize);
+        query.setFirstResult((page - 1) * pageSize);
+        return query.getResultList();
+    }
+
+    @Override
     public User update(Long id, User entity) throws NotFoundException, AlreadyExistsException {
         User user = findById(id).orElseThrow(() -> new UserNotFoundException(id));
         updateUser(user, entity);

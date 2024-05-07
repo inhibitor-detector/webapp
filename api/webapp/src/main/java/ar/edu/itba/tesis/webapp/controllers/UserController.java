@@ -31,8 +31,8 @@ public class UserController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers() {
-        final List<User> users = userService.findAll();
+    public Response getUsers(@DefaultValue("1") @QueryParam("page") final Integer page) {
+        final List<User> users = userService.findAllPaginated(page, 10);
 
         if (users.isEmpty()) {
             return Response

@@ -168,7 +168,11 @@ public class SecurityConfiguration {
 
                 // Set permissions on endpoints
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/users").anonymous()
+                        /* /users */
+                        .requestMatchers(new OrRequestMatcher(
+                                new AntPathRequestMatcher("/users", HttpMethod.POST.toString()),
+                                new AntPathRequestMatcher("/users", HttpMethod.GET.toString())
+                        )).access((authentication, context) -> new AuthorizationDecision(accessControl.isAdminUser(authentication.get())))
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.PUT.toString()),
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.GET.toString()),
@@ -178,6 +182,10 @@ public class SecurityConfiguration {
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/signals", HttpMethod.POST.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canPostSignal(authentication.get()))))
+                        /* /detectors  */
+                        .requestMatchers(new OrRequestMatcher(
+                                new AntPathRequestMatcher("/detectors", HttpMethod.POST.toString())
+                        )).access(((authentication, context) -> new AuthorizationDecision(accessControl.isAdminUser(authentication.get()))))
                         .requestMatchers("/**").permitAll())
 
                 // Add Basic & JWT Authentication filters
