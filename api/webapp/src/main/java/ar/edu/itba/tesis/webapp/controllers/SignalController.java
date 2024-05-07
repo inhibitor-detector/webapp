@@ -10,6 +10,7 @@ import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Signal;
 import ar.edu.itba.tesis.models.User;
+import ar.edu.itba.tesis.webapp.auth.AccessControl;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
 import ar.edu.itba.tesis.webapp.dtos.SignalDto;
 import jakarta.validation.Valid;
@@ -19,6 +20,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,15 +34,17 @@ public class SignalController {
     private final DetectorService detectorService;
     private final UserService userService;
     private final SignalService signalService;
+    private final AccessControl accessControl;
 
     @Context
     private UriInfo uriInfo;
 
     @Autowired
-    public SignalController(DetectorService detectorService, UserService userService, SignalService signalService) {
+    public SignalController(DetectorService detectorService, UserService userService, SignalService signalService, AccessControl accessControl) {
         this.detectorService = detectorService;
         this.userService = userService;
         this.signalService = signalService;
+        this.accessControl = accessControl;
     }
 
     @GET
@@ -62,6 +68,8 @@ public class SignalController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveSignal(@Valid SignalDto signalDto) throws NotFoundException, AlreadyExistsException {
         final Detector detector = detectorService.findById(signalDto.detectorId()).orElseThrow(() -> new DetectorNotFoundException(signalDto.detectorId()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!accessControl.canPostSignalCheckDetectorId(authentication, detector)) throw new AccessDeniedException("Access denied");
 
         final Signal signal = signalService.create(Signal.builder().detector(detector).timestamp(parseAndValidate(signalDto.timestamp())).isHeartbeat(signalDto.isHeartbeat()).build());
 

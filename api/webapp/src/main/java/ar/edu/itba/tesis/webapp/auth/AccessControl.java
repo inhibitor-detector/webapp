@@ -1,6 +1,9 @@
 package ar.edu.itba.tesis.webapp.auth;
 
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.interfaces.service.UserService;
+import ar.edu.itba.tesis.models.Detector;
+import ar.edu.itba.tesis.models.Role;
 import ar.edu.itba.tesis.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -39,5 +42,16 @@ public class AccessControl {
     public boolean isAuthenticatedUser(Authentication authentication, Long id) {
         final User user = getAuthenticatedUser(authentication);
         return user != null && user.getId().equals(id);
+    }
+
+    public boolean canPostSignal(Authentication authentication) {
+        final User user = getAuthenticatedUser(authentication);
+        return user != null && user.getRoles().contains(Role.DETECTOR);
+    }
+
+    // Method for Signal controller, checks that the detector user is the same as the detectorId in the body
+    public boolean canPostSignalCheckDetectorId(Authentication authentication, Detector detector) {
+        final User user = getAuthenticatedUser(authentication);
+        return user != null && user.getId().equals(detector.getUser().getId());
     }
 }

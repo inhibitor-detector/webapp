@@ -174,6 +174,10 @@ public class SecurityConfiguration {
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.GET.toString()),
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.DELETE.toString())
                         )).access((authentication, context) -> new AuthorizationDecision(accessControl.isAuthenticatedUser(authentication.get(), Long.parseLong(context.getVariables().get("id")))))
+                        /* /signals  */
+                        .requestMatchers(new OrRequestMatcher(
+                                new AntPathRequestMatcher("/signals", HttpMethod.POST.toString())
+                        )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canPostSignal(authentication.get()))))
                         .requestMatchers("/**").permitAll())
 
                 // Add Basic & JWT Authentication filters
