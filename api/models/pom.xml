@@ -12,6 +12,10 @@
   <version>1.0-SNAPSHOT</version>
   <name>models</name>
 
+  <properties>
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>
+
   <dependencies>
     <!-- Starters -->
     <dependency>

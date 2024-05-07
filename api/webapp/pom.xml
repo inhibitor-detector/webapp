@@ -18,13 +18,12 @@
     <dependency>
       <groupId>ar.edu.itba.tesis</groupId>
       <artifactId>interfaces</artifactId>
-      <version>${project.parent.version}</version>
+      <version>${parent.version}</version>
     </dependency>
     <dependency>
       <groupId>ar.edu.itba.tesis</groupId>
       <artifactId>services</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>runtime</scope>
+      <version>${parent.version}</version>
     </dependency>
 
     <!-- Starters -->

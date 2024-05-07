@@ -32,7 +32,7 @@ This API uses a postgres database. To set up the database, run the following com
     - container:    the name of the docker container. If not provided, the default value is 'postgres'
     - user:         the user to create. If not provided, the default value is 'user'
     - password:     the password for the user. If not provided, the default value is '123123123'
-    - database:     the name of the database to create. If not provided, the default value is 'java_api_template'
+    - database:     the name of the database to create. If not provided, the default value is 'inhibitor-detector'
 ### Run Database Container 🏹
 If you want to run or re-run the database in a different container, you can use the following command:
 
@@ -40,6 +40,7 @@ If you want to run or re-run the database in a different container, you can use 
 
     Where:
     - container:    the name of the docker container. If not provided, the default value is 'postgres'
+
 ### Stop Database Container 🛑
 If you want to stop the database container, you can use the following command:
 
@@ -49,6 +50,20 @@ If you want to stop the database container, you can use the following command:
     - container:    the name of the docker container. If not provided, the default value is 'postgres'
 
 Tests will run using an in-memory HSQL database, so there is no need to create a database for tests.
+
+### Populate Database 🏹
+This command will create the database schemas and populate them with default values:
+```make run_db database=<database>```
+
+    Where:
+    - database:    the name of the database. If not provided, the default value is 'inhibitor-detector'
+
+This will provide 3 users.
+- user: tata, password: 12345678, role: USER
+- user: det_1_cliente_1, password: 12345678, role: DETECTOR
+- user: det_1_cliente_2, password: 12345678, role: DETECTOR
+
+For each detector a row in table detectors is also populated
 
 ## Security Configuration 🔒
 This API uses Basic and JWT authentication. 
@@ -77,8 +92,7 @@ The Jwk set must be in the following format:
 ⚠️ Make sure to do not use this key in production. It is only an example.
 
 # Run 🏃
-```make run``` 
-
+```make clean package```
 
 ```mvn spring-boot:run -pl webapp```
 
@@ -88,4 +102,8 @@ The Jwk set must be in the following format:
 ```make test```
 
 ```mvn test```
+
+
+
+
 

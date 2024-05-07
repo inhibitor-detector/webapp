@@ -1,8 +1,8 @@
 # Database variables
-container = postgres
+container = inhibitor-detector-db
 user = user
 password = 123123123
-database = java_api_template
+database = inhibitor_detector
 
 
 # Application Commands
@@ -13,26 +13,38 @@ test:
 	mvn test
 
 run: start_db
-	mvn spring-boot:run -pl webapp
-
+	mvn clean package
+	java -jar ./webapp/target/webapp-1.0-SNAPSHOT.jar
 
 # Database Commands
 start_db:
-	@if [ "$(container)" = "postgres" ]; then echo "Using default container name: postgres."; fi
+	@if [ "$(container)" = "inhibitor-detector-db" ]; then echo "Using default container name: inhibitor-detector-db."; fi
 	docker start $(container)
 
 stop_db:
-	@if [ "$(container)" = "postgres" ]; then echo "Using default container name: postgres."; fi
+	@if [ "$(container)" = "inhibitor-detector-db" ]; then echo "Using default container name: inhibitor-detector-db."; fi
 	docker stop $(container)
 
 create_db:
-	@if [ "$(container)" = "postgres" ]; then echo "Using default container name: 'postgres'."; fi
+	@if [ "$(container)" = "inhibitor-detector-db" ]; then echo "Using default container name: 'inhibitor-detector-db'."; fi
 	@if [ "$(user)" = "user" ]; then echo "Using default user name: 'user'."; fi
 	@if [ "$(password)" = "123123123" ]; then echo "Using default container name: '123123123'."; fi
-	@if [ "$(database)" = "java_api_template" ]; then echo "Using default container name: 'java_api_template'."; fi
+	@if [ "$(database)" = "inhibitor_detector" ]; then echo "Using default container name: 'inhibitor_detector'."; fi
 
 	docker run --name $(container) -e POSTGRES_PASSWORD=$(password) -e POSTGRES_USER=$(user) -p 5432:5432 -d postgres
 	sleep 5  # Wait for the PostgreSQL container to start (you can adjust this as needed)
 	docker exec -it $(container) psql -U $(user) -c 'CREATE DATABASE "$(database)" WITH ENCODING "UTF-8";'
+
+populate_db:
+	@if [ "$(container)" = "inhibitor-detector-db" ]; then echo "Using default container name: 'inhibitor-detector-db'."; fi
+	@if [ "$(user)" = "user" ]; then echo "Using default user name: 'user'."; fi
+	@if [ "$(password)" = "123123123" ]; then echo "Using default container name: '123123123'."; fi
+	@if [ "$(database)" = "inhibitor-detector" ]; then echo "Using default container name: 'inhibitor-detector'."; fi
+
+	docker exec -i $(container) psql -U $(user) --dbname $(database) < ./persistence/src/main/resources/schema.sql
+	docker exec -i $(container) psql -U $(user) --dbname $(database) < ./persistence/src/main/resources/data.sql
+
+
+
 
 

@@ -12,12 +12,16 @@
   <version>1.0-SNAPSHOT</version>
   <name>interfaces</name>
 
+  <properties>
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+  </properties>
+
   <dependencies>
     <!--    Modules dependencies-->
     <dependency>
       <groupId>ar.edu.itba.tesis</groupId>
       <artifactId>models</artifactId>
-      <version>${project.parent.version}</version>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
