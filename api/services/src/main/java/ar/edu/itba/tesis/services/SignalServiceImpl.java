@@ -46,6 +46,14 @@ public class SignalServiceImpl implements SignalService {
         return signalDao.findAllPaginated(page, pageSize);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId) {
+        // TODO: Validate that ownerId belongs to a owner with ROLE USER/ADMIN
+        // TODO: Validate that detector with detectorId exists
+        return signalDao.findAllPaginated(page, pageSize, ownerId, detectorId);
+    }
+
     @Transactional
     @Override
     public Signal update(Long id, Signal entity) throws NotFoundException, AlreadyExistsException {

@@ -10,6 +10,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
@@ -41,6 +42,7 @@ public class SignalHibernateDao implements SignalDao {
         Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("timestamp")));
 
         return entityManager.createQuery(criteriaQuery);
     }
@@ -59,6 +61,27 @@ public class SignalHibernateDao implements SignalDao {
         query.setFirstResult((page - 1) * pageSize);
         return query.getResultList();
     }
+
+    @Override
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
+        Root<Signal> root = criteriaQuery.from(Signal.class);
+
+        criteriaQuery.select(root);
+        // Sets where SQL clauses if they exist
+        setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId);
+
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("timestamp")));
+
+        TypedQuery<Signal> query = entityManager.createQuery(criteriaQuery);
+
+        query.setMaxResults(pageSize);
+        query.setFirstResult((page - 1) * pageSize);
+        return query.getResultList();
+    }
+
+
 
     @Override
     public Signal update(Long id, Signal entity) throws NotFoundException, AlreadyExistsException {
@@ -94,5 +117,20 @@ public class SignalHibernateDao implements SignalDao {
 
     private void updateHeartbeat(Signal user, Signal newValues) {
         // TODO Update heartbeat
+    }
+
+    // Aux methods
+    private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId) {
+        Predicate ownerIdCondition = criteriaBuilder.conjunction(); // Always returns true
+        if (ownerId != 0) {
+            ownerIdCondition = criteriaBuilder.equal(root.get("detector").get("owner").get("id"), ownerId);
+        }
+        Predicate detectorIdCondition = criteriaBuilder.conjunction(); // Always returns true
+
+        if (detectorId != 0) {
+            detectorIdCondition = criteriaBuilder.equal(root.get("detector").get("id"), detectorId);
+        }
+
+        criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition));
     }
 }
