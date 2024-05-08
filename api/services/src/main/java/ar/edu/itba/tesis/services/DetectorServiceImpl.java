@@ -47,6 +47,16 @@ public class DetectorServiceImpl implements DetectorService {
         return detectorDao.findAllPaginated(page, pageSize);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Detector> findAllPaginated(Integer page, Integer pageSize, Long ownerId) {
+        // owenerId == 0  checks if it is default value
+        if (ownerId == 0) return detectorDao.findAllPaginated(page, pageSize);
+
+        // TODO: Validate that de ownerId belongs to a owner user
+        return detectorDao.findByOwnerIdPaginated(page, pageSize, ownerId);
+    }
+
     @Transactional
     @Override
     public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {

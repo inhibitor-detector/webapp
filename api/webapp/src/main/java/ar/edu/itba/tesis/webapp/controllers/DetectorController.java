@@ -39,8 +39,9 @@ public class DetectorController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDetectors(@Min(1) @DefaultValue("1") @QueryParam("page") final Integer page,
-                                 @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize) {
-        final List<Detector> detectors = detectorService.findAllPaginated(page, pageSize);
+                                 @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize,
+                                 @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId) {
+        final List<Detector> detectors = detectorService.findAllPaginated(page, pageSize, ownerId);
 
         if (detectors.isEmpty()) {
             return Response
