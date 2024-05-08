@@ -182,10 +182,20 @@ public class SecurityConfiguration {
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/signals", HttpMethod.POST.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canPostSignal(authentication.get()))))
+
+                        .requestMatchers(new OrRequestMatcher(
+                                new AntPathRequestMatcher("/signals", HttpMethod.GET.toString())
+                        )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canAccessDetectors(authentication.get(), context.getRequest().getQueryString()))))
+
                         /* /detectors  */
+                        .requestMatchers(new OrRequestMatcher(
+                                new AntPathRequestMatcher("/detectors", HttpMethod.GET.toString())
+                        )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canAccessDetectors(authentication.get(), context.getRequest().getQueryString()))))
+
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/detectors", HttpMethod.POST.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.isAdminUser(authentication.get()))))
+
                         .requestMatchers("/**").permitAll())
 
                 // Add Basic & JWT Authentication filters
