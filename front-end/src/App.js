@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
-import Navbar from './Navbar';
-import DetectorTable from './DetectorTable';
-import SignalTable from './SignalTable';
-import axios from 'axios';
-
-axios.defaults.baseURL = 'http://localhost:8000';
+import React, { useState }  from 'react';
+import DetectorTable from './components/DetectorTable';
+import SignalTable from './components/SignalTable';
+import SignIn from './components/Signin';
+import { Route, Routes } from 'react-router-dom';
+import AlertContainer from './components/AlertContainer';
+import detectorsData from './components/mock_data/detectors.json';
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('detectors');
+  const [open, setOpen] = useState(true);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div>
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === 'detectors' && <DetectorTable/>}
-      {activeTab === 'signals' && <SignalTable/>}
+      <AlertContainer
+        open={open}
+        onClose={handleClose}
+        selectedDetector={detectorsData.detectors[1]}
+      />
+      <Routes>
+        <Route path='/' element={<SignIn/>}/>
+        <Route path='Detectores' element={<DetectorTable/>}/>
+        <Route path='Señales' element={<SignalTable/>}/>
+      </Routes>
     </div>
   );
 };

@@ -4,25 +4,33 @@
 	    "id": 1,
 	    "owner": 1,
 	    "isOnline": true,
-	    "version": 1
+	    "version": 1,
+		"name": "shopping1",
+		"description": "parking A"
 	  },
 	  {
 	    "id": 2,
 	    "owner": 1,
 	    "isOnline": false,
-	    "version": 1
+	    "version": 1,
+		"name": "shopping2",
+		"description": "parking B"
 	  },
       {
 	    "id": 3,
 	    "owner": 1,
 	    "isOnline": true,
-	    "version": 1
+	    "version": 1,
+		"name": "shopping3",
+		"description": "parking C"
 	  },
       {
 	    "id": 4,
 	    "owner": 1,
 	    "isOnline": true,
-	    "version": 1
+	    "version": 1,
+		"name": "shopping4",
+		"description": "parking D"
 	  }
 	]
 }
