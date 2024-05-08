@@ -11,8 +11,6 @@ public interface UserDao extends CrudOperations<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    List<User> findAllPaginated(Integer page, Integer maxResults);
-
     Optional<User> findByUsername(String username);
 
 }

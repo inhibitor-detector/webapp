@@ -33,15 +33,28 @@ public class DetectorHibernateDao implements DetectorDao {
     }
 
     // Refactor this
-    @Override
-    public List<Detector> findAll() {
+    private TypedQuery<Detector> getDetectorsQuery() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Detector> criteriaQuery = criteriaBuilder.createQuery(Detector.class);
         Root<Detector> root = criteriaQuery.from(Detector.class);
 
         criteriaQuery.select(root);
 
-        TypedQuery<Detector> query = entityManager.createQuery(criteriaQuery);
+        return entityManager.createQuery(criteriaQuery);
+    }
+
+    @Override
+    public List<Detector> findAll() {
+        TypedQuery<Detector> query = getDetectorsQuery();
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Detector> findAllPaginated(Integer page, Integer pageSize) {
+        TypedQuery<Detector> query = getDetectorsQuery();
+
+        query.setMaxResults(pageSize);
+        query.setFirstResult((page - 1) * pageSize);
         return query.getResultList();
     }
 

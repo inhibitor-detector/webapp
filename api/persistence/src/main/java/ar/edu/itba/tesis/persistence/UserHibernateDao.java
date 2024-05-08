@@ -35,27 +35,25 @@ public class UserHibernateDao implements UserDao {
     }
 
     // Refactor this
-    @Override
-    public List<User> findAll() {
+    private TypedQuery<User> getUsersQuery() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
 
         criteriaQuery.select(root);
 
-        TypedQuery<User> query = entityManager.createQuery(criteriaQuery);
+        return entityManager.createQuery(criteriaQuery);
+    }
+
+    @Override
+    public List<User> findAll() {
+        TypedQuery<User> query = getUsersQuery();
         return query.getResultList();
     }
 
     @Override
     public List<User> findAllPaginated(Integer page, Integer pageSize) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root = criteriaQuery.from(User.class);
-
-        criteriaQuery.select(root);
-
-        TypedQuery<User> query = entityManager.createQuery(criteriaQuery);
+        TypedQuery<User> query = getUsersQuery();
 
         query.setMaxResults(pageSize);
         query.setFirstResult((page - 1) * pageSize);

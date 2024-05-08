@@ -4,6 +4,7 @@ import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
 import ar.edu.itba.tesis.models.Signal;
+import ar.edu.itba.tesis.models.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -34,15 +35,28 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     // Refactor this
-    @Override
-    public List<Signal> findAll() {
+    private TypedQuery<Signal> getSignalsQuery() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
         Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
 
-        TypedQuery<Signal> query = entityManager.createQuery(criteriaQuery);
+        return entityManager.createQuery(criteriaQuery);
+    }
+
+    @Override
+    public List<Signal> findAll() {
+        TypedQuery<Signal> query = getSignalsQuery();
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize) {
+        TypedQuery<Signal> query = getSignalsQuery();
+
+        query.setMaxResults(pageSize);
+        query.setFirstResult((page - 1) * pageSize);
         return query.getResultList();
     }
 

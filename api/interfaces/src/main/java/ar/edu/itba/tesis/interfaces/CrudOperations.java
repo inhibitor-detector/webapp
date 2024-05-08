@@ -2,6 +2,7 @@ package ar.edu.itba.tesis.interfaces;
 
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.models.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +24,6 @@ public interface CrudOperations<T, ID> {
     boolean existsById(ID id);
 
     long count();
+
+    List<T> findAllPaginated(Integer page, Integer pageSize);
 }

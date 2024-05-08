@@ -28,7 +28,8 @@ public class JerseyConfiguration extends ResourceConfig {
                 ClientErrorExceptionMapper.class,
                 ConstraintViolationExceptionMapper.class,
                 GenericExceptionMapper.class,
-                NotFoundExceptionMapper.class
+                NotFoundExceptionMapper.class,
+                QueryParamExceptionMapper.class
         );
 
         register(ObjectMapperProvider.class);

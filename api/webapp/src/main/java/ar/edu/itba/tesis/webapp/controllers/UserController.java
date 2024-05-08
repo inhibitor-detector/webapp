@@ -7,6 +7,8 @@ import ar.edu.itba.tesis.interfaces.exceptions.UserNotFoundException;
 import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.dtos.UserDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -31,14 +33,17 @@ public class UserController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers(@DefaultValue("1") @QueryParam("page") final Integer page) {
-        final List<User> users = userService.findAllPaginated(page, 10);
+    public Response getUsers(@Min (1) @DefaultValue("1") @QueryParam("page") final Integer page,
+                             @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize) {
+        final List<User> users = userService.findAllPaginated(page, pageSize);
 
         if (users.isEmpty()) {
             return Response
                     .noContent()
                     .build();
         }
+
+        // TODO: Set links to previous and next page
 
         return Response
                 .ok(UserDto.fromUsers(users))
@@ -100,5 +105,4 @@ public class UserController {
                 .password(userDto.password())
                 .build();
     }
-
 }

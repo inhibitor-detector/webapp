@@ -5,6 +5,7 @@ import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.models.Detector;
+import ar.edu.itba.tesis.models.Signal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,12 @@ public class DetectorServiceImpl implements DetectorService {
     @Override
     public List<Detector> findAll() {
         return detectorDao.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Detector> findAllPaginated(Integer page, Integer pageSize) {
+        return detectorDao.findAllPaginated(page, pageSize);
     }
 
     @Transactional

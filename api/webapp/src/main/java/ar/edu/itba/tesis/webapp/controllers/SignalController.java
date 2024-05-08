@@ -14,6 +14,8 @@ import ar.edu.itba.tesis.webapp.auth.AccessControl;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
 import ar.edu.itba.tesis.webapp.dtos.SignalDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -49,15 +51,16 @@ public class SignalController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSignals() {
-        final List<Signal> signals = signalService.findAll();
+    public Response getSignals(@Min(1) @DefaultValue("1") @QueryParam("page") final Integer page,
+                               @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize) {
+        final List<Signal> signals = signalService.findAllPaginated(page, pageSize);
 
         if (signals.isEmpty()) {
             return Response
                     .noContent()
                     .build();
         }
-
+        // TODO: Set links to proper pages
         return Response
                 .ok(SignalDto.fromSignals(signals))
                 .build();

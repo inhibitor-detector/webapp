@@ -11,6 +11,8 @@ import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
 import ar.edu.itba.tesis.webapp.dtos.UserDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -36,8 +38,9 @@ public class DetectorController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers() {
-        final List<Detector> detectors = detectorService.findAll();
+    public Response getDetectors(@Min(1) @DefaultValue("1") @QueryParam("page") final Integer page,
+                                 @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize) {
+        final List<Detector> detectors = detectorService.findAllPaginated(page, pageSize);
 
         if (detectors.isEmpty()) {
             return Response

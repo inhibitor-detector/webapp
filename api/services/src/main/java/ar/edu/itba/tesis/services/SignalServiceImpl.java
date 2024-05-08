@@ -15,58 +15,64 @@ import java.util.Optional;
 @Service
 public class SignalServiceImpl implements SignalService {
 
-    private final SignalDao heartbeatDao;
+    private final SignalDao signalDao;
 
     @Autowired
     public SignalServiceImpl(SignalDao heartbeatDao) {
-        this.heartbeatDao = heartbeatDao;
+        this.signalDao = heartbeatDao;
     }
 
     @Transactional
     @Override
     public Signal create(Signal entity) throws AlreadyExistsException {
-        return heartbeatDao.create(entity);
+        return signalDao.create(entity);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Optional<Signal> findById(Long id) {
-        return heartbeatDao.findById(id);
+        return signalDao.findById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Signal> findAll() {
-        return heartbeatDao.findAll();
+        return signalDao.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize) {
+        return signalDao.findAllPaginated(page, pageSize);
     }
 
     @Transactional
     @Override
     public Signal update(Long id, Signal entity) throws NotFoundException, AlreadyExistsException {
-        return heartbeatDao.update(id, entity);
+        return signalDao.update(id, entity);
     }
 
     @Transactional
     @Override
     public void deleteById(Long id) {
-        heartbeatDao.deleteById(id);
+        signalDao.deleteById(id);
     }
 
     @Transactional
     @Override
     public void delete(Signal entity) {
-        heartbeatDao.delete(entity);
+        signalDao.delete(entity);
     }
 
     @Transactional(readOnly = true)
     @Override
     public boolean existsById(Long id) {
-        return heartbeatDao.existsById(id);
+        return signalDao.existsById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
     public long count() {
-        return heartbeatDao.count();
+        return signalDao.count();
     }
 }
