@@ -1,9 +1,6 @@
 package ar.edu.itba.tesis.webapp.config;
 
-import ar.edu.itba.tesis.webapp.auth.AccessControl;
-import ar.edu.itba.tesis.webapp.auth.ForbiddenRequestHandler;
-import ar.edu.itba.tesis.webapp.auth.CustomBasicAuthenticationFilter;
-import ar.edu.itba.tesis.webapp.auth.UnauthorizedRequestHandler;
+import ar.edu.itba.tesis.webapp.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -60,6 +57,7 @@ public class SecurityConfiguration {
     private final JwtEncoder jwtEncoder;
     private final Converter<Jwt, UsernamePasswordAuthenticationToken> jwtToUserDetailsConverter;
     private final AccessControl accessControl;
+    private final AuthFacade authFacade;
 
     @Autowired
     public SecurityConfiguration(UserDetailsService userDetailsService,
@@ -67,13 +65,15 @@ public class SecurityConfiguration {
                                  JwtDecoder jwtDecoder,
                                  JwtEncoder jwtEncoder,
                                  Converter<Jwt, UsernamePasswordAuthenticationToken> jwtToUserDetailsConverter,
-                                 AccessControl accessControl) {
+                                 AccessControl accessControl,
+                                 AuthFacade authFacade) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.jwtDecoder = jwtDecoder;
         this.jwtEncoder = jwtEncoder;
         this.jwtToUserDetailsConverter = jwtToUserDetailsConverter;
         this.accessControl = accessControl;
+        this.authFacade = authFacade;
     }
 
     @Bean
@@ -121,14 +121,16 @@ public class SecurityConfiguration {
     public BasicAuthenticationFilter basicAuthenticationFilter(HttpSecurity http) throws Exception {
         final AuthenticationManager authenticationManager = authenticationManager(http);
         final AuthenticationEntryPoint authenticationEntryPoint = authenticationEntryPoint();
-        return new CustomBasicAuthenticationFilter(authenticationManager, authenticationEntryPoint, jwtEncoder);
+        return new CustomBasicAuthenticationFilter(authenticationManager, authenticationEntryPoint, jwtEncoder, authFacade);
     }
 
     @Bean
     public BearerTokenAuthenticationFilter bearerTokenAuthenticationFilter(HttpSecurity http) throws Exception {
         final AuthenticationManager authenticationManager = authenticationManager(http);
         // TODO implement custom BearerTokenAuthenticationEntryPoint or AuthenticationFailureHandler
-        return new BearerTokenAuthenticationFilter(authenticationManager);
+        BearerTokenAuthenticationFilter filter = new BearerTokenAuthenticationFilter(authenticationManager);
+        filter.setAuthenticationEntryPoint(authenticationEntryPoint());
+        return filter;
     }
 
     /**

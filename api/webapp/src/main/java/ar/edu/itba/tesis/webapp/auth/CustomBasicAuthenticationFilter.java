@@ -10,16 +10,20 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 
 public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
 
     private final JwtEncoder jwtEncoder;
+    private final AuthFacade authFacade;
 
     public CustomBasicAuthenticationFilter(AuthenticationManager authenticationManager,
                                            AuthenticationEntryPoint authenticationEntryPoint,
-                                           JwtEncoder jwtEncoder) {
+                                           JwtEncoder jwtEncoder,
+                                           AuthFacade authFacade) {
         super(authenticationManager, authenticationEntryPoint);
         this.jwtEncoder = jwtEncoder;
+        this.authFacade = authFacade;
     }
 
     @Override
@@ -31,8 +35,14 @@ public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
 
     private Jwt createJwt(Authentication authentication) {
         final JwsHeader header = JwsHeader.with(SignatureAlgorithm.ES256).build();
+        ZonedDateTime issuedDate = ZonedDateTime.now();
+        ZonedDateTime expiresDate = issuedDate.plusSeconds(30);
+
         final JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(authentication.getName())
+                .issuedAt(issuedDate.toInstant())
+                .expiresAt(expiresDate.toInstant())
+                .claim("userId", authFacade.getAuthenticatedUser(authentication).getId())
                 .build();
 
         final JwtEncoderParameters parameters = JwtEncoderParameters.from(header, claims);

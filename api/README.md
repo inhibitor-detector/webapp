@@ -1,20 +1,11 @@
-# Java Api Template ☕
+# Java inhibitor-api ☕
 This is a template for a Java API, using Spring Boot, Spring Data JPA, Spring Security, and JWT.
 
-The API is a simple CRUD for a User entity.
-
-## Next Steps 🚀
-- [ ] Add unit tests in the service layer
-- [x] Integrate Spring Security and JWT authentication
-- [x] Implement user roles
-- [x] Implement ACL
-- [ ] Add integration tests
-- [ ] Add Dockerfile
-- [ ] Add Swagger documentation
+The API is a CRUD for a User, Detectors and Signal entities.
 
 ## Requirements 📋
 - Java 21 :coffee:
-- Maven :wrench:
+- Maven 3.8.X :wrench:
 - Docker :whale:
 - Postgres :elephant:
 
@@ -32,11 +23,11 @@ This API uses a postgres database. To set up the database, run the following com
     - container:    the name of the docker container. If not provided, the default value is 'postgres'
     - user:         the user to create. If not provided, the default value is 'user'
     - password:     the password for the user. If not provided, the default value is '123123123'
-    - database:     the name of the database to create. If not provided, the default value is 'inhibitor-detector'
+    - database:     the name of the database to create. If not provided, the default value is 'inhibitor_detector'
 ### Run Database Container 🏹
 If you want to run or re-run the database in a different container, you can use the following command:
 
-```make run_db container=<container>```
+```make start_db container=<container>```
 
     Where:
     - container:    the name of the docker container. If not provided, the default value is 'postgres'
@@ -53,10 +44,10 @@ Tests will run using an in-memory HSQL database, so there is no need to create a
 
 ### Populate Database 🏹
 This command will create the database schemas and populate them with default values:
-```make run_db database=<database>```
+```make populate_db database=<database>```
 
     Where:
-    - database:    the name of the database. If not provided, the default value is 'inhibitor-detector'
+    - database:    the name of the database. If not provided, the default value is 'inhibitor_detector'
 
 This will provide 3 users.
 - user: tata, password: 12345678, role: USER
@@ -93,8 +84,6 @@ The Jwk set must be in the following format:
 
 # Run 🏃
 ```make clean package```
-
-```mvn spring-boot:run -pl webapp```
 
 ⚠️ `make run` will run the database container if it is not running.
 

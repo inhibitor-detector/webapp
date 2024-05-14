@@ -25,51 +25,36 @@ import java.util.function.Supplier;
 @Component()
 public class AccessControl {
 
-    private final UserService userService;
+    private final AuthFacade authFacade;
 
     @Autowired
-    public AccessControl(UserService userService) {
-        this.userService = userService;
-    }
-
-    public UserDetails getAuthenticatedUserDetails(Authentication authentication) {
-        if (!(authentication.getPrincipal() instanceof UserDetails)) {
-            return null;
-        }
-        return (UserDetails) authentication.getPrincipal();
-    }
-
-    public User getAuthenticatedUser(Authentication authentication) {
-        final UserDetails userDetails = getAuthenticatedUserDetails(authentication);
-        if (userDetails == null) {
-            return null;
-        }
-        return userService.findByUsername(userDetails.getUsername()).orElse(null);
+    public AccessControl(AuthFacade authFacade) {
+        this.authFacade = authFacade;
     }
 
     public boolean isAuthenticatedUser(Authentication authentication, Long id) {
-        final User user = getAuthenticatedUser(authentication);
+        final User user = authFacade.getAuthenticatedUser(authentication);
         return user != null && (user.getRoles().contains(Role.ADMIN) || user.getId().equals(id));
     }
 
     public boolean canPostSignal(Authentication authentication) {
-        final User user = getAuthenticatedUser(authentication);
+        final User user = authFacade.getAuthenticatedUser(authentication);
         return user != null && user.getRoles().contains(Role.DETECTOR);
     }
 
     // Method for Signal controller, checks that the detector user is the same as the detectorId in the body
     public boolean canPostSignalCheckDetectorId(Authentication authentication, Detector detector) {
-        final User user = getAuthenticatedUser(authentication);
+        final User user = authFacade.getAuthenticatedUser(authentication);
         return user != null && user.getId().equals(detector.getUser().getId());
     }
 
     public boolean isAdminUser(Authentication authentication) {
-        final User user = getAuthenticatedUser(authentication);
+        final User user = authFacade.getAuthenticatedUser(authentication);
         return user != null && user.getRoles().contains(Role.ADMIN);
     }
 
     public boolean canAccessDetectors(Authentication authentication, String queryString) {
-        final User user = getAuthenticatedUser(authentication);
+        final User user = authFacade.getAuthenticatedUser(authentication);
         if (user == null) return false;
         if (user.getRoles().contains(Role.ADMIN)) return true;
 
