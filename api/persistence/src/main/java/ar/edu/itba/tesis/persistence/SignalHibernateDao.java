@@ -63,14 +63,14 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     @Override
-    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId) {
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId, Boolean isHeartbeat) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
         Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
         // Sets where SQL clauses if they exist
-        setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId);
+        setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId, isHeartbeat);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("timestamp")));
 
@@ -120,7 +120,7 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     // Aux methods
-    private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId) {
+    private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId, Boolean isHeartbeat) {
         Predicate ownerIdCondition = criteriaBuilder.conjunction(); // Always returns true
         if (ownerId != 0) {
             ownerIdCondition = criteriaBuilder.equal(root.get("detector").get("owner").get("id"), ownerId);
@@ -131,6 +131,11 @@ public class SignalHibernateDao implements SignalDao {
             detectorIdCondition = criteriaBuilder.equal(root.get("detector").get("id"), detectorId);
         }
 
-        criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition));
+        Predicate isHeartbeatCondition = criteriaBuilder.conjunction(); // Always returns true
+        if (isHeartbeat != null) {
+            isHeartbeatCondition = criteriaBuilder.equal(root.get("isHeartbeat"), isHeartbeat);
+        }
+
+        criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition, isHeartbeatCondition));
     }
 }

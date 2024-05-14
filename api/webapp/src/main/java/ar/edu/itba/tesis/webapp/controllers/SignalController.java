@@ -54,9 +54,10 @@ public class SignalController {
     public Response getSignals(@Min(1) @DefaultValue("1") @QueryParam("page") final Integer page,
                                @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize,
                                @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId,
-                               @Min(0) @DefaultValue("0") @QueryParam("detectorId") final Long detectorId
+                               @Min(0) @DefaultValue("0") @QueryParam("detectorId") final Long detectorId,
+                               @QueryParam("isHeartbeat") final Boolean isHeartBeat
     ) {
-        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId);
+        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartBeat);
 
         if (signals.isEmpty()) {
             return Response

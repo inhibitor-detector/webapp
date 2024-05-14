@@ -48,10 +48,10 @@ public class SignalServiceImpl implements SignalService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId) {
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId, Boolean isHeartbeat) {
         // TODO: Validate that ownerId belongs to a owner with ROLE USER/ADMIN
         // TODO: Validate that detector with detectorId exists
-        return signalDao.findAllPaginated(page, pageSize, ownerId, detectorId);
+        return signalDao.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartbeat);
     }
 
     @Transactional
