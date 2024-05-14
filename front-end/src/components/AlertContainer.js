@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const Notification = ({ open, onClose, selectedDetector }) => {
+const Notification = ({open, onClose}) => {
   return (
     <div>
       {open && (
@@ -41,8 +41,8 @@ const Notification = ({ open, onClose, selectedDetector }) => {
             </Button>
             <h2 style={{ color: 'white', textAlign: 'center' }}>¡ALERTA!</h2>
             <h3 style={{ color: 'white', textAlign: 'center' }}>Inhibidor detectado</h3>
-            <h3 style={{ color: 'white', textAlign: 'center' }}>Detector: {selectedDetector.id}</h3>
-            <h3 style={{ color: 'white', textAlign: 'center' }}>Descripción: {selectedDetector.name}</h3>
+            {/* <h3 style={{ color: 'white', textAlign: 'center' }}>Detector: {selectedDetector.id}</h3>
+            <h3 style={{ color: 'white', textAlign: 'center' }}>Descripción: {selectedDetector.name}</h3> */}
           </div>
         </Modal>
     </div>

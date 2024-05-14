@@ -1,29 +1,50 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Signin.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 import Paper from '@mui/material/Paper';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const { saveToken } = useAuth();
+
+  // TODO get role by user id
+  // const getRoles = async (event) => {
+  // };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    navigate("/Detectores")
+    try {
+      console.log("before sign in");
+      const response = await axios.get('http://localhost:8000/', { auth: {username: data.get('username'), password: data.get('password') }});
+      if (response.status === 200) {
+        const token = response.headers.authorization.split(' ')[1];
+        console.log("tokenFromResponse");
+        console.log(response);
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken)
+
+        saveToken(token);
+        localStorage.setItem('token', token);
+        console.log("token saved");
+        navigate("/Detectores")
+      } else {
+        console.log("Error");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -40,7 +61,7 @@ export default function SignIn() {
         >
           <Paper elevation={3} sx={{ padding: 4, border: '1px solid #8bc34a' }}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-              <img src="/logo.png" style={{ width: '100px', height: '100px', alignSelf: 'center' }} />
+              <img src="/logo.png" alt="" style={{ width: '100px', height: '100px', alignSelf: 'center' }} />
             </div>
               <Typography component="h1" variant="h5" sx={{ textAlign: 'center' }}>
                 Sign in
@@ -50,10 +71,10 @@ export default function SignIn() {
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                  id="username"
+                  label="Usuario"
+                  name="username"
+                  autoComplete="username"
                   autoFocus
                   className='textField'
                 />
@@ -62,7 +83,7 @@ export default function SignIn() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -74,7 +95,7 @@ export default function SignIn() {
                   variant="contained"
                   sx= {{ backgroundColor: '#8bc34a', 
                   '&:hover': {
-                    backgroundColor: '#689f38', // Cambia el color al hacer hover
+                    backgroundColor: '#689f38',
                   }}}
                 >
                   Iniciar Cesion

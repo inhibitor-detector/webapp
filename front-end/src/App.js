@@ -4,7 +4,8 @@ import SignalTable from './components/SignalTable';
 import SignIn from './components/Signin';
 import { Route, Routes } from 'react-router-dom';
 import AlertContainer from './components/AlertContainer';
-import detectorsData from './components/mock_data/detectors.json';
+import PrivateRoutes from './components/PrivateRoutes'
+import HeartbeatTable from './components/HeartbeatTable';
 
 const App = () => {
   const [open, setOpen] = useState(true);
@@ -15,15 +16,14 @@ const App = () => {
 
   return (
     <div>
-      <AlertContainer
-        open={open}
-        onClose={handleClose}
-        selectedDetector={detectorsData.detectors[1]}
-      />
+      <AlertContainer open={open} onClose={handleClose}/>
       <Routes>
-        <Route path='/' element={<SignIn/>}/>
-        <Route path='Detectores' element={<DetectorTable/>}/>
-        <Route path='Señales' element={<SignalTable/>}/>
+      <Route path='/' element={<SignIn/>}/>
+        <Route element={<PrivateRoutes />}>
+          <Route path='Heartbeats' element={<HeartbeatTable/>}/>
+          <Route path='Detectores' element={<DetectorTable/>}/>
+          <Route path='Inhibiciones' element={<SignalTable/>}/>
+        </Route>
       </Routes>
     </div>
   );

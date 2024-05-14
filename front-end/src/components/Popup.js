@@ -7,7 +7,7 @@ const Popup = ({ popup, selectedDetector, onClose }) => {
     return (
         <Popover
             open={Boolean(popup)}
-            popup={popup}
+            anchorEl={popup}
             onClose={onClose}
             anchorOrigin={{
             vertical: 'bottom',
