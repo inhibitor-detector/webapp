@@ -13,13 +13,15 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link} from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useAuth } from './AuthContext';
 
-const pages = ['Detectores', 'Señales'];
+const pages = ['Detectores', 'Inhibiciones'];
 const settings = ['Cerrar Sesión'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { logout } = useAuth(); 
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -32,7 +34,11 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event) => {
+    if (event.target.textContent === "Cerrar Sesión") {
+      logout();
+      console.log("logout");
+    }
     setAnchorElUser(null);
   };
 

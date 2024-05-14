@@ -27,8 +27,7 @@ CREATE TABLE IF NOT EXISTS detectors
     name varchar(30) not null,
     description varchar(255),
     FOREIGN KEY (user_id) REFERENCES users (id) on DELETE CASCADE,
-    FOREIGN KEY (owner_id) REFERENCES users (id),
-    unique (user_id)
+    FOREIGN KEY (owner_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS signals

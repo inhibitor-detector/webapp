@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import signalsData from './mock_data/signals.json';
-import { IconButton, Popover } from '@mui/material';
 import ResponsiveAppBar from './Nav';
+import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 const SignalTable = () => {
+  const { token } = useAuth();
   const [signals, setSignals] = useState([]);
-  const [popup, setPopup] = useState(null);
-
-  const handlePopoverOpen = (event, detectorId) => {
-    setPopup(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setPopup(null);
-  };
-
-  const open = Boolean(popup);
 
   useEffect(() => {
-    setSignals(signalsData.signals);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/signals', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) {
+          setSignals(response.data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   return (
     <div>
@@ -37,32 +42,13 @@ const SignalTable = () => {
             <TableBody>
               {signals.map(signal => (
                 <TableRow key={signal.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
-                  <TableCell sx={{textAlign: 'center' }}>
-                    <IconButton onClick={(event) => handlePopoverOpen(event, signal.detector_id)}>
-                      {signal.detector_id}
-                    </IconButton>
-                  </TableCell>
+                  <TableCell sx={{textAlign: 'center' }}>{signal.detectorId}</TableCell>
                   <TableCell sx={{textAlign: 'center' }}>{signal.timestamp}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-        <Popover
-          open={open}
-          popup={popup}
-          onClose={handlePopoverClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          <div style={{ padding: '10px' }}>Detector!</div>
-        </Popover>
       </div>
     </div>
   );
