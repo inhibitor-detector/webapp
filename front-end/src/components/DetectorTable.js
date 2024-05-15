@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const DetectorTable = () => {
-  const { token, userRole } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [detectors, setDetectors] = useState([]);
   const [selectedDetector, setSelectedDetector] = useState(null);
   const [popup, setPopup] = useState(null);
@@ -16,10 +16,9 @@ const DetectorTable = () => {
     const fetchData = async () => {
       try {
         let params = {};
-        if (userRole !== 'ADMIN') {
-          // TODO use ownerId from user logued
+        if (!userRole.includes('ADMIN')) {
           params = {
-            ownerId: 1
+            ownerId: userId
           };
         }
         const response = await axios.get('http://localhost:8000/detectors', {
@@ -46,7 +45,7 @@ const DetectorTable = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [token, userRole]);
+  }, [token, userRole, userId]);
 
   const handleClick = (event, detector, columnIndex) => {
     if (columnIndex === 3) {

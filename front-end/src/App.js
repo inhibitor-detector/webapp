@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState } from 'react';
 import DetectorTable from './components/DetectorTable';
 import SignalTable from './components/SignalTable';
 import SignIn from './components/Signin';

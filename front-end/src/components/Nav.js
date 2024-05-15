@@ -37,7 +37,7 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = (event) => {
     if (event.target.textContent === "Cerrar Sesión") {
       logout();
-      console.log("logout");
+      console.log("Logout");
     }
     setAnchorElUser(null);
   };

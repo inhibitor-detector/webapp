@@ -16,12 +16,12 @@ const HeartbeatTable = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
+            console.log(selectedDetector)
             const response = await axios.get(`http://localhost:8000/signals?detectorId=${selectedDetector}`, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
               });
-            console.log(response)
             if (response.status === 200) {
               setHeartbeats(response.data);
             }

@@ -17,30 +17,35 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const navigate = useNavigate();
   const { saveToken } = useAuth();
+  const { saveUserId } = useAuth();
+  const { saveUserRole } = useAuth();
 
-  // TODO get role by user id
-  // const getRoles = async (event) => {
-  // };
+  const saveRoles = async (token, userId) => {
+    const response = await axios.get(`http://localhost:8000/users/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    saveUserRole(response.data.roles);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      console.log("before sign in");
       const response = await axios.get('http://localhost:8000/', { auth: {username: data.get('username'), password: data.get('password') }});
       if (response.status === 200) {
         const token = response.headers.authorization.split(' ')[1];
-        console.log("tokenFromResponse");
-        console.log(response);
         const decodedToken = jwtDecode(token);
         console.log(decodedToken)
-
+        saveUserId(decodedToken.userId)
+        saveRoles(token, decodedToken.userId);
         saveToken(token);
         localStorage.setItem('token', token);
-        console.log("token saved");
+        console.log("Signed in")
         navigate("/Detectores")
       } else {
-        console.log("Error");
+        console.log("Error signing in");
       }
     } catch (error) {
       console.error('Error:', error);
