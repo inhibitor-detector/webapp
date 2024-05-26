@@ -69,7 +69,7 @@ export default function SignIn() {
               <img src="/logo.png" alt="" style={{ width: '100px', height: '100px', alignSelf: 'center' }} />
             </div>
               <Typography component="h1" variant="h5" sx={{ textAlign: 'center' }}>
-                Sign in
+                Detector Inhibidores
               </Typography>
               <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
@@ -103,7 +103,7 @@ export default function SignIn() {
                     backgroundColor: '#689f38',
                   }}}
                 >
-                  Iniciar Cesion
+                  Iniciar Sesion
                 </Button>
               </Box>
           </Paper>

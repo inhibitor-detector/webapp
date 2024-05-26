@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DetectorTable from './components/DetectorTable';
 import SignalTable from './components/SignalTable';
 import SignIn from './components/Signin';
@@ -16,7 +16,6 @@ const App = () => {
 
   return (
     <div>
-      <AlertContainer open={open} onClose={handleClose}/>
       <Routes>
       <Route path='/' element={<SignIn/>}/>
         <Route element={<PrivateRoutes />}>
