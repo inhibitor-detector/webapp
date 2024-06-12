@@ -1,0 +1,11 @@
+.css-n70jm4-MuiInputBase-root-MuiInput-root-MuiSelect-root::after {
+    border-bottom-color: #8bc34a !important;
+}
+
+.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root.Mui-focused{
+    color: #8bc34a !important;
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected{
+    background-color: rgba(139, 195, 74, 0.15) !important;
+} 

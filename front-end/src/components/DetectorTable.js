@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import axios from 'axios';
 import Popup from './Popup';
+import SelectOrder from './Select';
 import ResponsiveAppBar from './Nav';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +12,7 @@ const DetectorTable = () => {
   const [detectors, setDetectors] = useState([]);
   const [selectedDetector, setSelectedDetector] = useState(null);
   const [popup, setPopup] = useState(null);
+  const [orderType, setOrderType] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +37,6 @@ const DetectorTable = () => {
       }
     };
 
-
     fetchData();
 
     const intervalId = setInterval(() => {
@@ -46,6 +47,18 @@ const DetectorTable = () => {
       clearInterval(intervalId);
     };
   }, [token, userRole, userId]);
+
+  const sortedDetectors = React.useMemo(() => {
+    let sorted = [...detectors];
+    if (orderType === 'Id') {
+      sorted.sort((a, b) => a.id - b.id);
+    } else if (orderType === 'Activo') {
+      sorted.sort((a, b) => (a.isOnline === b.isOnline) ? 0 : a.isOnline ? -1 : 1);
+    } else if (orderType === 'Desactivado') {
+      sorted.sort((a, b) => (a.isOnline === b.isOnline) ? 0 : a.isOnline ? 1 : -1);
+    }
+    return sorted;
+  }, [detectors, orderType]);
 
   const handleClick = (event, detector, columnIndex) => {
     if (columnIndex === 3) {
@@ -64,7 +77,8 @@ const DetectorTable = () => {
   return (
     <div>
       <ResponsiveAppBar/>
-      <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
+      <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+        <SelectOrder setOrderType={setOrderType} />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -76,7 +90,7 @@ const DetectorTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {detectors.map((detector) => (
+              {sortedDetectors.map((detector) => (
                 <DetectorRow key={detector.id} detector={detector} onClick={(event, columnIndex) => handleClick(event, detector, columnIndex)} />
               ))}
             </TableBody>

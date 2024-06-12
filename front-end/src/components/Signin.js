@@ -41,6 +41,8 @@ export default function SignIn() {
         saveUserId(decodedToken.userId)
         saveRoles(token, decodedToken.userId);
         saveToken(token);
+        setCookie('username', data.get('username'), 1);
+        setCookie('password', data.get('password'), 1);
         localStorage.setItem('token', token);
         console.log("Signed in")
         navigate("/Detectores")
@@ -50,6 +52,13 @@ export default function SignIn() {
     } catch (error) {
       console.error('Error:', error);
     }
+  };
+
+  const setCookie = (name, value, days) => {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   };
 
   return (
