@@ -1,10 +1,15 @@
 import axios from 'axios';
 
-const INTERVAL_TIME = 20000;
+const INTERVAL_TIME = 300000;
 
-export async function loginPeriodically(username, pass, saveToken) {
+export async function loginPeriodically(saveToken) {
   try {
-    const response = await axios.get('http://localhost:8000/', { auth: { username: username, password: pass } });
+    const username = getCookie('username');
+    const pass = getCookie('password');
+    console.log(username);
+    console.log(pass);
+    if (username !== null && username !== '' && pass !== null) {
+      const response = await axios.get('http://localhost:8000/', { auth: { username: username, password: pass } });
     if (response.status === 200) {
       const token = response.headers.authorization.split(' ')[1];
       saveToken(token);
@@ -13,20 +18,16 @@ export async function loginPeriodically(username, pass, saveToken) {
     } else {
       console.log("Error logging in");
     }
+    }
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 export function startLoginInterval(saveToken) {
-  const username = getCookie('username');
-  const pass = getCookie('password');
-
-  if(username !== null && pass !== null) {
-    return setInterval(() => {
-      loginPeriodically(username, pass, saveToken);
-    }, INTERVAL_TIME);
-  }
+  return setInterval(() => {
+    loginPeriodically(saveToken);
+  }, INTERVAL_TIME);
 }
 
 export function stopLoginInterval(intervalId) {

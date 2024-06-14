@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider, useAuth } from './components/AuthContext'; 
+import { AuthProvider, useAuth } from './components/AuthContext';
 
 const InitializeApp = () => {
   const { saveToken } = useAuth();
@@ -24,6 +24,6 @@ createRoot(document.getElementById('root')).render(
         <InitializeApp />
         <App />
       </AuthProvider>
-    </BrowserRouter> 
+    </BrowserRouter>
   </React.StrictMode>
 );

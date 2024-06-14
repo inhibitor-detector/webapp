@@ -26,6 +26,7 @@ const App = () => {
 
   return (
     <div>
+      <AlertContainer open={open} onClose={handleClose}/>
       <Routes>
       <Route path='/' element={<SignIn/>}/>
         <Route element={<PrivateRoutes />}>

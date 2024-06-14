@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
 
   const saveToken = (newToken) => {
+    console.log("gfrgf")
     setToken(newToken);
   };
 
@@ -24,6 +25,15 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
+    setCookie('username', '', 1);
+    setCookie('password', '', 1);
+  };
+
+  const setCookie = (name, value, days) => {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   };
 
   return (
