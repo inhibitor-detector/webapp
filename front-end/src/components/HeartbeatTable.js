@@ -50,7 +50,8 @@ const HeartbeatTable = () => {
     try {
       let params = {
         detectorId: selectedDetector,
-        page: page
+        page: page,
+        isHeartbeat: true
       };
       if (!userRole.includes('ADMIN')) {
         params.ownerId = userId;

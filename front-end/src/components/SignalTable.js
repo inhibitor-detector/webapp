@@ -17,7 +17,7 @@ const SignalTable = () => {
 
     try {
       while (hasMore) {
-        let params = { page };
+        let params = { page, isHeartbeat: false };
         if (!userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
