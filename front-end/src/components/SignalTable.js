@@ -3,9 +3,10 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import ResponsiveAppBar from './Nav';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import { refreshToken } from './AuthService';
 
 const SignalTable = () => {
-  const { token, userRole, userId } = useAuth();
+  const { token, userRole, userId, exp, setExp, saveToken } = useAuth();
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +17,7 @@ const SignalTable = () => {
     let hasMore = true;
 
     try {
+      refreshToken(exp, setExp, saveToken);
       while (hasMore) {
         let params = { page, isHeartbeat: false };
         if (!userRole.includes('ADMIN')) {
@@ -44,7 +46,7 @@ const SignalTable = () => {
       console.error('Error:', error);
     }
     setLoading(false);
-  }, [token, userRole, userId]);
+  }, [token, userRole, userId, exp, setExp, saveToken]);
 
   useEffect(() => {
     fetchAllSignals();

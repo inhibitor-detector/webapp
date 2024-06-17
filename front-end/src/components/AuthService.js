@@ -1,37 +1,28 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
-const INTERVAL_TIME = 300000;
-
-export async function loginPeriodically(saveToken) {
+export async function refreshToken(exp, setExp, saveToken) {
   try {
-    const username = getCookie('username');
-    const pass = getCookie('password');
-    console.log(username);
-    console.log(pass);
-    if (username !== null && username !== '' && pass !== null) {
-      const response = await axios.get('http://localhost:8000/', { auth: { username: username, password: pass } });
-    if (response.status === 200) {
-      const token = response.headers.authorization.split(' ')[1];
-      saveToken(token);
-      localStorage.setItem('token', token);
-      console.log("Logged in");
-    } else {
-      console.log("Error logging in");
+    const now = Date.now() / 1000;
+    const expiresIn = exp - now;
+    if (expiresIn < 60) {
+      const username = getCookie('username');
+      const pass = getCookie('password');
+      if (username && pass) {
+        const response = await axios.get('http://localhost:8000/', { auth: { username, password: pass } });
+        if (response.status === 200) {
+          const token = response.headers.authorization.split(' ')[1];
+          saveToken(token);
+          const decodedToken = jwtDecode(token);
+          setExp(decodedToken.exp);
+          localStorage.setItem('token', token);
+        }
+      }
     }
-    }
+
   } catch (error) {
     console.error('Error:', error);
   }
-}
-
-export function startLoginInterval(saveToken) {
-  return setInterval(() => {
-    loginPeriodically(saveToken);
-  }, INTERVAL_TIME);
-}
-
-export function stopLoginInterval(intervalId) {
-  clearInterval(intervalId);
 }
 
 function getCookie(name) {
@@ -39,11 +30,8 @@ function getCookie(name) {
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(';');
   for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i];
-    while (cookie.charAt(0) === ' ') {
-      cookie = cookie.substring(1);
-    }
-    if (cookie.indexOf(cookieName) === 0) {
+    let cookie = cookieArray[i].trim();
+    if (cookie.startsWith(cookieName)) {
       return cookie.substring(cookieName.length, cookie.length);
     }
   }

@@ -8,9 +8,10 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './HeartbeatTable.css'
+import { refreshToken } from './AuthService';
 
 const HeartbeatTable = () => {
-  const { token, userRole, userId } = useAuth();
+  const { token, userRole, userId, exp, saveToken, setExp } = useAuth();
   const [heartbeats, setHeartbeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -48,6 +49,7 @@ const HeartbeatTable = () => {
   const fetchData = useCallback(async (page) => {
     setLoading(true);
     try {
+      refreshToken(exp, setExp, saveToken);
       let params = {
         detectorId: selectedDetector,
         page: page,
@@ -78,7 +80,7 @@ const HeartbeatTable = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedDetector, userId, userRole, token]);
+  }, [selectedDetector, userId, userRole, token, exp, saveToken, setExp]);
 
   useEffect(() => {
     fetchData(1);

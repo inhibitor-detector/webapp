@@ -22,7 +22,7 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { saveToken, saveUserId, saveUserRole } = useAuth();
+  const { saveToken, saveUserId, saveUserRole, setExp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -46,6 +46,7 @@ export default function SignIn() {
         saveUserId(decodedToken.userId);
         saveRoles(token, decodedToken.userId);
         saveToken(token);
+        setExp(decodedToken.exp);
         setCookie('username', data.get('username'), 1);
         setCookie('password', data.get('password'), 1);
         localStorage.setItem('token', token);

@@ -9,9 +9,10 @@ import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
+import { refreshToken } from './AuthService';
 
 const DetectorTable = () => {
-  const { token, userRole, userId } = useAuth();
+  const { token, userRole, userId, exp, saveToken, setExp } = useAuth();
   const [detectors, setDetectors] = useState([]);
   const [selectedDetector, setSelectedDetector] = useState(null);
   const [popup, setPopup] = useState(null);
@@ -27,6 +28,7 @@ const DetectorTable = () => {
     let hasMore = true;
 
     try {
+      refreshToken(exp, setExp, saveToken);
       while (hasMore) {
         let params = { page };
         if (!userRole.includes('ADMIN')) {
@@ -57,7 +59,7 @@ const DetectorTable = () => {
     } catch (error) {
       console.error('Error fetching detectors:', error);
     }
-  }, [token, userRole, userId]);
+  }, [token, userRole, userId, saveToken, exp, setExp]);
 
   useEffect(() => {
     fetchAllData();
@@ -141,23 +143,23 @@ const DetectorTable = () => {
         </div>
 
         {!searchResultsMessage && (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Activo</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredDetectors.map((detector) => (
-                <DetectorRow key={detector.id} detector={detector} onClick={(event, columnIndex) => handleClick(event, detector, columnIndex)} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>)}
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Activo</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredDetectors.map((detector) => (
+                  <DetectorRow key={detector.id} detector={detector} onClick={(event, columnIndex) => handleClick(event, detector, columnIndex)} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>)}
         {searchResultsMessage && (
           <Typography
             variant="body1"

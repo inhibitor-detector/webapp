@@ -8,9 +8,9 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [userRole, setUserRole] = useState('ADMINS');
   const [userId, setUserId] = useState(null);
+  const [exp, setExp] = useState(null);
 
   const saveToken = (newToken) => {
-    console.log("gfrgf")
     setToken(newToken);
   };
 
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, userRole, userId, saveToken, saveUserRole, saveUserId, logout }}>
+    <AuthContext.Provider value={{ token, userRole, userId, exp, saveToken, saveUserRole, saveUserId, logout, setExp }}>
       {children}
     </AuthContext.Provider>
   );
