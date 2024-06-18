@@ -126,30 +126,69 @@ const HeartbeatTable = () => {
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
       ) : heartbeats.length > 0 ? (
-        <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Heartbeat</TableCell>
-                <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Tiempo</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {heartbeats.map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                    {data.isHeartbeat ? (
-                      <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
-                    ) : (
-                      <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>{data.timestamp}</TableCell>
+        <div>
+          <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Heartbeat</TableCell>
+                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Tiempo</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {heartbeats.map((data, index) => (
+                  <TableRow key={index}>
+                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      {data.isHeartbeat ? (
+                        <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
+                      ) : (
+                        <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
+                      )}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>{data.timestamp}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'fixed',
+              bottom: 1,
+              width: '100%',
+              backgroundColor: 'white',
+              padding: '10px 0',
+            }}
+          >
+            <Button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="custom-button"
+            >
+              <ArrowBackIosIcon
+                sx={{
+                  fontSize: '20px',
+                  color: currentPage === 1 ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
+                }}
+              />
+            </Button>
+            <Button
+              onClick={handleNextPage}
+              disabled={!hasMorePages}
+              className="custom-button"
+            >
+              <ArrowForwardIosIcon
+                sx={{
+                  fontSize: '20px',
+                  color: !hasMorePages ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
+                }}
+              />
+            </Button>
+          </Box>
+        </div>
       ) : (
         <Box sx={styles.container}>
           <div style={styles.background} />
@@ -158,45 +197,6 @@ const HeartbeatTable = () => {
           }}>
             No se detectaron señales
           </Typography>
-        </Box>
-      )}
-      {heartbeats.length > 0 && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'fixed',
-            bottom: 1,
-            width: '100%',
-            backgroundColor: 'white',
-            padding: '10px 0',
-          }}
-        >
-          <Button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="custom-button" 
-          >
-            <ArrowBackIosIcon
-              sx={{
-                fontSize: '20px',
-                color: currentPage === 1 ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
-              }}
-            />
-          </Button>
-          <Button
-            onClick={handleNextPage}
-            disabled={!hasMorePages}
-            className="custom-button" 
-          >
-            <ArrowForwardIosIcon
-              sx={{
-                fontSize: '20px',
-                color: !hasMorePages ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
-              }}
-            />
-          </Button>
         </Box>
       )}
     </div>

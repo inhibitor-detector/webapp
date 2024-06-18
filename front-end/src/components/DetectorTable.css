@@ -3,7 +3,7 @@
 }
 
 .search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #8bc34a;
+    border-color: #8bc34a !important;
 }
 
 .search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {

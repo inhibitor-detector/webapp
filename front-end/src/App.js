@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import PrivateRoutes from './components/PrivateRoutes'
 import HeartbeatTable from './components/HeartbeatTable';
 import InhibitionDetected from './components/InhibitionDetected';
+import SignalsChart from './components/Statistics';
 
 const App = () => {
 
@@ -18,6 +19,7 @@ const App = () => {
           <Route path='Heartbeats' element={<HeartbeatTable/>}/>
           <Route path='Detectores' element={<DetectorTable/>}/>
           <Route path='Inhibiciones' element={<SignalTable/>}/>
+          <Route path='Estadisticas' element={<SignalsChart/>}/>
         </Route>
       </Routes>
     </div>

@@ -54,31 +54,32 @@ const SignalTable = () => {
 
   return (
     <div>
-      <ResponsiveAppBar/>
-      <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Detector</TableCell>
-                <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Horario</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {signals.map(signal => (
-                <TableRow key={signal.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
-                  <TableCell sx={{ textAlign: 'center' }}>{signal.detectorId}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{signal.timestamp}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {(loading && 
+      <ResponsiveAppBar />
+      {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
-        </Box>)}
-      </div>
+        </Box>
+      ) : (
+        <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Detector</TableCell>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Horario</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {signals.map(signal => (
+                  <TableRow key={signal.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
+                    <TableCell sx={{ textAlign: 'center' }}>{signal.detectorId}</TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>{signal.timestamp}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>)}
     </div>
   );
 };

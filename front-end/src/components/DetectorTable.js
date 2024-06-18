@@ -6,7 +6,7 @@ import ResponsiveAppBar from './Nav';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
 import { refreshToken } from './AuthService';
@@ -21,8 +21,10 @@ const DetectorTable = () => {
   const [inactiveCount, setInactiveCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResultsMessage, setSearchResultsMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const fetchAllData = useCallback(async () => {
+    setLoading(true);
     let allDetectors = [];
     let page = 1;
     let hasMore = true;
@@ -59,6 +61,7 @@ const DetectorTable = () => {
     } catch (error) {
       console.error('Error fetching detectors:', error);
     }
+    setLoading(false);
   }, [token, userRole, userId, saveToken, exp, setExp]);
 
   useEffect(() => {
@@ -118,11 +121,15 @@ const DetectorTable = () => {
   return (
     <div>
       <ResponsiveAppBar />
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
+          <CircularProgress sx={{ color: '#8bc34a' }} />
+        </Box>
+      ) : (
       <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
         <TextField
           className="search-field"
           label="Buscar por nombre"
-          variant="outlined"
           size="small"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -173,7 +180,7 @@ const DetectorTable = () => {
           </Typography>
         )}
 
-      </div>
+      </div>)}
       <Popup popup={popup} selectedDetector={selectedDetector} onClose={handleClose} />
     </div>
   );

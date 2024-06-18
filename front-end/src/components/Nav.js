@@ -14,7 +14,7 @@ import {Link} from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from './AuthContext';
 
-const pages = ['Detectores', 'Inhibiciones'];
+const pages = ['Detectores', 'Inhibiciones', 'Estadisticas'];
 const settings = ['Cerrar Sesión'];
 
 function ResponsiveAppBar() {
