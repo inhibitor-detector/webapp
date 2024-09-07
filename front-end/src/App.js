@@ -1,28 +1,25 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import DetectorTable from './components/DetectorTable';
 import SignalTable from './components/SignalTable';
 import SignIn from './components/Signin';
 import { Route, Routes } from 'react-router-dom';
-import AlertContainer from './components/AlertContainer';
 import PrivateRoutes from './components/PrivateRoutes'
 import HeartbeatTable from './components/HeartbeatTable';
+import InhibitionDetected from './components/InhibitionDetected';
+import SignalsChart from './components/Statistics';
 
 const App = () => {
-  const [open, setOpen] = useState(true);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <div>
-      <AlertContainer open={open} onClose={handleClose}/>
+      <InhibitionDetected />
       <Routes>
       <Route path='/' element={<SignIn/>}/>
         <Route element={<PrivateRoutes />}>
           <Route path='Heartbeats' element={<HeartbeatTable/>}/>
           <Route path='Detectores' element={<DetectorTable/>}/>
           <Route path='Inhibiciones' element={<SignalTable/>}/>
+          <Route path='Estadisticas' element={<SignalsChart/>}/>
         </Route>
       </Routes>
     </div>

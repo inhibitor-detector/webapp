@@ -1,0 +1,20 @@
+.search-field {
+    width: 100%;
+}
+
+.search-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #8bc34a !important;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #8bc34a !important;
+}
+
+.search-field .MuiInputLabel-outlined.MuiInputLabel-shrink {
+    color: grey !important;
+    opacity: 0.5;
+}
+
+.search-field .MuiInputLabel-root {
+    opacity: 0.5;
+}
