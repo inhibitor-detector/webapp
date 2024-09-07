@@ -26,7 +26,7 @@ export default function SelectOrder(props) {
           label="Ordenar Por"
         >
           <MenuItem value="">
-            <em>None</em>
+            <em>-</em>
           </MenuItem>
           <MenuItem value={'Id'}>Id</MenuItem>
           <MenuItem value={'Activo'}>Activado</MenuItem>

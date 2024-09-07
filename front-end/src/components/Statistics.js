@@ -68,7 +68,7 @@ const SignalsChart = () => {
       const twentyFourHoursAgo = new Date(new Date() - 24 * 60 * 60 * 1000);
 
       if (date >= twentyFourHoursAgo) {
-        const hour = date.getHours(); // Obtener solo la hora, sin minutos
+        const hour = date.getHours();
 
         if (!signalsByHour[hour]) {
           signalsByHour[hour] = 0;
