@@ -28,7 +28,8 @@ export default function SelectOrder(props) {
           <MenuItem value="">
             <em>-</em>
           </MenuItem>
-          <MenuItem value={'Id'}>Id</MenuItem>
+          <MenuItem value={'Id Ascendente'}>Ascendente</MenuItem>
+          <MenuItem value={'Id Descendente'}>Descendente</MenuItem>
           <MenuItem value={'Activo'}>Activado</MenuItem>
           <MenuItem value={'Desactivado'}>Desactivado</MenuItem>
         </Select>

@@ -6,11 +6,10 @@ import { refreshToken } from './AuthService';
 import ResponsiveAppBar from './Nav';
 import { CircularProgress, Box } from '@mui/material';
 
-
 const SignalsChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token, userRole, userId, exp, setExp, saveToken } = useAuth();
+  const { token, userRole, userId, exp, setExp, saveToken, saveUserId } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +20,7 @@ const SignalsChart = () => {
       let page = 1;
 
       try {
-        refreshToken(exp, setExp, saveToken);
+        refreshToken(exp, setExp, saveToken, saveUserId);
         while (hasMore) {
           let params = { page, isHeartbeat: false };
           if (!userRole.includes('ADMIN')) {
@@ -77,6 +76,7 @@ const SignalsChart = () => {
         signalsByHour[hour] += 1;
       }
     });
+
     const now = new Date();
     const processedData = [];
 
@@ -92,24 +92,38 @@ const SignalsChart = () => {
     return processedData;
   };
 
+  const filterLastHour = (data) => {
+    return data.slice(-2);
+  };
+
   return (
     <div>
       <ResponsiveAppBar />
       {loading ? (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
       ) : (
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 20}}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en las últimas 24 horas" stroke="#8bc34a" />
-        </LineChart>
-      </ResponsiveContainer>)}
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={data} margin={{ top: 20, right: 30, left: 20}}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en las últimas 24 horas" stroke="#8bc34a" />
+          </LineChart>
+
+          <LineChart data={filterLastHour(data)} margin={{ top: 20, right: 30, left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en la última hora" stroke="#8bc34a" />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

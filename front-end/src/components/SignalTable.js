@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext';
 import { refreshToken } from './AuthService';
 
 const SignalTable = () => {
-  const { token, userRole, userId, exp, setExp, saveToken } = useAuth();
+  const { token, userRole, userId, exp, setExp, saveToken, saveUserId } = useAuth();
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ const SignalTable = () => {
     let hasMore = true;
 
     try {
-      refreshToken(exp, setExp, saveToken);
+      refreshToken(exp, setExp, saveToken, saveUserId);
       while (hasMore) {
         let params = { page, isHeartbeat: false };
         if (!userRole.includes('ADMIN')) {

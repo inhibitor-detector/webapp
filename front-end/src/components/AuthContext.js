@@ -6,7 +6,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [userRole, setUserRole] = useState('ADMINS');
+  const [userRole, setUserRole] = useState(localStorage.getItem('role'));
   const [userId, setUserId] = useState(null);
   const [exp, setExp] = useState(null);
 
@@ -24,9 +24,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setToken(null);
     setCookie('username', '', 1);
     setCookie('password', '', 1);
+    setCookie('userId', '', 1);
   };
 
   const setCookie = (name, value, days) => {

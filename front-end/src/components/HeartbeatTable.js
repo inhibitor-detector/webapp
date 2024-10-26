@@ -11,7 +11,7 @@ import './HeartbeatTable.css'
 import { refreshToken } from './AuthService';
 
 const HeartbeatTable = () => {
-  const { token, userRole, userId, exp, saveToken, setExp } = useAuth();
+  const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
   const [heartbeats, setHeartbeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -49,7 +49,7 @@ const HeartbeatTable = () => {
   const fetchData = useCallback(async (page) => {
     setLoading(true);
     try {
-      refreshToken(exp, setExp, saveToken);
+      refreshToken(exp, setExp, saveToken, saveUserId);
       let params = {
         detectorId: selectedDetector,
         page: page,

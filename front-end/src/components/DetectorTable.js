@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
-import Popup from './Popup';
 import SelectOrder from './Select';
 import ResponsiveAppBar from './Nav';
 import { useAuth } from './AuthContext';
@@ -12,16 +11,15 @@ import './DetectorTable.css';
 import { refreshToken } from './AuthService';
 
 const DetectorTable = () => {
-  const { token, userRole, userId, exp, saveToken, setExp } = useAuth();
+  const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
   const [detectors, setDetectors] = useState([]);
-  const [selectedDetector, setSelectedDetector] = useState(null);
-  const [popup, setPopup] = useState(null);
   const [orderType, setOrderType] = useState('');
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResultsMessage, setSearchResultsMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState({});
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
@@ -30,7 +28,7 @@ const DetectorTable = () => {
     let hasMore = true;
 
     try {
-      refreshToken(exp, setExp, saveToken);
+      refreshToken(exp, setExp, saveToken, saveUserId);
       while (hasMore) {
         let params = { page };
         if (!userRole.includes('ADMIN')) {
@@ -58,11 +56,15 @@ const DetectorTable = () => {
       setDetectors(allDetectors);
       setActiveCount(allDetectors.filter(detector => detector.isOnline).length);
       setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
+      if (userRole.includes('ADMIN')) {
+        const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
+        await fetchUsers(userIds);
+      }
     } catch (error) {
       console.error('Error fetching detectors:', error);
     }
     setLoading(false);
-  }, [token, userRole, userId, saveToken, exp, setExp]);
+  }, [token, userRole, saveToken, exp, setExp]);
 
   useEffect(() => {
     fetchAllData();
@@ -77,8 +79,10 @@ const DetectorTable = () => {
 
   const sortedDetectors = useMemo(() => {
     let sorted = [...detectors];
-    if (orderType === 'Id') {
+    if (orderType === 'Id Ascendente') {
       sorted.sort((a, b) => a.id - b.id);
+    } else if (orderType === 'Id Descendente') {
+      sorted.sort((a, b) => b.id - a.id);
     } else if (orderType === 'Activo') {
       sorted.sort((a, b) => (a.isOnline === b.isOnline) ? 0 : a.isOnline ? -1 : 1);
     } else if (orderType === 'Desactivado') {
@@ -92,20 +96,6 @@ const DetectorTable = () => {
     detector.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleClick = (event, detector, columnIndex) => {
-    if (columnIndex === 3) {
-      setSelectedDetector(detector);
-    } else {
-      setSelectedDetector(detector);
-      setPopup(event.currentTarget);
-    }
-  };
-
-  const handleClose = () => {
-    setSelectedDetector(null);
-    setPopup(null);
-  };
-
   useEffect(() => {
     if (searchTerm.trim() !== '') {
       if (filteredDetectors.length === 0) {
@@ -118,6 +108,28 @@ const DetectorTable = () => {
     }
   }, [filteredDetectors, searchTerm]);
 
+  const fetchUsers = async (userIds) => {
+    const userRequests = userIds.map(userId =>
+      axios.get(`http://localhost:8000/users/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+    );
+
+    try {
+      const responses = await Promise.all(userRequests);
+      const userMap = {};
+      responses.forEach(response => {
+        if (response.status === 200) {
+          userMap[response.data.id] = response.data.username;
+        }
+
+      });
+      setUsers(userMap);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -126,99 +138,88 @@ const DetectorTable = () => {
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
       ) : (
-      <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
-        <TextField
-          className="search-field"
-          label="Buscar por nombre"
-          size="small"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            endAdornment: <SearchIcon />,
-          }}
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <Typography variant="body1">
-            <CheckCircleOutline sx={{ fontSize: 18, verticalAlign: 'middle', color: '#4CAF50', marginRight: '5px' }} />
-            Total Activos: {activeCount}
-          </Typography>
-          <Typography variant="body1">
-            <HighlightOff sx={{ fontSize: 18, verticalAlign: 'middle', color: '#F44336', marginRight: '5px' }} />
-            Total Inactivos: {inactiveCount}
-          </Typography>
-          <SelectOrder setOrderType={setOrderType} />
-        </div>
-
-        {!searchResultsMessage && (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Activo</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredDetectors.map((detector) => (
-                  <DetectorRow key={detector.id} detector={detector} onClick={(event, columnIndex) => handleClick(event, detector, columnIndex)} />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>)}
-        {searchResultsMessage && (
-          <Typography
-            variant="body1"
-            style={{
-              textAlign: 'center',
-              padding: '10px',
-              color: 'grey'
+        <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+          <TextField
+            className="search-field"
+            label="Buscar por nombre"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              endAdornment: <SearchIcon />,
             }}
-          >
-            {searchResultsMessage}
-          </Typography>
-        )}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <Typography variant="body1">
+              <CheckCircleOutline sx={{ fontSize: 18, verticalAlign: 'middle', color: '#4CAF50', marginRight: '5px' }} />
+              Total Activos: {activeCount}
+            </Typography>
+            <Typography variant="body1">
+              <HighlightOff sx={{ fontSize: 18, verticalAlign: 'middle', color: '#F44336', marginRight: '5px' }} />
+              Total Inactivos: {inactiveCount}
+            </Typography>
+            <SelectOrder setOrderType={setOrderType} />
+          </div>
 
-      </div>)}
-      <Popup popup={popup} selectedDetector={selectedDetector} onClose={handleClose} />
+          {!searchResultsMessage && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
+                    <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
+                    <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
+                    {userRole.includes('ADMIN') && (
+                      <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Usuario</TableCell>
+                    )}
+                    <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Activo</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredDetectors.map((detector) => (
+                    <DetectorRow key={detector.id} detector={detector} users={users} userRole={userRole} />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>)}
+          {searchResultsMessage && (
+            <Typography
+              variant="body1"
+              style={{
+                textAlign: 'center',
+                padding: '10px',
+                color: 'grey'
+              }}
+            >
+              {searchResultsMessage}
+            </Typography>
+          )}
+        </div>)}
     </div>
   );
 };
 
-const DetectorRow = ({ detector, onClick }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const DetectorRow = ({ detector, onClick, users, userRole }) => {
   const navigate = useNavigate();
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  const handleClick = (event, columnIndex) => {
-    if (columnIndex === 3) {
-      navigate(`/Heartbeats?selectedDetector=${detector.id}`);
-    }
+  const handleClick = (event) => {
+    navigate(`/Heartbeats?selectedDetector=${detector.id}`);
   };
 
   return (
-    <TableRow
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      sx={{ cursor: 'pointer', backgroundColor: isHovered ? '#f0f0f0' : 'inherit' }}
-    >
+    <TableRow>
       <TableCell
         onClick={(event) => onClick(event, 0)}
         sx={{ textAlign: 'center', color: 'black' }}
       >
         {detector.id}
       </TableCell>
-      <TableCell onClick={(event) => onClick(event, 1)} sx={{ textAlign: 'center' }}>{detector.name}</TableCell>
-      <TableCell onClick={(event) => onClick(event, 2)} sx={{ textAlign: 'center' }}>{detector.description}</TableCell>
-      <TableCell onClick={(event) => handleClick(event, 3)} sx={{ textAlign: 'center' }}>
+      <TableCell sx={{ textAlign: 'center' }}>{detector.name}</TableCell>
+      <TableCell sx={{ textAlign: 'center' }}>{detector.description}</TableCell>
+      {userRole.includes('ADMIN') && (
+        <TableCell sx={{ textAlign: 'center' }}>{users[detector.ownerId] || 'Cargando...'}</TableCell> // Aquí puedes reemplazarlo con el username si lo tienes disponible
+      )}
+      <TableCell onClick={(event) => handleClick(event)} sx={{ textAlign: 'center', cursor: 'pointer' }}>
         {detector.isOnline ? (
           <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
         ) : (

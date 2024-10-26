@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-export async function refreshToken(exp, setExp, saveToken) {
+export async function refreshToken(exp, setExp, saveToken, saveUserId) {
   try {
     const now = Date.now() / 1000;
     const expiresIn = exp - now;
@@ -16,10 +16,10 @@ export async function refreshToken(exp, setExp, saveToken) {
           const decodedToken = jwtDecode(token);
           setExp(decodedToken.exp);
           localStorage.setItem('token', token);
+          saveUserId(getCookie('userId'));
         }
       }
     }
-
   } catch (error) {
     console.error('Error:', error);
   }
