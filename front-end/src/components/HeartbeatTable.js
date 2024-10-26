@@ -9,6 +9,8 @@ import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './HeartbeatTable.css'
 import { refreshToken } from './AuthService';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const HeartbeatTable = () => {
   const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
@@ -145,7 +147,9 @@ const HeartbeatTable = () => {
                         <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
                       )}
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>{data.timestamp}</TableCell>
+                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      {formatDistanceToNow(new Date(data.timestamp), { addSuffix: true, locale: es })}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

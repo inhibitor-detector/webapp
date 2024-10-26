@@ -32,8 +32,6 @@ export default function SignIn() {
         'Authorization': `Bearer ${token}`
       }
     });
-    console.log("guard roles")
-    console.log(response.data.roles)
     saveUserRole(response.data.roles);
     localStorage.setItem('role', response.data.roles);
   };
@@ -53,8 +51,6 @@ export default function SignIn() {
         setCookie('username', data.get('username'), 1);
         setCookie('password', data.get('password'), 1);
         setCookie('userId', decodedToken.userId, 1);
-        console.log("response.data")
-        console.log(response)
         localStorage.setItem('token', token);
         navigate("/Detectores");
       } else {
