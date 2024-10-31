@@ -5,53 +5,90 @@ import axios from 'axios';
 
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
-  const { userRole, userId } = useAuth();
-  const { token } = useAuth();
-  const [ lastId, setLastId ] = useState(-1);
-  const [detectorId, setDetectorId] = useState([]);
+  const { userRole, userId, token } = useAuth();
+  const [lastId, setLastId] = useState(
+    () => Number(localStorage.getItem('lastId')) || -1
+  );
+  const [detector, setDetector] = useState([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  useEffect(() => {
-    const fetchSignals = async () => {
-      if (token) {
+  const axiosGetSignals = async () => {
+    try {
+      let params = { isHeartbeat: false };
+      if (!userRole.includes('ADMIN')) {
+        params.ownerId = userId;
+      }
+      const response = await axios.get('http://localhost:80/signals', {
+        params: params,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching signals:', error);
+      return null;
+    }
+  };
+
+  const fetchSignals = async () => {
+    const data = await axiosGetSignals();
+    if (data && data.length > 0) {
+      const lastId = data[0].id;
+      setLastId(lastId);
+      localStorage.setItem('lastId', lastId);
+    }
+  };
+
+  const checkForNewSignals = async () => {
+    const data = await axiosGetSignals();
+    if (data && data.length > 0) {
+      const actualId = data[0].id;
+      if (actualId !== lastId) {
+        if (!isInitialLoad) {
+          setOpen(true);
+        }
+        setLastId(actualId);
+        localStorage.setItem('lastId', actualId);
+
         try {
-          let params = { isHeartbeat: false };
-          if (!userRole.includes('ADMIN')) {
-            params.ownerId = userId;
-          }
-          const response = await axios.get('http://localhost:8000/signals', {
-            params: params,
+          const detectorResponse = await axios.get(`http://localhost:80/detectors/${data[0].detectorId}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           });
-          if (response.status === 200) {
-            const data = response.data;
-            if(data.length > 0) {
-              const actualId = data[0].id;
-              if(lastId === -1) {
-                setLastId(actualId);
-              } else {
-                if(actualId !== lastId) {
-                  setOpen(true);
-                  setLastId(actualId);
-                  setDetectorId(data[0].detectorId);
-                }
-              }
-            }
+          if (detectorResponse.status === 200) {
+            setDetector(detectorResponse.data);
           }
         } catch (error) {
-          console.error('Error:', error);
+          console.error('Error fetching detector data:', error);
         }
       }
+    }
+  };
 
+  useEffect(() => {
+    if (!token) {
+      setLastId(-1);
+      localStorage.removeItem('lastId');
+      setIsInitialLoad(true);
+      return;
+    }
+
+    const fetchAndCheckSignals = async () => {
+      await fetchSignals();
+      await checkForNewSignals();
+      setIsInitialLoad(false);
     };
 
-    const interval = setInterval(fetchSignals, 15000);
+    fetchAndCheckSignals();
 
-    fetchSignals();
+    const interval = setInterval(() => {
+      checkForNewSignals();
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, [token, userRole, userId, lastId, detectorId]);
+  }, [token, userRole, userId, lastId]);
 
   const handleClose = () => {
     setOpen(false);
@@ -59,7 +96,7 @@ const InhibitionDetected = () => {
 
   return (
     <div>
-      <AlertContainer open={open} onClose={handleClose} detectorId={detectorId} />
+      <AlertContainer open={open} onClose={handleClose} detector={detector} />
     </div>
   );
 };
