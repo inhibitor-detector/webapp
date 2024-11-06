@@ -34,7 +34,7 @@ const DetectorTable = () => {
         if (!userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:8000/detectors', {
+        const response = await axios.get('http://localhost:80/detectors', {
           params: params,
           headers: {
             'Authorization': `Bearer ${token}`
@@ -110,7 +110,7 @@ const DetectorTable = () => {
 
   const fetchUsers = async (userIds) => {
     const userRequests = userIds.map(userId =>
-      axios.get(`http://localhost:8000/users/${userId}`, {
+      axios.get(`http://localhost:80/users/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
     );

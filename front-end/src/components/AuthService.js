@@ -9,7 +9,7 @@ export async function refreshToken(exp, setExp, saveToken, saveUserId) {
       const username = getCookie('username');
       const pass = getCookie('password');
       if (username && pass) {
-        const response = await axios.get('http://localhost:8000/', { auth: { username, password: pass } });
+        const response = await axios.get('http://localhost:80/', { auth: { username, password: pass } });
         if (response.status === 200) {
           const token = response.headers.authorization.split(' ')[1];
           saveToken(token);

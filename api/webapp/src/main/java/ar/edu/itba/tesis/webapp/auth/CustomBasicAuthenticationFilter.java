@@ -36,7 +36,7 @@ public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
     private Jwt createJwt(Authentication authentication) {
         final JwsHeader header = JwsHeader.with(SignatureAlgorithm.ES256).build();
         ZonedDateTime issuedDate = ZonedDateTime.now();
-        ZonedDateTime expiresDate = issuedDate.plusSeconds(300);
+        ZonedDateTime expiresDate = issuedDate.plusSeconds(43200);
 
         final JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(authentication.getName())

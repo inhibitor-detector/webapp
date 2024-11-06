@@ -60,7 +60,7 @@ const HeartbeatTable = () => {
       if (!userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:8000/signals', {
+      const response = await axios.get('http://localhost:80/signals', {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
