@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
-  const { userRole, userId, token } = useAuth();
+  const { userRole, userId, token, logout } = useAuth();
   const [lastId, setLastId] = useState(
     () => Number(localStorage.getItem('lastId')) || -1
   );
@@ -26,6 +26,9 @@ const InhibitionDetected = () => {
       });
       return response.data;
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        logout();
+      }
       console.error('Error fetching signals:', error);
       return null;
     }
@@ -61,6 +64,9 @@ const InhibitionDetected = () => {
             setDetector(detectorResponse.data);
           }
         } catch (error) {
+          if (error.response && error.response.status === 401) {
+            logout();
+          }
           console.error('Error fetching detector data:', error);
         }
       }
@@ -68,6 +74,7 @@ const InhibitionDetected = () => {
   };
 
   useEffect(() => {
+    console.log(token)
     if (!token) {
       setLastId(-1);
       localStorage.removeItem('lastId');
@@ -85,10 +92,10 @@ const InhibitionDetected = () => {
 
     const interval = setInterval(() => {
       checkForNewSignals();
-    }, 15000);
+    }, 10000);
 
     return () => clearInterval(interval);
-  }, [token, userRole, userId, lastId]);
+  }, [token, userRole, userId, lastId, logout]);
 
   const handleClose = () => {
     setOpen(false);
