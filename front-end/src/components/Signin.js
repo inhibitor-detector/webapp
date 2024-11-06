@@ -48,8 +48,6 @@ export default function SignIn() {
         saveRoles(token, decodedToken.userId);
         saveToken(token);
         setExp(decodedToken.exp);
-        setCookie('username', data.get('username'), 1);
-        setCookie('password', data.get('password'), 1);
         setCookie('userId', decodedToken.userId, 1);
         localStorage.setItem('token', token);
         navigate("/Detectores");

@@ -8,7 +8,6 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './HeartbeatTable.css'
-import { refreshToken } from './AuthService';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -51,7 +50,6 @@ const HeartbeatTable = () => {
   const fetchData = useCallback(async (page) => {
     setLoading(true);
     try {
-      refreshToken(exp, setExp, saveToken, saveUserId);
       let params = {
         detectorId: selectedDetector,
         page: page,

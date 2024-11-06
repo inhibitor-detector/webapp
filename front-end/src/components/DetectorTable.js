@@ -8,7 +8,6 @@ import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
-import { refreshToken } from './AuthService';
 
 const DetectorTable = () => {
   const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
@@ -28,7 +27,6 @@ const DetectorTable = () => {
     let hasMore = true;
 
     try {
-      refreshToken(exp, setExp, saveToken, saveUserId);
       while (hasMore) {
         let params = { page };
         if (!userRole.includes('ADMIN')) {

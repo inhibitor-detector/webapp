@@ -26,8 +26,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     setToken(null);
-    setCookie('username', '', 1);
-    setCookie('password', '', 1);
     setCookie('userId', '', 1);
   };
 
