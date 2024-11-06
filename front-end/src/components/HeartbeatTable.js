@@ -12,7 +12,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const HeartbeatTable = () => {
-  const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [heartbeats, setHeartbeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -80,7 +80,7 @@ const HeartbeatTable = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedDetector, userId, userRole, token, exp, saveToken, setExp]);
+  }, [selectedDetector, userId, userRole, token]);
 
   useEffect(() => {
     fetchData(1);

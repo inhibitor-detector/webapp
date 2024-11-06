@@ -22,7 +22,7 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { saveToken, saveUserId, saveUserRole, setExp } = useAuth();
+  const { saveToken, saveUserId, saveUserRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -47,9 +47,8 @@ export default function SignIn() {
         saveUserId(decodedToken.userId);
         saveRoles(token, decodedToken.userId);
         saveToken(token);
-        setExp(decodedToken.exp);
-        setCookie('userId', decodedToken.userId, 1);
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', decodedToken.userId);
         navigate("/Detectores");
       } else {
         console.log("Error signing in");
@@ -59,13 +58,6 @@ export default function SignIn() {
       console.error('Error:', error);
       setErrorMessage("Usuario o contraseña incorrectos.");
     }
-  };
-
-  const setCookie = (name, value, days) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   };
 
   return (

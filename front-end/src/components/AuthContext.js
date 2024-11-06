@@ -7,8 +7,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
-  const [userId, setUserId] = useState(null);
-  const [exp, setExp] = useState(null);
+  const [userId, setUserId] = useState(localStorage.getItem('userId'));
 
   const saveToken = (newToken) => {
     setToken(newToken);
@@ -25,19 +24,12 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     setToken(null);
-    setCookie('userId', '', 1);
-  };
-
-  const setCookie = (name, value, days) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   };
 
   return (
-    <AuthContext.Provider value={{ token, userRole, userId, exp, saveToken, saveUserRole, saveUserId, logout, setExp }}>
+    <AuthContext.Provider value={{ token, userRole, userId, saveToken, saveUserRole, saveUserId, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,7 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
 
 const DetectorTable = () => {
-  const { token, userRole, userId, exp, saveToken, setExp, saveUserId } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [detectors, setDetectors] = useState([]);
   const [orderType, setOrderType] = useState('');
   const [activeCount, setActiveCount] = useState(0);
@@ -62,7 +62,7 @@ const DetectorTable = () => {
       console.error('Error fetching detectors:', error);
     }
     setLoading(false);
-  }, [token, userRole, saveToken, exp, setExp]);
+  }, [token, userRole, userId]);
 
   useEffect(() => {
     fetchAllData();

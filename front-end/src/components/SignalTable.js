@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth } from './AuthContext';
 
 const SignalTable = () => {
-  const { token, userRole, userId, exp, setExp, saveToken, saveUserId } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ const SignalTable = () => {
       console.error('Error:', error);
     }
     setLoading(false);
-  }, [token, userRole, userId, exp, setExp, saveToken]);
+  }, [token, userRole, userId]);
 
   useEffect(() => {
     fetchAllSignals();

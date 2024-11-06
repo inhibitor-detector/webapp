@@ -8,7 +8,7 @@ import { CircularProgress, Box } from '@mui/material';
 const SignalsChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token, userRole, userId, exp, setExp, saveToken, saveUserId } = useAuth();
+  const { token, userRole, userId } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +54,7 @@ const SignalsChart = () => {
     };
 
     fetchData();
-  }, [token, userRole, userId, exp, setExp, saveToken]);
+  }, [token, userRole, userId]);
 
   const processSignals = (signals) => {
     const signalsByHour = {};
