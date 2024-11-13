@@ -15,7 +15,7 @@ const InhibitionDetected = () => {
   const axiosGetSignals = async () => {
     try {
       let params = { isHeartbeat: false };
-      if (!userRole.includes('ADMIN')) {
+      if (userRole && !userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
       const response = await axios.get('http://localhost:80/signals', {

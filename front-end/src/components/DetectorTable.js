@@ -29,7 +29,7 @@ const DetectorTable = () => {
     try {
       while (hasMore) {
         let params = { page };
-        if (!userRole.includes('ADMIN')) {
+        if (userRole && !userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
         const response = await axios.get('http://localhost:80/detectors', {
@@ -54,7 +54,7 @@ const DetectorTable = () => {
       setDetectors(allDetectors);
       setActiveCount(allDetectors.filter(detector => detector.isOnline).length);
       setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
-      if (userRole.includes('ADMIN')) {
+      if (userRole && userRole.includes('ADMIN')) {
         const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
         await fetchUsers(userIds);
       }
