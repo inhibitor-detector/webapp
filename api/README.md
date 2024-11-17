@@ -1,5 +1,5 @@
 # Java inhibitor-api ☕
-This is a template for a Java API, using Spring Boot, Spring Data JPA, Spring Security, and JWT.
+This is a Java API, using Spring Boot, Spring Data JPA, Spring Security, and JWT.
 
 The API is a CRUD for a User, Detectors and Signal entities.
 
