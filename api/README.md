@@ -83,7 +83,7 @@ The Jwk set must be in the following format:
 ⚠️ Make sure to do not use this key in production. It is only an example.
 
 # Run 🏃
-```make clean package```
+```mvn clean package```
 
 ⚠️ `make run` will run the database container if it is not running.
 
