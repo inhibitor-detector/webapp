@@ -62,7 +62,8 @@ const DetectorTable = () => {
       console.error('Error fetching detectors:', error);
     }
     setLoading(false);
-  }, [token, userRole, userId]);
+  // eslint-disable-next-line
+}, [token, userRole, userId]);
 
   useEffect(() => {
     fetchAllData();
@@ -207,7 +208,7 @@ const DetectorRow = ({ detector, onClick, users, userRole }) => {
   return (
     <TableRow>
       <TableCell
-        onClick={(event) => onClick(event, 0)}
+        onClick={(event) => handleClick(event, 0)}
         sx={{ textAlign: 'center', color: 'black' }}
       >
         {detector.id}
