@@ -3,7 +3,7 @@ import axios from 'axios';
 import SelectOrder from './Select';
 import ResponsiveAppBar from './Nav';
 import DashboardStats from './Dashboard';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';

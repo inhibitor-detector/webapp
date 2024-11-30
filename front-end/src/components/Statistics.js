@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 import ResponsiveAppBar from './Nav';
 import { CircularProgress, Box } from '@mui/material';
 

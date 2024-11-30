@@ -12,9 +12,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, useLocation } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 
-const pages = ['Detectores', 'Inhibiciones', 'Estadisticas'];
+const pages = ['Detectores', 'Alertas', 'Estadisticas'];
 const settings = ['Cerrar Sesión'];
 
 function ResponsiveAppBar() {

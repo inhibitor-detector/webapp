@@ -1,7 +1,7 @@
 import React from 'react';
 import DetectorTable from './components/DetectorTable';
 import SignalTable from './components/SignalTable';
-import SignIn from './components/Signin';
+import SignIn from './components/Auth/Signin';
 import { Route, Routes } from 'react-router-dom';
 import PrivateRoutes from './components/PrivateRoutes'
 import HeartbeatTable from './components/HeartbeatTable';
@@ -18,7 +18,7 @@ const App = () => {
         <Route element={<PrivateRoutes />}>
           <Route path='Heartbeats' element={<HeartbeatTable />} />
           <Route path='Detectores' element={<DetectorTable />} />
-          <Route path='Inhibiciones' element={<SignalTable />} />
+          <Route path='Alertas' element={<SignalTable />} />
           <Route path='Estadisticas' element={<SignalsChart />} />
         </Route>
       </Routes>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Box } from '@mui/material';
 import ResponsiveAppBar from './Nav';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
