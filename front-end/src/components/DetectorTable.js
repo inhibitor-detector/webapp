@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import SelectOrder from './Select';
 import ResponsiveAppBar from './Nav';
+import DashboardStats from './Dashboard';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
@@ -62,8 +63,8 @@ const DetectorTable = () => {
       console.error('Error fetching detectors:', error);
     }
     setLoading(false);
-  // eslint-disable-next-line
-}, [token, userRole, userId]);
+    // eslint-disable-next-line
+  }, [token, userRole, userId]);
 
   useEffect(() => {
     fetchAllData();
@@ -132,39 +133,44 @@ const DetectorTable = () => {
   return (
     <div>
       <ResponsiveAppBar />
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <Typography
+        variant="h4"
+        style={{
+          fontWeight: 'bold',
+        }}
+      >
+        Detectores
+      </Typography>
+    </div>
+      <DashboardStats activeCount={activeCount} inactiveCount={inactiveCount} totalCount={activeCount + inactiveCount} />
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
       ) : (
-        <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
-          <TextField
-            className="search-field"
-            label="Buscar por nombre"
-            size="small"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              endAdornment: <SearchIcon />,
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <Typography variant="body1">
-              <CheckCircleOutline sx={{ fontSize: 18, verticalAlign: 'middle', color: '#4CAF50', marginRight: '5px' }} />
-              Total Activos: {activeCount}
-            </Typography>
-            <Typography variant="body1">
-              <HighlightOff sx={{ fontSize: 18, verticalAlign: 'middle', color: '#F44336', marginRight: '5px' }} />
-              Total Inactivos: {inactiveCount}
-            </Typography>
-            <SelectOrder setOrderType={setOrderType} />
+        <div style={{ maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", gap: "16px" }}>
+            <TextField
+              className="search-field"
+              label="Buscar por nombre"
+              size="small"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                endAdornment: <SearchIcon />,
+              }}
+            />
+            <SelectOrder
+              setOrderType={setOrderType}
+            />
           </div>
 
           {!searchResultsMessage && (
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
-                  <TableRow>
+                  <TableRow >
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
@@ -183,7 +189,6 @@ const DetectorTable = () => {
             </TableContainer>)}
           {searchResultsMessage && (
             <Typography
-              variant="body1"
               style={{
                 textAlign: 'center',
                 padding: '10px',
@@ -198,7 +203,7 @@ const DetectorTable = () => {
   );
 };
 
-const DetectorRow = ({ detector, onClick, users, userRole }) => {
+const DetectorRow = ({ detector, users, userRole }) => {
   const navigate = useNavigate();
 
   const handleClick = (event) => {
@@ -206,7 +211,10 @@ const DetectorRow = ({ detector, onClick, users, userRole }) => {
   };
 
   return (
-    <TableRow>
+    <TableRow sx={{
+      backgroundColor: detector.isOnline ? '' : 'rgba(255, 0, 0, 0.1)',
+    }}
+    >
       <TableCell
         onClick={(event) => handleClick(event, 0)}
         sx={{ textAlign: 'center', color: 'black' }}

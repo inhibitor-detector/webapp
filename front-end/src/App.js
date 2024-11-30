@@ -14,12 +14,12 @@ const App = () => {
     <div>
       <InhibitionDetected />
       <Routes>
-      <Route path='/' element={<SignIn/>}/>
+        <Route path='/' element={<SignIn />} />
         <Route element={<PrivateRoutes />}>
-          <Route path='Heartbeats' element={<HeartbeatTable/>}/>
-          <Route path='Detectores' element={<DetectorTable/>}/>
-          <Route path='Inhibiciones' element={<SignalTable/>}/>
-          <Route path='Estadisticas' element={<SignalsChart/>}/>
+          <Route path='Heartbeats' element={<HeartbeatTable />} />
+          <Route path='Detectores' element={<DetectorTable />} />
+          <Route path='Inhibiciones' element={<SignalTable />} />
+          <Route path='Estadisticas' element={<SignalsChart />} />
         </Route>
       </Routes>
     </div>

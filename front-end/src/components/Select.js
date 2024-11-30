@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -28,8 +28,8 @@ export default function SelectOrder(props) {
           <MenuItem value="">
             <em>-</em>
           </MenuItem>
-          <MenuItem value={'Id Ascendente'}>Ascendente</MenuItem>
-          <MenuItem value={'Id Descendente'}>Descendente</MenuItem>
+          <MenuItem value={'Id Ascendente'}>Id Ascendente</MenuItem>
+          <MenuItem value={'Id Descendente'}>Id Descendente</MenuItem>
           <MenuItem value={'Activo'}>Activado</MenuItem>
           <MenuItem value={'Desactivado'}>Desactivado</MenuItem>
         </Select>
