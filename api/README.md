@@ -1,5 +1,5 @@
 # Java inhibitor-api ☕
-This is a template for a Java API, using Spring Boot, Spring Data JPA, Spring Security, and JWT.
+This is a Java API, using Spring Boot, Spring Data JPA, Spring Security, and JWT.
 
 The API is a CRUD for a User, Detectors and Signal entities.
 
@@ -83,7 +83,7 @@ The Jwk set must be in the following format:
 ⚠️ Make sure to do not use this key in production. It is only an example.
 
 # Run 🏃
-```make clean package```
+```mvn clean package```
 
 ⚠️ `make run` will run the database container if it is not running.
 

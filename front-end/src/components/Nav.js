@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,17 +10,18 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import {Link} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 
-const pages = ['Detectores', 'Inhibiciones', 'Estadisticas'];
+const pages = ['Detectores', 'Alertas', 'Estadisticas'];
 const settings = ['Cerrar Sesión'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
+  const location = useLocation();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -75,31 +76,45 @@ function ResponsiveAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">
-                        <Link style={{textDecoration: "none", color: "black"}} to={`/${page}`}> 
-                        {page}
-                        </Link>
-                    </Typography>
+                  <Typography textAlign="center">
+                    <Link style={{ textDecoration: "none", color: "black" }} to={`/${page}`}>
+                      {page}
+                    </Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                <Link style={{textDecoration: "none", color: "white"}} to={`/${page}`}>{page}</Link>
-              </Button>
-            ))}
+            {pages.map((page) => {
+              const isActive = location.pathname.includes(page);
+              return (
+                <Link style={{ textDecoration: "none", color: "white" }} to={`/${page}`}>
+                  <Box key={page} sx={{ position: 'relative' }}>
+                    <Button onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white' }}>
+                      {page}
+                    </Button>
+                    {isActive && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          width: '100%',
+                          height: '5px',
+                          backgroundColor: '#7b9f3a',
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Link>
+              );
+            })}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <AccountCircleIcon style={{ fontSize: 40, color: 'white' }} />
+                <AccountCircleIcon style={{ fontSize: 40, color: 'white' }} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -130,4 +145,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

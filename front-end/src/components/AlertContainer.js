@@ -1,18 +1,29 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import CloseIcon from '@mui/icons-material/Close';
 import { Typography } from '@mui/material';
+import Popup from './Popup';
+import Box from '@mui/material/Box';
 
+const Notification = ({ open, onClose, detector }) => {
+  const [popup, setPopup] = useState(null);
 
-const Notification = ({ open, onClose, detectorId }) => {
+  const handleClose = () => {
+    setPopup(null);
+  };
+
+  const handleClick = (event) => {
+    setPopup(event.currentTarget);
+  };
+
   return (
     <div>
       {open && (
         <Stack sx={{ width: '100%' }} spacing={2}>
-          <Alert severity="error">Alerta, inhibidor detectado.</Alert>
+          <Alert severity="error">Inhibidor detectado.</Alert>
         </Stack>
       )}
       <Modal
@@ -58,10 +69,22 @@ const Notification = ({ open, onClose, detectorId }) => {
               fontSize: 24
             }}
           >
-            Inhibidor detectado por detector: {detectorId}
+            Inhibidor detectado
           </Typography>
+          <Box textAlign='center'>
+            <Button onClick={handleClick}
+              style={{
+                color: 'white',
+                textDecoration: 'underline', 
+              }}
+            >
+              Detector
+          </Button>
+          </Box>
+
         </div>
       </Modal>
+      <Popup popup={popup} selectedDetector={detector} onClose={handleClose} />
     </div>
   );
 };

@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useAuth } from './AuthContext';
-import { refreshToken } from './AuthService';
+import { useAuth } from './Auth/AuthContext';
 import ResponsiveAppBar from './Nav';
 import { CircularProgress, Box } from '@mui/material';
-
 
 const SignalsChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { token, userRole, userId, exp, setExp, saveToken } = useAuth();
+  const { token, userRole, userId } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,13 +19,12 @@ const SignalsChart = () => {
       let page = 1;
 
       try {
-        refreshToken(exp, setExp, saveToken);
         while (hasMore) {
           let params = { page, isHeartbeat: false };
           if (!userRole.includes('ADMIN')) {
             params.ownerId = userId;
           }
-          const response = await axios.get('http://localhost:8000/signals', {
+          const response = await axios.get('http://localhost:80/signals', {
             params: params,
             headers: {
               'Authorization': `Bearer ${token}`
@@ -57,7 +54,7 @@ const SignalsChart = () => {
     };
 
     fetchData();
-  }, [token, userRole, userId, exp, setExp, saveToken]);
+  }, [token, userRole, userId]);
 
   const processSignals = (signals) => {
     const signalsByHour = {};
@@ -77,6 +74,7 @@ const SignalsChart = () => {
         signalsByHour[hour] += 1;
       }
     });
+
     const now = new Date();
     const processedData = [];
 
@@ -92,24 +90,38 @@ const SignalsChart = () => {
     return processedData;
   };
 
+  const filterLastHour = (data) => {
+    return data.slice(-2);
+  };
+
   return (
     <div>
       <ResponsiveAppBar />
       {loading ? (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
       ) : (
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 20}}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en las últimas 24 horas" stroke="#8bc34a" />
-        </LineChart>
-      </ResponsiveContainer>)}
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={data} margin={{ top: 20, right: 30, left: 20}}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en las últimas 24 horas" stroke="#8bc34a" />
+          </LineChart>
+
+          <LineChart data={filterLastHour(data)} margin={{ top: 20, right: 30, left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="count" name="Cantidad de inhibiciones en la última hora" stroke="#8bc34a" />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

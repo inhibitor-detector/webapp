@@ -1,7 +1,6 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
 import ar.edu.itba.tesis.interfaces.service.DetectorService;
-import ar.edu.itba.tesis.interfaces.service.SignalService;
 import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
@@ -9,7 +8,6 @@ import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
-import ar.edu.itba.tesis.webapp.dtos.UserDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

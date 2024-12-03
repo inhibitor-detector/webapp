@@ -22,9 +22,9 @@ const Popup = ({ popup, selectedDetector, onClose }) => {
           <div style={{ padding: '20px' }}>
             <h3>Detalle</h3>
             <p>Id: {selectedDetector.id}</p>
-            <p>Ubicación: {selectedDetector.name}</p>
+            <p>Nombre: {selectedDetector.name}</p>
             <p>Estado: {selectedDetector.isOnline ? 'Activo' : 'Inactivo'}</p>
-            <p>Descripción: {selectedDetector.description}</p>
+            <p>Ubicación: {selectedDetector.description}</p>
           </div>
         )}
       </Popover>

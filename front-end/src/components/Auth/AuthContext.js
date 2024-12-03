@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -6,9 +7,9 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [userRole, setUserRole] = useState('ADMINS');
-  const [userId, setUserId] = useState(null);
-  const [exp, setExp] = useState(null);
+  const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+  const [userId, setUserId] = useState(localStorage.getItem('userId'));
+  const navigate = useNavigate();
 
   const saveToken = (newToken) => {
     setToken(newToken);
@@ -24,20 +25,15 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('lastId');
     setToken(null);
-    setCookie('username', '', 1);
-    setCookie('password', '', 1);
-  };
-
-  const setCookie = (name, value, days) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ token, userRole, userId, exp, saveToken, saveUserRole, saveUserId, logout, setExp }}>
+    <AuthContext.Provider value={{ token, userRole, userId, saveToken, saveUserRole, saveUserId, logout }}>
       {children}
     </AuthContext.Provider>
   );

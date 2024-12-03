@@ -2,11 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Box } from '@mui/material';
 import ResponsiveAppBar from './Nav';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
-import { refreshToken } from './AuthService';
+import { useAuth } from './Auth/AuthContext';
 
 const SignalTable = () => {
-  const { token, userRole, userId, exp, setExp, saveToken } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -17,13 +16,12 @@ const SignalTable = () => {
     let hasMore = true;
 
     try {
-      refreshToken(exp, setExp, saveToken);
       while (hasMore) {
         let params = { page, isHeartbeat: false };
         if (!userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:8000/signals', {
+        const response = await axios.get('http://localhost:80/signals', {
           params: params,
           headers: {
             'Authorization': `Bearer ${token}`
@@ -46,7 +44,7 @@ const SignalTable = () => {
       console.error('Error:', error);
     }
     setLoading(false);
-  }, [token, userRole, userId, exp, setExp, saveToken]);
+  }, [token, userRole, userId]);
 
   useEffect(() => {
     fetchAllSignals();

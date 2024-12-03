@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button, Box, Typography, CircularProgress } from '@mui/material';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Auth/AuthContext';
 import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './HeartbeatTable.css'
-import { refreshToken } from './AuthService';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const HeartbeatTable = () => {
-  const { token, userRole, userId, exp, saveToken, setExp } = useAuth();
+  const { token, userRole, userId } = useAuth();
   const [heartbeats, setHeartbeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -49,7 +50,6 @@ const HeartbeatTable = () => {
   const fetchData = useCallback(async (page) => {
     setLoading(true);
     try {
-      refreshToken(exp, setExp, saveToken);
       let params = {
         detectorId: selectedDetector,
         page: page,
@@ -58,7 +58,7 @@ const HeartbeatTable = () => {
       if (!userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:8000/signals', {
+      const response = await axios.get('http://localhost:80/signals', {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ const HeartbeatTable = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedDetector, userId, userRole, token, exp, saveToken, setExp]);
+  }, [selectedDetector, userId, userRole, token]);
 
   useEffect(() => {
     fetchData(1);
@@ -145,7 +145,9 @@ const HeartbeatTable = () => {
                         <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
                       )}
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>{data.timestamp}</TableCell>
+                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      {formatDistanceToNow(new Date(data.timestamp), { addSuffix: true, locale: es })}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

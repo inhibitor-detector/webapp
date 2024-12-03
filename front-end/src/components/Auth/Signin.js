@@ -22,34 +22,33 @@ const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { saveToken, saveUserId, saveUserRole, setExp } = useAuth();
+  const { saveToken, saveUserId, saveUserRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const saveRoles = async (token, userId) => {
-    const response = await axios.get(`http://localhost:8000/users/${userId}`, {
+    const response = await axios.get(`http://localhost:80/users/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
     saveUserRole(response.data.roles);
+    localStorage.setItem('role', response.data.roles);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.get('http://localhost:8000/', { auth: { username: data.get('username'), password: data.get('password') } });
+      const response = await axios.get('http://localhost:80/', { auth: { username: data.get('username'), password: data.get('password') } });
       if (response.status === 200) {
         const token = response.headers.authorization.split(' ')[1];
         const decodedToken = jwtDecode(token);
         saveUserId(decodedToken.userId);
         saveRoles(token, decodedToken.userId);
         saveToken(token);
-        setExp(decodedToken.exp);
-        setCookie('username', data.get('username'), 1);
-        setCookie('password', data.get('password'), 1);
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', decodedToken.userId);
         navigate("/Detectores");
       } else {
         console.log("Error signing in");
@@ -59,13 +58,6 @@ export default function SignIn() {
       console.error('Error:', error);
       setErrorMessage("Usuario o contraseña incorrectos.");
     }
-  };
-
-  const setCookie = (name, value, days) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
   };
 
   return (
