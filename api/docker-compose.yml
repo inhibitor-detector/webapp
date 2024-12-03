@@ -12,7 +12,6 @@ services:
       - "5432:5432"  # Exponer el puerto de la base de datos
     volumes:
       - ./persistence/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-      - ./persistence/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql
     networks:
       - app_network
     restart: always
@@ -20,7 +19,7 @@ services:
       - "5432"
 
   app:
-    image: tataabancens/detector-api:1.0.3  # Usa la imagen que subiste a Docker Hub
+    image: tataabancens/detector-api:1.0.4  # Usa la imagen que subiste a Docker Hub
     container_name: inhibitor-detector-api
     depends_on:
       - db
