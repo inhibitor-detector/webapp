@@ -49,9 +49,6 @@ Thumbs.db
 *.exe
 *.war
 
-# secrets
-jwk_set.json
-
 # misc
 .env.local
 .env.development.local

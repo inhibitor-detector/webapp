@@ -17,10 +17,10 @@ The API is a CRUD for a User, Detectors and Signal entities.
 ### Create Database Container 🐋
 This API uses a postgres database. To set up the database, run the following command:
 
-```make create_db container=<container> user=<user> password=<pwd> database=<db_name>```
+```make create_db```
 
-    Where:
-    - container:    the name of the docker container. If not provided, the default value is 'postgres'
+    Will create a docker container with the following parameters:
+    - container:    the name of the docker container. Value is 'postgres'
     - user:         the user to create. If not provided, the default value is 'user'
     - password:     the password for the user. If not provided, the default value is '123123123'
     - database:     the name of the database to create. If not provided, the default value is 'inhibitor_detector'
