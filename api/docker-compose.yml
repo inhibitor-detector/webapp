@@ -20,7 +20,7 @@ services:
       - "5432"
 
   app:
-    image: tataabancens/detector-api  # Usa la imagen que subiste a Docker Hub
+    image: tataabancens/detector-api:1.0.3  # Usa la imagen que subiste a Docker Hub
     container_name: inhibitor-detector-api
     depends_on:
       - db

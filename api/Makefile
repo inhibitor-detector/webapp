@@ -45,6 +45,21 @@ populate_db:
 	docker exec -i $(container) psql -U $(user) --dbname $(database) < ./persistence/src/main/resources/data.sql
 
 
+# Nombre de la imagen y el repositorio en Docker Hub
+IMAGE_NAME = tataabancens/detector-api
+TAG = 1.0.2
 
+# Comando para construir y subir la imagen
+deploy:
+	@echo "Construyendo la imagen Docker..."
+	docker build --no-cache -t $(IMAGE_NAME):$(TAG) .
+	@echo "Subiendo la imagen a Docker Hub..."
+	docker push $(IMAGE_NAME):$(TAG)
+
+start:
+	@echo "Pulling latest images..."
+	docker-compose pull
+	@echo "Rebuilding containers..."
+	docker-compose up -d
 
 
