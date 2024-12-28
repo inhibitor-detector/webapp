@@ -27,7 +27,7 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const saveRoles = async (token, userId) => {
-    const response = await axios.get(`http://localhost:80/users/${userId}`, {
+    const response = await axios.get(`http://localhost:8001/users/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -40,7 +40,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.get('http://localhost:80/', { auth: { username: data.get('username'), password: data.get('password') } });
+      const response = await axios.get('http://localhost:8001/', { auth: { username: data.get('username'), password: data.get('password') } });
       if (response.status === 200) {
         const token = response.headers.authorization.split(' ')[1];
         const decodedToken = jwtDecode(token);

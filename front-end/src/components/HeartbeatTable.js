@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button, Box, Typography, CircularProgress } from '@mui/material';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from './Auth/AuthContext';
+import { useAuth } from './auth/AuthContext';
 import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -58,7 +58,7 @@ const HeartbeatTable = () => {
       if (!userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:80/signals', {
+      const response = await axios.get('http://localhost:8001/signals', {
         params,
         headers: {
           Authorization: `Bearer ${token}`,

@@ -3,7 +3,7 @@ import axios from 'axios';
 import SelectOrder from './Select';
 import ResponsiveAppBar from './Nav';
 import DashboardStats from './Dashboard';
-import { useAuth } from './Auth/AuthContext';
+import { useAuth } from './auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';
@@ -33,7 +33,7 @@ const DetectorTable = () => {
         if (userRole && !userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:80/detectors', {
+        const response = await axios.get('http://localhost:8001/detectors', {
           params: params,
           headers: {
             'Authorization': `Bearer ${token}`
@@ -110,7 +110,7 @@ const DetectorTable = () => {
 
   const fetchUsers = async (userIds) => {
     const userRequests = userIds.map(userId =>
-      axios.get(`http://localhost:80/users/${userId}`, {
+      axios.get(`http://localhost:8001/users/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
     );
@@ -134,15 +134,15 @@ const DetectorTable = () => {
     <div>
       <ResponsiveAppBar />
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <Typography
-        variant="h4"
-        style={{
-          fontWeight: 'bold',
-        }}
-      >
-        Detectores
-      </Typography>
-    </div>
+        <Typography
+          variant="h4"
+          style={{
+            fontWeight: 'bold',
+          }}
+        >
+          Detectores
+        </Typography>
+      </div>
       <DashboardStats activeCount={activeCount} inactiveCount={inactiveCount} totalCount={activeCount + inactiveCount} />
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
