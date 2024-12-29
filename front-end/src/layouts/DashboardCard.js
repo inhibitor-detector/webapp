@@ -1,30 +1,7 @@
 import React from 'react';
 import { Box, Typography, Grid, Paper } from "@mui/material";
-import DoneIcon from "@mui/icons-material/Done";
-import BlockIcon from "@mui/icons-material/Block";
-import DevicesIcon from "@mui/icons-material/Devices";
 
-const DashboardStats = ({ activeCount, inactiveCount, totalCount }) => {
-  const stats = [
-    {
-      label: "Total Activos",
-      value: activeCount,
-      icon: <DoneIcon />,
-      backgroundColor: "#66BB6A",
-    },
-    {
-      label: "Total Inactivos",
-      value: inactiveCount,
-      icon: <BlockIcon />,
-      backgroundColor: "#EF5350",
-    },
-    {
-      label: "Total Detectores",
-      value: totalCount,
-      icon: <DevicesIcon />,
-      backgroundColor: "#42A5F5",
-    },
-  ];
+const DashboardCard = ({ stats }) => {
 
   return (
     <Box margin={1}>
@@ -71,4 +48,4 @@ const DashboardStats = ({ activeCount, inactiveCount, totalCount }) => {
   );
 };
 
-export default DashboardStats;
+export default DashboardCard;

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Box } from '@mui/material';
-import ResponsiveAppBar from './Nav';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, CircularProgress, Box } from '@mui/material';
+import ResponsiveAppBar from '../../layouts/Nav';
 import axios from 'axios';
-import { useAuth } from './Auth/AuthContext';
+import { useAuth } from '../../components/AuthContext';
+import DashboardCard from '../../layouts/DashboardCard';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -21,7 +23,7 @@ const SignalTable = () => {
         if (!userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:80/signals', {
+        const response = await axios.get('http://localhost:8001/signals', {
           params: params,
           headers: {
             'Authorization': `Bearer ${token}`
@@ -59,6 +61,22 @@ const SignalTable = () => {
         </Box>
       ) : (
         <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Typography
+              variant="h4"
+              style={{
+                fontWeight: 'bold',
+              }}
+            >
+              Alertas
+            </Typography>
+          </div>
+          <DashboardCard stats={[{
+            label: "Total Alertas",
+            value: signals.length,
+            icon: <NotificationsActiveIcon />,
+            backgroundColor: "#EF5350",
+          }]} />
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

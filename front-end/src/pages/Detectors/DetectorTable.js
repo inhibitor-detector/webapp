@@ -2,13 +2,16 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import SelectOrder from '../../components/Select/Select';
 import ResponsiveAppBar from '../../layouts/Nav';
-import DashboardStats from '../../layouts/Dashboard';
+import DashboardCard from '../../layouts/DashboardCard';
 import { useAuth } from '../../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
+import DoneIcon from "@mui/icons-material/Done";
+import BlockIcon from "@mui/icons-material/Block";
+import DevicesIcon from "@mui/icons-material/Devices";
 
 const DetectorTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -143,7 +146,26 @@ const DetectorTable = () => {
           Detectores
         </Typography>
       </div>
-      <DashboardStats activeCount={activeCount} inactiveCount={inactiveCount} totalCount={activeCount + inactiveCount} />
+      <DashboardCard stats = {[
+        {
+          label: "Total Activos",
+          value: activeCount,
+          icon: <DoneIcon />,
+          backgroundColor: "#66BB6A",
+        },
+        {
+          label: "Total Inactivos",
+          value: inactiveCount,
+          icon: <BlockIcon />,
+          backgroundColor: "#EF5350",
+        },
+        {
+          label: "Total Detectores",
+          value: activeCount + inactiveCount,
+          icon: <DevicesIcon />,
+          backgroundColor: "#42A5F5",
+        },
+      ]} />
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
