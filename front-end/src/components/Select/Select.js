@@ -4,7 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import './SelectOrder.css';
+import './Select.css';
 
 export default function SelectOrder(props) {
   const [order, setOrder] = React.useState('');

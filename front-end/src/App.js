@@ -1,12 +1,12 @@
 import React from 'react';
-import DetectorTable from './components/DetectorTable';
-import SignalTable from './components/SignalTable';
-import SignIn from './components/auth/Signin';
+import DetectorTable from './pages/Detectors/DetectorTable';
+import SignalTable from './pages/Inhibitions/SignalTable';
+import SignIn from './pages/SignIn/Signin';
 import { Route, Routes } from 'react-router-dom';
 import PrivateRoutes from './components/PrivateRoutes'
-import HeartbeatTable from './components/HeartbeatTable';
+import HeartbeatTable from './components/HeartbeatTable/HeartbeatTable';
 import InhibitionDetected from './components/InhibitionDetected';
-import SignalsChart from './components/Statistics';
+import SignalsChart from './pages/Statistics/Statistics';
 
 const App = () => {
 

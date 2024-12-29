@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
-import SelectOrder from './Select';
-import ResponsiveAppBar from './Nav';
-import DashboardStats from './Dashboard';
-import { useAuth } from './auth/AuthContext';
+import SelectOrder from '../../components/Select/Select';
+import ResponsiveAppBar from '../../layouts/Nav';
+import DashboardStats from '../../layouts/Dashboard';
+import { useAuth } from '../../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';

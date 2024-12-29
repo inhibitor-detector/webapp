@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, useLocation } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useAuth } from './Auth/AuthContext';
+import { useAuth } from '../components/AuthContext';
 
 const pages = ['Detectores', 'Alertas', 'Estadisticas'];
 const settings = ['Cerrar Sesión'];
@@ -90,8 +90,8 @@ function ResponsiveAppBar() {
             {pages.map((page) => {
               const isActive = location.pathname.includes(page);
               return (
-                <Link style={{ textDecoration: "none", color: "white" }} to={`/${page}`}>
-                  <Box key={page} sx={{ position: 'relative' }}>
+                <Link key={page} style={{ textDecoration: "none", color: "white" }} to={`/${page}`}>
+                  <Box sx={{ position: 'relative' }}>
                     <Button onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white' }}>
                       {page}
                     </Button>

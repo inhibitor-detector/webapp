@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './Signin.css';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../../components/AuthContext';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
