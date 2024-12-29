@@ -5,11 +5,14 @@ import axios from 'axios';
 import { useAuth } from '../../components/AuthContext';
 import DashboardCard from '../../layouts/DashboardCard';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import Popup from '../../components/Popup';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedDetector, setSelectedDetector] = useState(null);
+  const [open, setOpen] = useState(null);
 
   const fetchAllSignals = useCallback(async () => {
     setLoading(true);
@@ -52,6 +55,33 @@ const SignalTable = () => {
     fetchAllSignals();
   }, [fetchAllSignals]);
 
+  const fetchDetectorDetails = async (detectorId) => {
+    try {
+      const response = await axios.get(`http://localhost:8001/detectors/${detectorId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 200) {
+        setSelectedDetector(response.data);
+      } else {
+        console.error('Error al obtener los detalles del detector');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleClick = (event, detectorId) => {
+    setOpen(event.currentTarget);
+    fetchDetectorDetails(detectorId);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -88,14 +118,25 @@ const SignalTable = () => {
               <TableBody>
                 {signals.map(signal => (
                   <TableRow key={signal.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
-                    <TableCell sx={{ textAlign: 'center' }}>{signal.detectorId}</TableCell>
+                    <TableCell
+                      sx={{ textAlign: 'center', cursor: 'pointer' }}
+                      onClick={(event) => handleClick(event, signal.detectorId)}
+                    >
+                      {signal.detectorId}
+                    </TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>{signal.timestamp}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </div>)}
+        </div>
+      )}
+      <Popup 
+        popup={open}
+        selectedDetector={selectedDetector}
+        onClose={handleClose}
+      />
     </div>
   );
 };
