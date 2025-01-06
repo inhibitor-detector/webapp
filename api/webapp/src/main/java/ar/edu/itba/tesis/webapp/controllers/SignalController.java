@@ -5,13 +5,10 @@ import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.interfaces.service.SignalService;
-import ar.edu.itba.tesis.interfaces.service.SignalService;
 import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Signal;
-import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.auth.AccessControl;
-import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
 import ar.edu.itba.tesis.webapp.dtos.SignalDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -115,4 +112,21 @@ public class SignalController {
         return LocalDateTime.parse(dateString, formatter);
     }
 
+    @GET
+    @Path("/time")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSignalsByTime(
+            @QueryParam("startTime") String startTime,
+            @QueryParam("endTime") String endTime,
+            @QueryParam("ownerId") final Long ownerId) {
+        LocalDateTime start = parseAndValidate(startTime);
+        LocalDateTime end = parseAndValidate(endTime);
+
+        List<Signal> signals = signalService.findByTime(start, end, ownerId);
+
+        List<SignalDto> signalDtos = signals.stream()
+                .map(SignalDto::fromSignal)
+                .toList();
+        return Response.ok(signalDtos).build();
+    }
 }

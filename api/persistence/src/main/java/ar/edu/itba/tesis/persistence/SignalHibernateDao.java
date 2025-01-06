@@ -4,7 +4,6 @@ import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
 import ar.edu.itba.tesis.models.Signal;
-import ar.edu.itba.tesis.models.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -14,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,5 +137,24 @@ public class SignalHibernateDao implements SignalDao {
         }
 
         criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition, isHeartbeatCondition));
+    }
+
+    public List<Signal> findByTime(LocalDateTime startTime, LocalDateTime endTime, Long ownerId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
+        Root<Signal> root = criteriaQuery.from(Signal.class);
+
+        Predicate conditions = criteriaBuilder.and(
+                criteriaBuilder.equal(root.get("isHeartbeat"), false),
+                criteriaBuilder.between(root.get("timestamp"), startTime, endTime)
+        );
+
+        if (ownerId != null) {
+            conditions = criteriaBuilder.and(conditions, criteriaBuilder.equal(root.get("detector").get("owner").get("id"), ownerId));
+        }
+
+        criteriaQuery.select(root).where(conditions);
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }

@@ -11,42 +11,39 @@ const SignalsChart = () => {
   const [range, setRange] = useState(24);
   const { token, userRole, userId } = useAuth();
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }).replace(' ', 'T');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
 
-      let allSignals = [];
-      let hasMore = true;
-      let page = 1;
+      const now = new Date();
+      const endTime = formatDate(now);
+      const startTime = formatDate(new Date(now - range * 60 * 60 * 1000));
 
       try {
-        while (hasMore) {
-          let params = { page, isHeartbeat: false };
-          if (!userRole.includes('ADMIN')) {
-            params.ownerId = userId;
-          }
-          const response = await axios.get('http://localhost:8001/signals', {
-            params: params,
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        const params = {
+          startTime,
+          endTime,
+        };
 
-          if (response.status === 200) {
-            const data = response.data;
-            if (data.length === 0) {
-              hasMore = false;
-            } else {
-              allSignals = [...allSignals, ...data];
-              page++;
-            }
-          } else {
-            hasMore = false;
-          }
+        if (!userRole.includes('ADMIN')) {
+          params.ownerId = userId;
         }
 
-        const processedData = processSignals(allSignals, range);
-        setData(processedData);
+        const response = await axios.get('http://localhost:8001/signals/time', {
+          params: params,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          const processedData = processSignals(response.data, range);
+          setData(processedData);
+        }
       } catch (error) {
         console.error('Error:', error);
       }
@@ -100,7 +97,6 @@ const SignalsChart = () => {
             <Bar dataKey="count" fill="#8bc34a" barSize="20" />
           </BarChart>
         </ResponsiveContainer>
-
       )}
     </div>
   );
@@ -109,41 +105,43 @@ const SignalsChart = () => {
 const processSignals = (signals, range) => {
   const signalsByTime = {};
 
-  const now = new Date();
-  const rangeStartTime = new Date(now - range * 60 * 60 * 1000);
-
   signals.forEach((signal) => {
     const signalDate = new Date(signal.timestamp);
-    if (signalDate >= rangeStartTime) {
-      let timeLabel;
+    let timeLabel;
 
-      if (range === 1) {
-        const interval = Math.floor(signalDate.getMinutes() / 15) * 15;
-        timeLabel = `${signalDate.getHours().toString().padStart(2, '0')}:${interval.toString().padStart(2, '0')}`;
-      } else {
-        const hour = signalDate.getHours();
-        timeLabel = `${hour.toString().padStart(2, '0')}:00`;
-      }
-
-      signalsByTime[timeLabel] = (signalsByTime[timeLabel] || 0) + 1;
+    if (range === 1) {
+      const interval = Math.floor(signalDate.getMinutes() / 15) * 15;
+      timeLabel = `${signalDate.getHours().toString().padStart(2, '0')}:${interval.toString().padStart(2, '0')}`;
+    } else {
+      const hour = signalDate.getHours();
+      timeLabel = `${hour.toString().padStart(2, '0')}:00`;
     }
+
+    signalsByTime[timeLabel] = (signalsByTime[timeLabel] || 0) + 1;
   });
 
   const processedData = [];
-  for (let i = 0; i < range; i++) {
-    const timeSlot = new Date(now - (range - i - 1) * 60 * 60 * 1000);
-    const baseHour = timeSlot.getHours();
+  const now = new Date();
 
-    if (range === 1) {
-      for (let m = 0; m <= 45; m += 15) {
-        const intervalTime = new Date(timeSlot.setMinutes(m));
-        const timeLabel = `${intervalTime.getHours().toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-        processedData.push({
-          time: timeLabel,
-          count: signalsByTime[timeLabel] || 0
-        });
-      }
-    } else {
+  if (range === 1) {
+    let roundedMinutes = Math.floor(now.getMinutes() / 15) * 15;
+    const roundedTime = new Date(now.setMinutes(roundedMinutes, 0, 0));
+    roundedTime.setHours(roundedTime.getHours() - 1);
+
+    for (let m = 0; m <= 3; m += 1) {
+      const intervalTime = new Date(roundedTime.getTime());
+      intervalTime.setMinutes(roundedMinutes);
+      const timeLabel = `${intervalTime.getHours().toString().padStart(2, '0')}:${intervalTime.getMinutes().toString().padStart(2, '0')}`;
+      processedData.push({
+        time: timeLabel,
+        count: signalsByTime[timeLabel] || 0
+      });
+      roundedMinutes += 15;
+    }
+  } else {
+    for (let i = 0; i < range; i++) {
+      const timeSlot = new Date(now - (range - i - 1) * 60 * 60 * 1000);
+      const baseHour = timeSlot.getHours();
       const timeLabel = `${baseHour.toString().padStart(2, '0')}:00`;
       processedData.push({
         time: timeLabel,
