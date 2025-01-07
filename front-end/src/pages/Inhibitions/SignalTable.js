@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, CircularProgress, Box } from '@mui/material';
 import ResponsiveAppBar from '../../layouts/Nav';
 import axios from 'axios';
@@ -124,7 +125,9 @@ const SignalTable = () => {
                     >
                       {signal.detectorId}
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>{signal.timestamp}</TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      {format(new Date(signal.timestamp), 'dd/MM/yyyy HH:mm:ss')}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

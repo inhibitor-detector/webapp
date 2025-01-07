@@ -172,7 +172,7 @@ const DetectorTable = () => {
         </Box>
       ) : (
         <div style={{ maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", gap: "16px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
             <TextField
               className="search-field"
               label="Buscar por nombre"
@@ -183,10 +183,8 @@ const DetectorTable = () => {
                 endAdornment: <SearchIcon />,
               }}
             />
-            <SelectOrder
-              setOrderType={setOrderType}
-            />
           </div>
+          <SelectOrder setOrderType={setOrderType} style={{ marginBottom: "10px" }}/>
 
           {!searchResultsMessage && (
             <TableContainer component={Paper}>

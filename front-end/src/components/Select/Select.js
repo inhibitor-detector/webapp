@@ -15,23 +15,24 @@ export default function SelectOrder(props) {
   };
 
   return (
-    <Box sx={{ minWidth: 120 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Ordenar Por</InputLabel>
+        <InputLabel id="demo-simple-select-standard-label" className='font-size'>Ordenar Por</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
           value={order}
           onChange={handleChange}
           label="Ordenar Por"
+          className='font-size'
         >
           <MenuItem value="">
             <em>-</em>
           </MenuItem>
-          <MenuItem value={'Id Ascendente'}>Id Ascendente</MenuItem>
-          <MenuItem value={'Id Descendente'}>Id Descendente</MenuItem>
-          <MenuItem value={'Activo'}>Activado</MenuItem>
-          <MenuItem value={'Desactivado'}>Desactivado</MenuItem>
+          <MenuItem value={'Id Ascendente'} className='font-size'>Id Ascendente</MenuItem>
+          <MenuItem value={'Id Descendente'} className='font-size'>Id Descendente</MenuItem>
+          <MenuItem value={'Activo'} className='font-size'>Activado</MenuItem>
+          <MenuItem value={'Desactivado'} className='font-size'>Desactivado</MenuItem>
         </Select>
       </FormControl>
     </Box>
