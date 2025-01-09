@@ -52,9 +52,9 @@ public class SignalController {
                                @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize,
                                @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId,
                                @Min(0) @DefaultValue("0") @QueryParam("detectorId") final Long detectorId,
-                               @QueryParam("isHeartbeat") final Boolean isHeartBeat
+                               @QueryParam("isHeartbeat") final Boolean isHeartBeat, @QueryParam("status") final Boolean status
     ) {
-        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartBeat);
+        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartBeat, status);
 
         if (signals.isEmpty()) {
             return Response
@@ -75,7 +75,7 @@ public class SignalController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!accessControl.canPostSignalCheckDetectorId(authentication, detector)) throw new AccessDeniedException("Access denied");
 
-        final Signal signal = signalService.create(Signal.builder().detector(detector).timestamp(parseAndValidate(signalDto.timestamp())).isHeartbeat(signalDto.isHeartbeat()).build());
+        final Signal signal = signalService.create(Signal.builder().detector(detector).timestamp(parseAndValidate(signalDto.timestamp())).isHeartbeat(signalDto.isHeartbeat()).status(signalDto.status()).build());
 
         return Response
                 .created(uriInfo

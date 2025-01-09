@@ -27,6 +27,9 @@ public class Signal {
     @Column(name = "is_heartbeat", nullable = false)
     private Boolean isHeartbeat;
 
+    @Column(name = "status", nullable = false)
+    private Boolean status;
+
     /*
         Builder for Signal
      */
@@ -60,5 +63,9 @@ public class Signal {
             return this;
         }
 
+        public Signal.Builder status(Boolean status) {
+            signal.setStatus(status);
+            return this;
+        }
     }
 }

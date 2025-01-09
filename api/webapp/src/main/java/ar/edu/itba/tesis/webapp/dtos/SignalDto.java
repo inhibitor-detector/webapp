@@ -17,14 +17,17 @@ public record SignalDto(
         @DateTimeFormat
         String timestamp,
 
-        Boolean isHeartbeat) {
+        Boolean isHeartbeat,
+
+        Boolean status) {
 
     public static SignalDto fromSignal(Signal signal) {
         return new SignalDto(
                 signal.getId(),
                 signal.getDetector().getId(),
                 signal.getTimestamp().toString(),
-                signal.getIsHeartbeat()
+                signal.getIsHeartbeat(),
+                signal.getStatus()
         );
     }
 
