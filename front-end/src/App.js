@@ -1,6 +1,6 @@
 import React from 'react';
 import DetectorTable from './pages/Detectors/DetectorTable';
-import SignalTable from './pages/Inhibitions/SignalTable';
+import SignalTable from './pages/Signals/SignalTable';
 import SignIn from './pages/SignIn/Signin';
 import { Route, Routes } from 'react-router-dom';
 import PrivateRoutes from './components/PrivateRoutes'

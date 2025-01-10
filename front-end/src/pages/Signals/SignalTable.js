@@ -7,6 +7,7 @@ import { useAuth } from '../../components/AuthContext';
 import DashboardCard from '../../layouts/DashboardCard';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Popup from '../../components/Popup';
+import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -114,6 +115,7 @@ const SignalTable = () => {
                 <TableRow>
                   <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Detector</TableCell>
                   <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Horario</TableCell>
+                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Estado</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -128,6 +130,11 @@ const SignalTable = () => {
                     <TableCell sx={{ textAlign: 'center' }}>
                       {format(new Date(signal.timestamp), 'dd/MM/yyyy HH:mm:ss')}
                     </TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>{signal.status ? (
+                      <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
+                    ) : (
+                      <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
+                    )}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -135,7 +142,7 @@ const SignalTable = () => {
           </TableContainer>
         </div>
       )}
-      <Popup 
+      <Popup
         popup={open}
         selectedDetector={selectedDetector}
         onClose={handleClose}

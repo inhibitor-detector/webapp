@@ -244,7 +244,7 @@ const DetectorRow = ({ detector, users, userRole }) => {
       <TableCell sx={{ textAlign: 'center' }}>{detector.name}</TableCell>
       <TableCell sx={{ textAlign: 'center' }}>{detector.description}</TableCell>
       {userRole.includes('ADMIN') && (
-        <TableCell sx={{ textAlign: 'center' }}>{users[detector.ownerId] || 'Cargando...'}</TableCell> // Aquí puedes reemplazarlo con el username si lo tienes disponible
+        <TableCell sx={{ textAlign: 'center' }}>{users[detector.ownerId] || 'Cargando...'}</TableCell>
       )}
       <TableCell onClick={(event) => handleClick(event)} sx={{ textAlign: 'center', cursor: 'pointer' }}>
         {detector.isOnline ? (
