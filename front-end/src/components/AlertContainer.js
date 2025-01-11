@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Alert from '@mui/material/Alert';
@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Typography } from '@mui/material';
 import Popup from './Popup';
 import Box from '@mui/material/Box';
+import CheckIcon from '@mui/icons-material/Check';
 
 const Notification = ({ open, onClose, detector }) => {
   const [popup, setPopup] = useState(null);
@@ -75,11 +76,38 @@ const Notification = ({ open, onClose, detector }) => {
             <Button onClick={handleClick}
               style={{
                 color: 'white',
-                textDecoration: 'underline', 
+                textDecoration: 'underline',
               }}
             >
               Detector
-          </Button>
+            </Button>
+            <Box textAlign="center">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => console.log("Chequeado")}
+                style={{
+                  margin: '5px',
+                }}
+              >
+                <CheckIcon style={{ marginRight: '5px' }} />
+                Chequeado
+              </Button>
+
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => console.log("No Chequeado")}
+                style={{
+                  margin: '5px',
+                  backgroundColor: 'grey',
+                  color: 'white',
+                }}
+              >
+                <CloseIcon style={{ marginRight: '5px' }} />
+                No Chequeado
+              </Button>
+            </Box>
           </Box>
 
         </div>

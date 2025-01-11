@@ -18,7 +18,7 @@ const InhibitionDetected = () => {
       if (userRole && !userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:80/signals', {
+      const response = await axios.get('http://localhost:8001/signals', {
         params: params,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -36,26 +36,25 @@ const InhibitionDetected = () => {
 
   const fetchSignals = async () => {
     const data = await axiosGetSignals();
-    if (data && data.length > 0) {
-      const lastId = data[0].id;
+    if (data && data.length > 0 && !localStorage.getItem('lastId')) {
+      const lastId = Math.max(...data.map(signal => signal.id));
       setLastId(lastId);
       localStorage.setItem('lastId', lastId);
+      setIsInitialLoad(false);
     }
   };
 
   const checkForNewSignals = async () => {
     const data = await axiosGetSignals();
     if (data && data.length > 0) {
-      const actualId = data[0].id;
+      const actualId = Math.max(...data.map(signal => signal.id));
       if (actualId !== lastId) {
-        if (!isInitialLoad) {
-          setOpen(true);
-        }
+        setOpen(true);
         setLastId(actualId);
         localStorage.setItem('lastId', actualId);
 
         try {
-          const detectorResponse = await axios.get(`http://localhost:80/detectors/${data[0].detectorId}`, {
+          const detectorResponse = await axios.get(`http://localhost:8001/detectors/${data[0].detectorId}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -74,7 +73,6 @@ const InhibitionDetected = () => {
   };
 
   useEffect(() => {
-    console.log(token)
     if (!token) {
       setLastId(-1);
       localStorage.removeItem('lastId');
@@ -83,9 +81,10 @@ const InhibitionDetected = () => {
     }
 
     const fetchAndCheckSignals = async () => {
-      await fetchSignals();
-      await checkForNewSignals();
-      setIsInitialLoad(false);
+      if(isInitialLoad) {
+        await fetchSignals();
+        setIsInitialLoad(false);
+      }
     };
 
     fetchAndCheckSignals();
@@ -95,6 +94,7 @@ const InhibitionDetected = () => {
     }, 10000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, [token, userRole, userId, lastId, logout]);
 
   const handleClose = () => {
