@@ -81,14 +81,12 @@ public class SignalHibernateDao implements SignalDao {
         return query.getResultList();
     }
 
-
-
     @Override
     public Signal update(Long id, Signal entity) throws NotFoundException, AlreadyExistsException {
-        Signal user = findById(id).orElseThrow(() -> new NotFoundException("Heartbeat not found"));
-        updateHeartbeat(user, entity);
-        entityManager.persist(user);
-        return user;
+        Signal signal = findById(id).orElseThrow(() -> new NotFoundException("Signal not found"));
+        updateSignal(signal, entity);
+        entityManager.persist(signal);
+        return signal;
     }
 
     @Override
@@ -161,5 +159,9 @@ public class SignalHibernateDao implements SignalDao {
         criteriaQuery.select(root).where(conditions);
 
         return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+    private void updateSignal(Signal signal, Signal newValues) {
+        signal.setStatus(newValues.getStatus());
     }
 }

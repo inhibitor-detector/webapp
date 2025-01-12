@@ -75,7 +75,7 @@ public class SignalController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!accessControl.canPostSignalCheckDetectorId(authentication, detector)) throw new AccessDeniedException("Access denied");
 
-        final Signal signal = signalService.create(Signal.builder().detector(detector).timestamp(parseAndValidate(signalDto.timestamp())).isHeartbeat(signalDto.isHeartbeat()).status(signalDto.status()).build());
+        final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
 
         return Response
                 .created(uriInfo
@@ -83,6 +83,21 @@ public class SignalController {
                         .path(signal.getId().toString())
                         .build())
                 .entity(SignalDto.fromSignal(signal))
+                .build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateSignal(@PathParam("id") Long id, @Valid SignalDto signalDto) throws AlreadyExistsException, NotFoundException {
+        final Detector detector = detectorService.findById(signalDto.detectorId()).orElseThrow(() -> new DetectorNotFoundException(signalDto.detectorId()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!accessControl.canPutSignal(authentication)) throw new AccessDeniedException("Access denied");
+
+        final Signal signal = signalService.update(id, buildNewSignal(signalDto, detector));
+        return Response
+                .ok(SignalDto.fromSignal(signal))
                 .build();
     }
 
@@ -128,5 +143,14 @@ public class SignalController {
                 .map(SignalDto::fromSignal)
                 .toList();
         return Response.ok(signalDtos).build();
+    }
+
+    private Signal buildNewSignal(SignalDto signalDto, Detector detector) {
+        return Signal.builder()
+                .detector(detector)
+                .timestamp(parseAndValidate(signalDto.timestamp()))
+                .isHeartbeat(signalDto.isHeartbeat())
+                .status(signalDto.status())
+                .build();
     }
 }

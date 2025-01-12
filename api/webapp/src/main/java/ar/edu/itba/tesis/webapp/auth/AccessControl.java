@@ -42,6 +42,11 @@ public class AccessControl {
         return user != null && user.getRoles().contains(Role.DETECTOR);
     }
 
+    public boolean canPutSignal(Authentication authentication) {
+        final User user = authFacade.getAuthenticatedUser(authentication);
+        return user != null;
+    }
+
     // Method for Signal controller, checks that the detector user is the same as the detectorId in the body
     public boolean canPostSignalCheckDetectorId(Authentication authentication, Detector detector) {
         final User user = authFacade.getAuthenticatedUser(authentication);
