@@ -7,8 +7,9 @@ import DashboardCard from '../../layouts/DashboardCard';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Popup from '../../components/Popup';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import { getSignals } from '../../api/SignalApi';
+import { getSignals, updateSignal } from '../../api/SignalApi';
 import { getDetectorById } from '../../api/DetectorApi';
+import Button from '@mui/material/Button';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -75,6 +76,23 @@ const SignalTable = () => {
     setOpen(false);
   };
 
+  const handleVerify = async (signalId) => {
+    try {
+      const updatedSignal = signals.find(signal => signal.id === signalId);
+      if (updatedSignal) {
+        updatedSignal.status = true;
+        await updateSignal(signalId, updatedSignal, token);
+        setSignals(prevSignals =>
+          prevSignals.map(signal =>
+            signal.id === signalId ? { ...signal, status: true } : signal
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error al verificar la señal:', error);
+    }
+  };
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -121,11 +139,33 @@ const SignalTable = () => {
                     <TableCell sx={{ textAlign: 'center' }}>
                       {format(new Date(signal.timestamp), 'dd/MM/yyyy HH:mm:ss')}
                     </TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}>{signal.status ? (
-                      <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
-                    ) : (
-                      <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
-                    )}</TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      {signal.status ? (
+                        <Box display="inline-flex" alignItems="center">
+                          <CheckCircleOutline sx={{ color: 'green', fontSize: 16 }} />
+                          <span style={{ marginLeft: '8px', color: 'green' }}>Verificado</span>
+                        </Box>
+                      ) : (
+                        <Box display="inline-flex" alignItems="center">
+                          <HighlightOff sx={{ color: 'red', fontSize: 16 }} />
+                          <Button
+                            sx={{
+                              marginLeft: '8px',
+                              color: 'red',
+                              textTransform: 'none',
+                              fontSize: 12,
+                              padding: '4px 8px',
+                              borderColor: 'red',
+                            }}
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleVerify(signal.id)} 
+                          >
+                            Verificar
+                          </Button>
+                        </Box>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

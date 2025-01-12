@@ -10,6 +10,7 @@ const InhibitionDetected = () => {
   const [lastId, setLastId] = useState(
     () => Number(localStorage.getItem('lastId')) || -1
   );
+  const [signal, setSignal] = useState([]);
   const [detector, setDetector] = useState([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
@@ -47,6 +48,7 @@ const InhibitionDetected = () => {
       if (actualId !== lastId) {
         setOpen(true);
         setLastId(actualId);
+        setSignal(data[0])
         localStorage.setItem('lastId', actualId);
 
         try {
@@ -95,7 +97,7 @@ const InhibitionDetected = () => {
 
   return (
     <div>
-      <AlertContainer open={open} onClose={handleClose} detector={detector} />
+      <AlertContainer open={open} onClose={handleClose} detector={detector} signal={signal} token={token}/>
     </div>
   );
 };

@@ -8,8 +8,9 @@ import { Typography } from '@mui/material';
 import Popup from './Popup';
 import Box from '@mui/material/Box';
 import CheckIcon from '@mui/icons-material/Check';
+import { updateSignal } from '../api/SignalApi';
 
-const Notification = ({ open, onClose, detector }) => {
+const Notification = ({ open, onClose, detector, signal, token }) => {
   const [popup, setPopup] = useState(null);
 
   const handleClose = () => {
@@ -18,6 +19,15 @@ const Notification = ({ open, onClose, detector }) => {
 
   const handleClick = (event) => {
     setPopup(event.currentTarget);
+  };
+
+  const handleVerify = async (signalId) => {
+    try {
+      const updatedSignal = { ...signal, status: true }
+      await updateSignal(signalId, updatedSignal, token);
+    } catch (error) {
+      console.error('Error al verificar la señal:', error);
+    }
   };
 
   return (
@@ -85,7 +95,7 @@ const Notification = ({ open, onClose, detector }) => {
               <Button
                 variant="contained"
                 color="success"
-                onClick={() => console.log("Chequeado")}
+                onClick={() => handleVerify(signal.id)}
                 style={{
                   margin: '5px',
                 }}
