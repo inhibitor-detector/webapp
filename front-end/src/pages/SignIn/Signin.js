@@ -10,13 +10,13 @@ import './Signin.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthContext';
 import Paper from '@mui/material/Paper';
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ErrorIcon from '@mui/icons-material/Error';
+import { getUserById, authenticateUser } from '../../api/UserApi';
 
 const defaultTheme = createTheme();
 
@@ -27,36 +27,28 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const saveRoles = async (token, userId) => {
-    const response = await axios.get(`http://localhost:8001/users/${userId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    saveUserRole(response.data.roles);
-    localStorage.setItem('role', response.data.roles);
+    const userData = await getUserById(userId, token);
+    saveUserRole(userData.roles);
+    localStorage.setItem('role', userData.roles);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.get('http://localhost:8001/', { auth: { username: data.get('username'), password: data.get('password') } });
+      const response = await authenticateUser(data.get('username'), data.get('password'));
       if (response.status === 200) {
         const token = response.headers.authorization.split(' ')[1];
         const decodedToken = jwtDecode(token);
         saveUserId(decodedToken.userId);
-        saveRoles(token, decodedToken.userId);
+        await saveRoles(token, decodedToken.userId);
         saveToken(token);
         localStorage.setItem('token', token);
         localStorage.setItem('userId', decodedToken.userId);
         navigate("/Detectores");
-      } else {
-        console.log("Error signing in");
-        setErrorMessage("Usuario o contraseña incorrectos.");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage("Usuario o contraseña incorrectos.");
+      setErrorMessage(error.message);
     }
   };
 

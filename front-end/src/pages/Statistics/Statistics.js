@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../components/AuthContext';
 import ResponsiveAppBar from '../../layouts/Nav';
 import { CircularProgress, Box, Select, MenuItem } from '@mui/material';
+import { getSignalsByTime } from '../../api/SignalApi';
 
 const SignalsChart = () => {
   const [data, setData] = useState([]);
@@ -33,12 +33,7 @@ const SignalsChart = () => {
           params.ownerId = userId;
         }
 
-        const response = await axios.get('http://localhost:8001/signals/time', {
-          params: params,
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        const response = await getSignalsByTime(params, token);
 
         if (response.status === 200) {
           const processedData = processSignals(response.data, range);

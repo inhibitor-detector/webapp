@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, CircularProgress, Box } from '@mui/material';
 import ResponsiveAppBar from '../../layouts/Nav';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthContext';
 import DashboardCard from '../../layouts/DashboardCard';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Popup from '../../components/Popup';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
+import { getSignals } from '../../api/SignalApi';
+import { getDetectorById } from '../../api/DetectorApi';
 
 const SignalTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -28,12 +29,7 @@ const SignalTable = () => {
         if (!userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:8001/signals', {
-          params: params,
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await getSignals(params, token);
         if (response.status === 200) {
           const data = response.data;
           if (data.length === 0) {
@@ -59,12 +55,7 @@ const SignalTable = () => {
 
   const fetchDetectorDetails = async (detectorId) => {
     try {
-      const response = await axios.get(`http://localhost:8001/detectors/${detectorId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
+      const response = await getDetectorById(detectorId, token);
       if (response.status === 200) {
         setSelectedDetector(response.data);
       } else {

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button, Box, Typography, CircularProgress } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-import axios from 'axios';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
@@ -10,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './HeartbeatTable.css'
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { getSignals } from '../../api/SignalApi';
 
 const HeartbeatTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -58,12 +58,7 @@ const HeartbeatTable = () => {
       if (!userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:8001/signals', {
-        params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await getSignals(params, token);
       if (response.status === 200) {
         if (response.data.length > 0) {
           setHeartbeats(response.data);

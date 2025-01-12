@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
 import SelectOrder from '../../components/Select/Select';
 import ResponsiveAppBar from '../../layouts/Nav';
 import DashboardCard from '../../layouts/DashboardCard';
@@ -12,6 +11,8 @@ import './DetectorTable.css';
 import DoneIcon from "@mui/icons-material/Done";
 import BlockIcon from "@mui/icons-material/Block";
 import DevicesIcon from "@mui/icons-material/Devices";
+import { getDetectors } from '../../api/DetectorApi';
+import { getUserById } from '../../api/UserApi';
 
 const DetectorTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -30,18 +31,26 @@ const DetectorTable = () => {
     let page = 1;
     let hasMore = true;
 
+    const fetchUsers = async (userIds) => {
+      const userMap = {};
+      try {
+        for (const userId of userIds) {
+          const user = await getUserById(userId, token);
+          userMap[userId] = user.username;
+        }
+        setUsers(userMap);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
     try {
       while (hasMore) {
         let params = { page };
         if (userRole && !userRole.includes('ADMIN')) {
           params.ownerId = userId;
         }
-        const response = await axios.get('http://localhost:8001/detectors', {
-          params: params,
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await getDetectors(params, token);
         if (response.status === 200) {
           const data = response.data;
           if (data.length === 0) {
@@ -66,7 +75,6 @@ const DetectorTable = () => {
       console.error('Error fetching detectors:', error);
     }
     setLoading(false);
-    // eslint-disable-next-line
   }, [token, userRole, userId]);
 
   useEffect(() => {
@@ -110,28 +118,6 @@ const DetectorTable = () => {
       setSearchResultsMessage('');
     }
   }, [filteredDetectors, searchTerm]);
-
-  const fetchUsers = async (userIds) => {
-    const userRequests = userIds.map(userId =>
-      axios.get(`http://localhost:8001/users/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-    );
-
-    try {
-      const responses = await Promise.all(userRequests);
-      const userMap = {};
-      responses.forEach(response => {
-        if (response.status === 200) {
-          userMap[response.data.id] = response.data.username;
-        }
-
-      });
-      setUsers(userMap);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
 
   return (
     <div>

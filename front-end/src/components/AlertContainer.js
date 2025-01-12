@@ -91,21 +91,7 @@ const Notification = ({ open, onClose, detector }) => {
                 }}
               >
                 <CheckIcon style={{ marginRight: '5px' }} />
-                Chequeado
-              </Button>
-
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => console.log("No Chequeado")}
-                style={{
-                  margin: '5px',
-                  backgroundColor: 'grey',
-                  color: 'white',
-                }}
-              >
-                <CloseIcon style={{ marginRight: '5px' }} />
-                No Chequeado
+                Verificado
               </Button>
             </Box>
           </Box>

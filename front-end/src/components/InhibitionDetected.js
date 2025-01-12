@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AlertContainer from './AlertContainer';
 import { useAuth } from './AuthContext';
-import axios from 'axios';
+import { getSignals } from '../api/SignalApi';
+import { getDetectorById } from '../api/DetectorApi';
 
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
@@ -12,18 +13,13 @@ const InhibitionDetected = () => {
   const [detector, setDetector] = useState([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const axiosGetSignals = async () => {
+  const getNewSignals = async () => {
     try {
       let params = { isHeartbeat: false };
       if (userRole && !userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
-      const response = await axios.get('http://localhost:8001/signals', {
-        params: params,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await getSignals(params, token);
       return response.data;
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -35,7 +31,7 @@ const InhibitionDetected = () => {
   };
 
   const fetchSignals = async () => {
-    const data = await axiosGetSignals();
+    const data = await getNewSignals();
     if (data && data.length > 0 && !localStorage.getItem('lastId')) {
       const lastId = Math.max(...data.map(signal => signal.id));
       setLastId(lastId);
@@ -45,7 +41,7 @@ const InhibitionDetected = () => {
   };
 
   const checkForNewSignals = async () => {
-    const data = await axiosGetSignals();
+    const data = await getNewSignals();
     if (data && data.length > 0) {
       const actualId = Math.max(...data.map(signal => signal.id));
       if (actualId !== lastId) {
@@ -54,11 +50,7 @@ const InhibitionDetected = () => {
         localStorage.setItem('lastId', actualId);
 
         try {
-          const detectorResponse = await axios.get(`http://localhost:8001/detectors/${data[0].detectorId}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const detectorResponse = await getDetectorById(data[0].detectorId, token);
           if (detectorResponse.status === 200) {
             setDetector(detectorResponse.data);
           }
