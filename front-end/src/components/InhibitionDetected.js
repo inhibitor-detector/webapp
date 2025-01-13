@@ -3,6 +3,7 @@ import AlertContainer from './AlertContainer';
 import { useAuth } from './AuthContext';
 import { getSignals } from '../api/SignalApi';
 import { getDetectorById } from '../api/DetectorApi';
+import { useSignal } from './SignalContext';
 
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
@@ -12,6 +13,7 @@ const InhibitionDetected = () => {
   );
   const [signal, setSignal] = useState([]);
   const [detector, setDetector] = useState([]);
+  const { addSignal, updateSignals } = useSignal();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const getNewSignals = async () => {
@@ -35,6 +37,7 @@ const InhibitionDetected = () => {
     const data = await getNewSignals();
     if (data && data.length > 0 && !localStorage.getItem('lastId')) {
       const lastId = Math.max(...data.map(signal => signal.id));
+      updateSignals(data);
       setLastId(lastId);
       localStorage.setItem('lastId', lastId);
       setIsInitialLoad(false);
@@ -48,7 +51,8 @@ const InhibitionDetected = () => {
       if (actualId !== lastId) {
         setOpen(true);
         setLastId(actualId);
-        setSignal(data[0])
+        setSignal(data[0]);
+        addSignal(data[0]);
         localStorage.setItem('lastId', actualId);
 
         try {

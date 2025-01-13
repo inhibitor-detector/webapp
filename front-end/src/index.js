@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from './components/AuthContext';
+import { SignalProvider } from './components/SignalContext';
 
 const InitializeApp = () => {
   const { saveToken } = useAuth();
@@ -21,8 +22,10 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <InitializeApp />
-        <App />
+        <SignalProvider>
+          <InitializeApp />
+          <App />
+        </SignalProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

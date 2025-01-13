@@ -1,58 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, CircularProgress, Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box } from '@mui/material';
 import ResponsiveAppBar from '../../layouts/Nav';
 import { useAuth } from '../../components/AuthContext';
 import DashboardCard from '../../layouts/DashboardCard';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Popup from '../../components/Popup';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import { getSignals, updateSignal } from '../../api/SignalApi';
+import { updateSignal } from '../../api/SignalApi';
 import { getDetectorById } from '../../api/DetectorApi';
 import Button from '@mui/material/Button';
+import { useSignal } from '../../components/SignalContext';
 
 const SignalTable = () => {
-  const { token, userRole, userId } = useAuth();
-  const [signals, setSignals] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
+  const { signals, setSignals } = useSignal();
   const [selectedDetector, setSelectedDetector] = useState(null);
   const [open, setOpen] = useState(null);
 
-  const fetchAllSignals = useCallback(async () => {
-    setLoading(true);
-    let allSignals = [];
-    let page = 1;
-    let hasMore = true;
-
-    try {
-      while (hasMore) {
-        let params = { page, isHeartbeat: false };
-        if (!userRole.includes('ADMIN')) {
-          params.ownerId = userId;
-        }
-        const response = await getSignals(params, token);
-        if (response.status === 200) {
-          const data = response.data;
-          if (data.length === 0) {
-            hasMore = false;
-          } else {
-            allSignals = [...allSignals, ...data];
-            page++;
-          }
-        } else {
-          hasMore = false;
-        }
-      }
-      setSignals(allSignals);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-    setLoading(false);
-  }, [token, userRole, userId]);
-
   useEffect(() => {
-    fetchAllSignals();
-  }, [fetchAllSignals]);
+  }, [signals]);
 
   const fetchDetectorDetails = async (detectorId) => {
     try {
@@ -96,28 +63,34 @@ const SignalTable = () => {
   return (
     <div>
       <ResponsiveAppBar />
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-          <CircularProgress sx={{ color: '#8bc34a' }} />
-        </Box>
-      ) : (
-        <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <Typography
-              variant="h4"
-              style={{
-                fontWeight: 'bold',
-              }}
-            >
-              Alertas
-            </Typography>
-          </div>
-          <DashboardCard stats={[{
-            label: "Total Alertas",
-            value: signals.length,
-            icon: <NotificationsActiveIcon />,
-            backgroundColor: "#EF5350",
-          }]} />
+      <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <Typography
+            variant="h4"
+            style={{
+              fontWeight: 'bold',
+            }}
+          >
+            Alertas
+          </Typography>
+        </div>
+        <DashboardCard stats={[{
+          label: "Total Alertas",
+          value: signals.length,
+          icon: <NotificationsActiveIcon />,
+          backgroundColor: "#EF5350",
+        }]} />
+        {signals.length === 0 ? (
+          <Typography
+            variant="h6"
+            sx={{
+              textAlign: 'center',
+              padding: '20px',
+            }}
+          >
+            No se detectaron alertas
+          </Typography>
+        ) : (
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -156,10 +129,14 @@ const SignalTable = () => {
                               fontSize: 12,
                               padding: '4px 8px',
                               borderColor: 'red',
+                              '&:hover': {
+                                backgroundColor: 'transparent',
+                                borderColor: 'darkred',
+                              },
                             }}
                             variant="outlined"
                             size="small"
-                            onClick={() => handleVerify(signal.id)} 
+                            onClick={() => handleVerify(signal.id)}
                           >
                             Verificar
                           </Button>
@@ -171,8 +148,8 @@ const SignalTable = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
-      )}
+        )}
+      </div>
       <Popup
         popup={open}
         selectedDetector={selectedDetector}

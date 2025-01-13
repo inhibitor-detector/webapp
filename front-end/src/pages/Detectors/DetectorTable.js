@@ -132,7 +132,7 @@ const DetectorTable = () => {
           Detectores
         </Typography>
       </div>
-      <DashboardCard stats = {[
+      <DashboardCard stats={[
         {
           label: "Total Activos",
           value: activeCount,
@@ -156,6 +156,16 @@ const DetectorTable = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
           <CircularProgress sx={{ color: '#8bc34a' }} />
         </Box>
+      ) : (detectors.length === 0 ? (
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: 'center',
+            padding: '20px',
+          }}
+        >
+          No hay detectores
+        </Typography>
       ) : (
         <div style={{ maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
@@ -170,7 +180,7 @@ const DetectorTable = () => {
               }}
             />
           </div>
-          <SelectOrder setOrderType={setOrderType} style={{ marginBottom: "10px" }}/>
+          <SelectOrder setOrderType={setOrderType} style={{ marginBottom: "10px" }} />
 
           {!searchResultsMessage && (
             <TableContainer component={Paper}>
@@ -204,7 +214,8 @@ const DetectorTable = () => {
               {searchResultsMessage}
             </Typography>
           )}
-        </div>)}
+        </div>
+      ))}
     </div>
   );
 };

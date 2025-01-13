@@ -24,12 +24,11 @@ export const getSignalsByTime = async (params, token) => {
 
 export const updateSignal = async (signalId, signal, token) => {
     try {
-      const response = await axios.put(`${BASE_URL}/${signalId}`, signal, {
+      await axios.put(`${BASE_URL}/${signalId}`, signal, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Respuesta:', response.data);
     } catch (error) {
       console.error('Error al actualizar la señal:', error);
     }

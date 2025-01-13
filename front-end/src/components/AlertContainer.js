@@ -9,9 +9,11 @@ import Popup from './Popup';
 import Box from '@mui/material/Box';
 import CheckIcon from '@mui/icons-material/Check';
 import { updateSignal } from '../api/SignalApi';
+import { useSignal } from './SignalContext';
 
 const Notification = ({ open, onClose, detector, signal, token }) => {
-  const [popup, setPopup] = useState(null);
+  const [popup, setPopup] = useState(null); 
+  const { setSignals } = useSignal();
 
   const handleClose = () => {
     setPopup(null);
@@ -23,8 +25,14 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
 
   const handleVerify = async (signalId) => {
     try {
-      const updatedSignal = { ...signal, status: true }
+      const updatedSignal = { ...signal, status: true };
       await updateSignal(signalId, updatedSignal, token);
+      setSignals(prevSignals =>
+        prevSignals.map(signal =>
+          signal.id === signalId ? { ...signal, status: true } : signal
+        )
+      );
+      onClose();
     } catch (error) {
       console.error('Error al verificar la señal:', error);
     }
