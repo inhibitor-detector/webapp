@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS signals
     detector_id INT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     is_heartbeat boolean NOT NULL,
-    status boolean NOT NULL,
+    acknowledged boolean NOT NULL DEFAULT false,
     FOREIGN KEY (detector_id) REFERENCES detectors (id) on DELETE CASCADE
 );
 

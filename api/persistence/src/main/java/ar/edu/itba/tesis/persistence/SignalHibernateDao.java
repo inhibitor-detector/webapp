@@ -63,14 +63,14 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     @Override
-    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean status) {
+    public List<Signal> findAllPaginated(Integer page, Integer pageSize, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean acknowledged) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Signal> criteriaQuery = criteriaBuilder.createQuery(Signal.class);
         Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
         // Sets where SQL clauses if they exist
-        setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId, isHeartbeat, status);
+        setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId, isHeartbeat, acknowledged);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("timestamp")));
 
@@ -118,7 +118,7 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     // Aux methods
-    private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean status) {
+    private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean acknowledged) {
         Predicate ownerIdCondition = criteriaBuilder.conjunction(); // Always returns true
         if (ownerId != 0) {
             ownerIdCondition = criteriaBuilder.equal(root.get("detector").get("owner").get("id"), ownerId);
@@ -134,12 +134,12 @@ public class SignalHibernateDao implements SignalDao {
             isHeartbeatCondition = criteriaBuilder.equal(root.get("isHeartbeat"), isHeartbeat);
         }
 
-        Predicate statusCondition = criteriaBuilder.conjunction();
-        if (status != null) {
-            statusCondition = criteriaBuilder.equal(root.get("status"), status);
+        Predicate acknowledgedCondition = criteriaBuilder.conjunction();
+        if (acknowledged != null) {
+            acknowledgedCondition = criteriaBuilder.equal(root.get("acknowledged"), acknowledged);
         }
 
-        criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition, isHeartbeatCondition, statusCondition));
+        criteriaQuery.where(criteriaBuilder.and(ownerIdCondition, detectorIdCondition, isHeartbeatCondition, acknowledgedCondition));
     }
 
     public List<Signal> findByTime(LocalDateTime startTime, LocalDateTime endTime, Long ownerId) {
@@ -162,6 +162,6 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     private void updateSignal(Signal signal, Signal newValues) {
-        signal.setStatus(newValues.getStatus());
+        signal.setAcknowledged(newValues.getAcknowledged());
     }
 }

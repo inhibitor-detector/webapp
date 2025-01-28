@@ -19,7 +19,7 @@ public record SignalDto(
 
         Boolean isHeartbeat,
 
-        Boolean status) {
+        Boolean acknowledged) {
 
     public static SignalDto fromSignal(Signal signal) {
         return new SignalDto(
@@ -27,7 +27,7 @@ public record SignalDto(
                 signal.getDetector().getId(),
                 signal.getTimestamp().toString(),
                 signal.getIsHeartbeat(),
-                signal.getStatus()
+                signal.getAcknowledged()
         );
     }
 

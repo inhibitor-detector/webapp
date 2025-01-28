@@ -44,11 +44,11 @@ class SignalTest {
     }
 
     @Test
-    public void testSetStatus() {
-        signal.setStatus(true);
-        assertTrue(signal.getStatus());
+    public void testSetAcknowledged() {
+        signal.setAcknowledged(true);
+        assertTrue(signal.getAcknowledged());
 
-        signal.setStatus(false);
-        assertFalse(signal.getStatus());
+        signal.setAcknowledged(false);
+        assertFalse(signal.getAcknowledged());
     }
 }

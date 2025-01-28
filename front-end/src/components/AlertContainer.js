@@ -25,11 +25,11 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
 
   const handleVerify = async (signalId) => {
     try {
-      const updatedSignal = { ...signal, status: true };
+      const updatedSignal = { ...signal, acknowledged: true };
       await updateSignal(signalId, updatedSignal, token);
       setSignals(prevSignals =>
         prevSignals.map(signal =>
-          signal.id === signalId ? { ...signal, status: true } : signal
+          signal.id === signalId ? { ...signal, acknowledged: true } : signal
         )
       );
       onClose();

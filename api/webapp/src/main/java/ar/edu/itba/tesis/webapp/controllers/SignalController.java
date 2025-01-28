@@ -52,9 +52,9 @@ public class SignalController {
                                @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize,
                                @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId,
                                @Min(0) @DefaultValue("0") @QueryParam("detectorId") final Long detectorId,
-                               @QueryParam("isHeartbeat") final Boolean isHeartBeat, @QueryParam("status") final Boolean status
+                               @QueryParam("isHeartbeat") final Boolean isHeartBeat, @QueryParam("acknowledged") final Boolean acknowledged
     ) {
-        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartBeat, status);
+        final List<Signal> signals = signalService.findAllPaginated(page, pageSize, ownerId, detectorId, isHeartBeat, acknowledged);
 
         if (signals.isEmpty()) {
             return Response
@@ -150,7 +150,7 @@ public class SignalController {
                 .detector(detector)
                 .timestamp(parseAndValidate(signalDto.timestamp()))
                 .isHeartbeat(signalDto.isHeartbeat())
-                .status(signalDto.status())
+                .acknowledged(signalDto.acknowledged())
                 .build();
     }
 }

@@ -47,11 +47,11 @@ const SignalTable = () => {
     try {
       const updatedSignal = signals.find(signal => signal.id === signalId);
       if (updatedSignal) {
-        updatedSignal.status = true;
+        updatedSignal.acknowledged = true;
         await updateSignal(signalId, updatedSignal, token);
         setSignals(prevSignals =>
           prevSignals.map(signal =>
-            signal.id === signalId ? { ...signal, status: true } : signal
+            signal.id === signalId ? { ...signal, acknowledged: true } : signal
           )
         );
       }
@@ -113,7 +113,7 @@ const SignalTable = () => {
                       {format(new Date(signal.timestamp), 'dd/MM/yyyy HH:mm:ss')}
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center' }}>
-                      {signal.status ? (
+                      {signal.acknowledged ? (
                         <Box display="inline-flex" alignItems="center">
                           <CheckCircleOutline sx={{ color: 'green', fontSize: 16 }} />
                           <span style={{ marginLeft: '8px', color: 'green' }}>Verificado</span>
