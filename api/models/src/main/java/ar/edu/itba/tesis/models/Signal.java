@@ -27,7 +27,7 @@ public class Signal {
     @Column(name = "is_heartbeat", nullable = false)
     private Boolean isHeartbeat;
 
-    @Column(name = "acknowledged", nullable = false)
+    @Column(name = "acknowledged", nullable = false, columnDefinition = "boolean default false")
     private Boolean acknowledged = false; //default value
 
     /*
@@ -45,6 +45,9 @@ public class Signal {
         }
 
         public Signal build() {
+            if (signal.getAcknowledged() == null) {
+                signal.setAcknowledged(false);
+            }
             return signal;
         }
 
@@ -64,7 +67,7 @@ public class Signal {
         }
 
         public Signal.Builder acknowledged(Boolean acknowledged) {
-            signal.setAcknowledged(acknowledged);
+            signal.setAcknowledged(acknowledged != null ? acknowledged : false);
             return this;
         }
     }

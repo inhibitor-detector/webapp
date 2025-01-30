@@ -41,6 +41,10 @@ public class DetectorController {
                                  @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId) {
         final List<Detector> detectors = detectorService.findAllPaginated(page, pageSize, ownerId);
 
+        System.out.println("hola");
+        System.out.println(detectors);
+        System.out.println(DetectorDto.fromDetectors(detectors));
+
         if (detectors.isEmpty()) {
             return Response
                     .noContent()
@@ -63,7 +67,8 @@ public class DetectorController {
                 create(Detector.builder()
                         .owner(ownerUser)
                         .user(user)
-                        .isOnline(detectorDto.isOnline())
+                        // .isOnline(detectorDto.isOnline())
+                        .lastHeartbeat(null)
                         .version(detectorDto.version())
                         .name(detectorDto.name())
                         .description(detectorDto.description())

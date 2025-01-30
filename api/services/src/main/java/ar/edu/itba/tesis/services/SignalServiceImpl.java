@@ -26,6 +26,9 @@ public class SignalServiceImpl implements SignalService {
     @Transactional
     @Override
     public Signal create(Signal entity) throws AlreadyExistsException {
+        if (entity.getAcknowledged() == null) {
+            entity.setAcknowledged(false);
+        }
         return signalDao.create(entity);
     }
 

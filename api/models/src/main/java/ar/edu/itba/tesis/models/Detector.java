@@ -25,9 +25,11 @@ public class Detector {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "is_online", nullable = false)
-    private Boolean isOnline;
-
+    // @Column(name = "is_online", nullable = false)
+    // private Boolean isOnline;
+    @Column(name = "last_heartbeat")
+    private LocalDateTime lastHeartbeat;
+    
     @Column(name = "version", nullable = false)
     private String version;
 
@@ -64,8 +66,12 @@ public class Detector {
             detector.setUser(user);
             return this;
         }
-        public Detector.Builder isOnline(Boolean isOnline) {
-            detector.setIsOnline(isOnline);
+        // public Detector.Builder isOnline(Boolean isOnline) {
+        //     detector.setIsOnline(isOnline);
+        //     return this;
+        // }
+        public Detector.Builder lastHeartbeat(LocalDateTime lastHeartbeat) {
+            detector.setLastHeartbeat(lastHeartbeat);
             return this;
         }
         public Detector.Builder version(String version) {

@@ -31,13 +31,19 @@ class DetectorTest {
         assertEquals(userMock, detector.getUser());
     }
 
-    @Test
-    public void testSetIsOnline() {
-        detector.setIsOnline(true);
-        assertTrue(detector.getIsOnline());
+    // @Test
+    // public void testSetIsOnline() {
+    //     detector.setIsOnline(true);
+    //     assertTrue(detector.getIsOnline());
 
-        detector.setIsOnline(false);
-        assertFalse(detector.getIsOnline());
+    //     detector.setIsOnline(false);
+    //     assertFalse(detector.getIsOnline());
+    // }
+    @Test
+    public void testSetLastHeartbeat() {
+        LocalDateTime lastHeartbeat = LocalDateTime.now();
+        detector.setLastHeartbeat(lastHeartbeat);
+        assertEquals(lastHeartbeat, detector.getLastHeartbeat());
     }
 
     @Test

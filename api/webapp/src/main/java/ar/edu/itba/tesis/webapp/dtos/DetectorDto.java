@@ -20,7 +20,7 @@ public record DetectorDto(
         @NotNull
         Long userId,
 
-        @NotNull
+        // @NotNull
         Boolean isOnline,
 
         @NotNull
@@ -35,11 +35,17 @@ public record DetectorDto(
         ) {
 
     public static DetectorDto fromDetector(Detector detector) {
+        boolean isOnlined = false;
+        LocalDateTime lastHeartbeat = detector.getLastHeartbeat();
+        if (lastHeartbeat != null && lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150))) {
+            isOnlined = true;
+        }
         return new DetectorDto(
                 detector.getId(),
                 detector.getOwner().getId(),
                 detector.getUser().getId(),
-                detector.getIsOnline(),
+                // detector.getIsOnline(),
+                isOnlined,
                 detector.getVersion(),
                 detector.getName(),
                 detector.getDescription()
@@ -47,6 +53,10 @@ public record DetectorDto(
     }
 
     public static List<DetectorDto> fromDetectors(List<Detector> detectors) {
+        System.out.println("hola fromDetectors");
+        System.out.println(detectors);
+        System.out.println("chau fromDetectors");
+
         return detectors.stream().map(DetectorDto::fromDetector).toList();
     }
 }
