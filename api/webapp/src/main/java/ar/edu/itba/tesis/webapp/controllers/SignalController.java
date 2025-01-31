@@ -20,6 +20,7 @@ import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Signal;
 import ar.edu.itba.tesis.webapp.auth.AccessControl;
 import ar.edu.itba.tesis.webapp.dtos.SignalDto;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -80,6 +81,7 @@ public class SignalController {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
     public Response saveSignal(@Valid SignalDto signalDto) throws NotFoundException, AlreadyExistsException {
         final Detector detector = detectorService.findById(signalDto.detectorId()).orElseThrow(() -> new DetectorNotFoundException(signalDto.detectorId()));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -88,8 +90,11 @@ public class SignalController {
         final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
 
         // We also update the detector last_heartbeat
-        detector.setLastHeartbeat(LocalDateTime.now());
-        detectorService.update(detector.getId(), detector);
+        if (signalDto.isHeartbeat()) {
+            detector.setLastHeartbeat(LocalDateTime.now());
+            // detectorService.save(detector);  // Make sure this method exists in your service
+            detectorService.update(detector.getId(), detector);
+        }
 
         return Response
                 .created(uriInfo
