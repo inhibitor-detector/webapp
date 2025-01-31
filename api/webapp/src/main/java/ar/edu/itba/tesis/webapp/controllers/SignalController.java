@@ -1,5 +1,15 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
@@ -13,20 +23,20 @@ import ar.edu.itba.tesis.webapp.dtos.SignalDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
 
 @Path("/signals")
 public class SignalController {
@@ -76,6 +86,10 @@ public class SignalController {
         if (!accessControl.canPostSignalCheckDetectorId(authentication, detector)) throw new AccessDeniedException("Access denied");
 
         final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
+
+        // We also update the detector last_heartbeat
+        detector.setLastHeartbeat(LocalDateTime.now());
+        detectorService.update(detector.getId(), detector);
 
         return Response
                 .created(uriInfo
