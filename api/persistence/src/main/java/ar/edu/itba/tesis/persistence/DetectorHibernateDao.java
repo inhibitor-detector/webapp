@@ -1,7 +1,15 @@
 package ar.edu.itba.tesis.persistence;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
+import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
-import ar.edu.itba.tesis.interfaces.exceptions.*;
 import ar.edu.itba.tesis.models.Detector;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -10,10 +18,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class DetectorHibernateDao implements DetectorDao {
@@ -111,5 +115,13 @@ public class DetectorHibernateDao implements DetectorDao {
 
     private void updateDetector(Detector user, Detector newValues) {
         // TODO Update detector
+    }
+
+    @Override
+    public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
+        entityManager.createNativeQuery("UPDATE detectors SET last_heartbeat = :lastHeartbeat WHERE id = :id")
+                .setParameter("lastHeartbeat", lastHeartbeat)
+                .setParameter("id", id)
+                .executeUpdate();
     }
 }

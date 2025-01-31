@@ -13,6 +13,8 @@ import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
 import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.models.Detector;
 
+import java.time.LocalDateTime;
+
 @Service
 public class DetectorServiceImpl implements DetectorService {
 
@@ -63,6 +65,12 @@ public class DetectorServiceImpl implements DetectorService {
         System.out.println("Updating detector with id: " + id);
         System.out.println("getLastHeartbeat: " + entity.getLastHeartbeat());
         return detectorDao.update(id, entity);
+    }
+
+    @Transactional
+    @Override
+    public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
+        detectorDao.updateLastHeartbeat(id, lastHeartbeat);
     }
 
     @Transactional

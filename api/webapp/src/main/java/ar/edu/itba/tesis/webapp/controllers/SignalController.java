@@ -91,9 +91,7 @@ public class SignalController {
 
         // We also update the detector last_heartbeat
         if (signalDto.isHeartbeat()) {
-            detector.setLastHeartbeat(LocalDateTime.now());
-            // detectorService.save(detector);  // Make sure this method exists in your service
-            detectorService.update(detector.getId(), detector);
+            detectorService.updateLastHeartbeat(detector.getId(), LocalDateTime.now());
         }
 
         return Response

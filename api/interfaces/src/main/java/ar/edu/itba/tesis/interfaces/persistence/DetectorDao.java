@@ -1,10 +1,12 @@
 package ar.edu.itba.tesis.interfaces.persistence;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import ar.edu.itba.tesis.interfaces.CrudOperations;
 import ar.edu.itba.tesis.models.Detector;
 
-import java.util.List;
-
 public interface DetectorDao extends CrudOperations<Detector, Long> {
     List<Detector> findByOwnerIdPaginated(Integer page, Integer pageSize, Long ownerId);
+    void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat);
 }
