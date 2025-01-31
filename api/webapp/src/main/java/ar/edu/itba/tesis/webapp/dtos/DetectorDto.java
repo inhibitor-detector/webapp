@@ -1,16 +1,10 @@
 package ar.edu.itba.tesis.webapp.dtos;
 
-import ar.edu.itba.tesis.models.Detector;
-import ar.edu.itba.tesis.models.Role;
-import ar.edu.itba.tesis.models.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-
 import java.util.List;
-import java.util.Set;
+
+import ar.edu.itba.tesis.models.Detector;
+import jakarta.validation.constraints.NotNull;
 
 public record DetectorDto(
         Long id,
@@ -42,10 +36,12 @@ public record DetectorDto(
             isOnline = true;
         }
         System.out.println("hola time");
-        System.out.println(lastHeartbeat);
-        System.out.println(lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150)));
-        System.out.println(LocalDateTime.now().minusSeconds(150));
-        System.out.println(isOnline);
+        System.out.println("lastHeartbeat:" + lastHeartbeat);
+        if (lastHeartbeat != null) {
+            System.out.println("isAfter:" + lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150)));
+        }
+        System.out.println("LocalDateTime.now().minusSeconds(150):" + LocalDateTime.now().minusSeconds(150));
+        System.out.println("isOnline:" + isOnline);
         System.out.println("chau time");
 
         return new DetectorDto(
