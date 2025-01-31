@@ -36,17 +36,24 @@ public record DetectorDto(
         ) {
 
     public static DetectorDto fromDetector(Detector detector) {
-        boolean isOnlined = false;
+        boolean isOnline = false;
         LocalDateTime lastHeartbeat = detector.getLastHeartbeat();
         if (lastHeartbeat != null && lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150))) {
-            isOnlined = true;
+            isOnline = true;
         }
+        System.out.println("hola time");
+        System.out.println(lastHeartbeat);
+        System.out.println(lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150)));
+        System.out.println(LocalDateTime.now().minusSeconds(150));
+        System.out.println(isOnline);
+        System.out.println("chau time");
+
         return new DetectorDto(
                 detector.getId(),
                 detector.getOwner().getId(),
                 detector.getUser().getId(),
                 // detector.getIsOnline(),
-                isOnlined,
+                isOnline,
                 detector.getVersion(),
                 detector.getName(),
                 detector.getDescription()
