@@ -1,17 +1,17 @@
 package ar.edu.itba.tesis.services;
 
-import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
-import ar.edu.itba.tesis.interfaces.service.DetectorService;
-import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
-import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
-import ar.edu.itba.tesis.models.Detector;
-import ar.edu.itba.tesis.models.Signal;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
+import ar.edu.itba.tesis.models.Detector;
 
 @Service
 public class DetectorServiceImpl implements DetectorService {
@@ -60,6 +60,8 @@ public class DetectorServiceImpl implements DetectorService {
     @Transactional
     @Override
     public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {
+        System.out.println("Updating detector with id: " + id);
+        System.out.println("getLastHeartbeat: " + entity.getLastHeartbeat());
         return detectorDao.update(id, entity);
     }
 

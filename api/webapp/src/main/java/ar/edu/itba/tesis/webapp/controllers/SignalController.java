@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
@@ -20,10 +21,6 @@ import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Signal;
 import ar.edu.itba.tesis.webapp.auth.AccessControl;
 import ar.edu.itba.tesis.webapp.dtos.SignalDto;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
