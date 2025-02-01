@@ -1,5 +1,6 @@
 package ar.edu.itba.tesis.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,6 @@ import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
 import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.models.Detector;
-
-import java.time.LocalDateTime;
 
 @Service
 public class DetectorServiceImpl implements DetectorService {
@@ -70,6 +69,7 @@ public class DetectorServiceImpl implements DetectorService {
     @Transactional
     @Override
     public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
+        System.out.println("in detector service impl");
         detectorDao.updateLastHeartbeat(id, lastHeartbeat);
     }
 
