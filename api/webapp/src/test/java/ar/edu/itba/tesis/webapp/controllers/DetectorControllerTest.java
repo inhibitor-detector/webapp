@@ -12,6 +12,7 @@ class DetectorControllerTest {
 
     @InjectMocks
     DetectorController detectorController;
+
     @Mock
     DetectorService detectorService;
 
