@@ -119,7 +119,6 @@ public class DetectorHibernateDao implements DetectorDao {
 
     @Override
     public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
-        System.out.println("in hibernate dao Updating last heartbeat for detector " + id + " to " + lastHeartbeat);
         entityManager.createNativeQuery("UPDATE detectors SET last_heartbeat = :lastHeartbeat WHERE id = :id")
                 .setParameter("lastHeartbeat", lastHeartbeat)
                 .setParameter("id", id)

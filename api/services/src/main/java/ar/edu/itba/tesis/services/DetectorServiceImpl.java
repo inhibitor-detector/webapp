@@ -61,15 +61,12 @@ public class DetectorServiceImpl implements DetectorService {
     @Transactional
     @Override
     public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {
-        System.out.println("Updating detector with id: " + id);
-        System.out.println("getLastHeartbeat: " + entity.getLastHeartbeat());
         return detectorDao.update(id, entity);
     }
 
     @Transactional
     @Override
     public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
-        System.out.println("in detector service impl");
         detectorDao.updateLastHeartbeat(id, lastHeartbeat);
     }
 

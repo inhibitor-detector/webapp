@@ -35,14 +35,6 @@ public record DetectorDto(
         if (lastHeartbeat != null && lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150))) {
             isOnline = true;
         }
-        System.out.println("hola time");
-        System.out.println("lastHeartbeat:" + lastHeartbeat);
-        if (lastHeartbeat != null) {
-            System.out.println("isAfter:" + lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150)));
-        }
-        System.out.println("LocalDateTime.now().minusSeconds(150):" + LocalDateTime.now().minusSeconds(150));
-        System.out.println("isOnline:" + isOnline);
-        System.out.println("chau time");
 
         return new DetectorDto(
                 detector.getId(),
@@ -57,10 +49,6 @@ public record DetectorDto(
     }
 
     public static List<DetectorDto> fromDetectors(List<Detector> detectors) {
-        System.out.println("hola fromDetectors");
-        System.out.println(detectors);
-        System.out.println("chau fromDetectors");
-
         return detectors.stream().map(DetectorDto::fromDetector).toList();
     }
 }
