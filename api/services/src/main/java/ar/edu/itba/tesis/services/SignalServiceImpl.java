@@ -1,26 +1,30 @@
 package ar.edu.itba.tesis.services;
 
-import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
-import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
-import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
-import ar.edu.itba.tesis.interfaces.service.SignalService;
-import ar.edu.itba.tesis.models.Signal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
+import ar.edu.itba.tesis.interfaces.service.EmailService;
+import ar.edu.itba.tesis.interfaces.service.SignalService;
+import ar.edu.itba.tesis.models.Signal;
 
 @Service
 public class SignalServiceImpl implements SignalService {
 
     private final SignalDao signalDao;
+    private final EmailService emailService;
 
     @Autowired
-    public SignalServiceImpl(SignalDao heartbeatDao) {
+    public SignalServiceImpl(SignalDao heartbeatDao, EmailService emailService) {
         this.signalDao = heartbeatDao;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -29,7 +33,17 @@ public class SignalServiceImpl implements SignalService {
         if (entity.getAcknowledged() == null) {
             entity.setAcknowledged(false);
         }
-        return signalDao.create(entity);
+        Signal createdSignal = signalDao.create(entity);
+
+        // Send email notification if it's not a heartbeat
+        if (!entity.getIsHeartbeat()) {
+            String ownerEmail = entity.getDetector().getOwner().getEmail();
+            String detectorName = entity.getDetector().getName();
+            String timestamp = entity.getTimestamp().toString();
+            emailService.sendInhibitionDetectedEmail(ownerEmail, detectorName, timestamp);
+        }
+        
+        return createdSignal;
     }
 
     @Transactional(readOnly = true)
