@@ -91,7 +91,7 @@ public class DetectorHibernateDao implements DetectorDao {
 
     @Override
     public void deleteById(Long id) {
-        entityManager.createNativeQuery("DELETE FROM users WHERE id = :id")
+        entityManager.createNativeQuery("DELETE FROM detectors WHERE id = :id")
                 .setParameter("id", id)
                 .executeUpdate();
     }

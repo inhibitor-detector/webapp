@@ -91,7 +91,7 @@ public class SignalHibernateDao implements SignalDao {
 
     @Override
     public void deleteById(Long id) {
-        entityManager.createNativeQuery("DELETE FROM users WHERE id = :id")
+        entityManager.createNativeQuery("DELETE FROM signals WHERE id = :id")
                 .setParameter("id", id)
                 .executeUpdate();
     }

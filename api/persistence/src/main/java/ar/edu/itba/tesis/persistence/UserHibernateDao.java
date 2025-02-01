@@ -31,7 +31,6 @@ public class UserHibernateDao implements UserDao {
     @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
-
     }
 
     // Refactor this

@@ -1,219 +1,248 @@
-//package ar.edu.itba.tesis.persistence;
-//
-//import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
-//import ar.edu.itba.tesis.interfaces.exceptions.EmailAlreadyExistsException;
-//import ar.edu.itba.tesis.interfaces.exceptions.UsernameAlreadyExistsException;
-//import ar.edu.itba.tesis.models.User;
-//import ar.edu.itba.tesis.persistence.config.TestConfig;
-//import jakarta.persistence.EntityManager;
-//import jakarta.persistence.PersistenceContext;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-//import org.springframework.jdbc.core.JdbcTemplate;
-//import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//import org.springframework.test.jdbc.JdbcTestUtils;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import javax.sql.DataSource;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//@DataJpaTestx
-//@ExtendWith(SpringExtension.class)
-//@ContextConfiguration(classes = {TestConfig.class})
-//@Transactional
-//public class UserHibernateDaoTest {
-//
-//    private static final String USER_TABLE = "users";
-//
-//    private final JdbcTemplate jdbcTemplate;
-//    private final UserHibernateDao userHibernateDao;
-//
-//    @PersistenceContext
-//    private EntityManager entityManager;
-//
-//    @Autowired
-//    public UserHibernateDaoTest(DataSource dataSource, UserHibernateDao userHibernateDao) {
-//        this.userHibernateDao = userHibernateDao;
-//        this.jdbcTemplate = new JdbcTemplate(dataSource);
-//    }
-//
-//    @Test
-//    @DisplayName("Create user should success")
-//    public void createUser() throws AlreadyExistsException {
-//        final User newUser = User.builder()
-//                .email(InstanceProvider.USER_NEW_EMAIL)
-//                .username(InstanceProvider.USER_NEW_USERNAME)
-//                .password("123456")
-//                .build();
-//
-//
-//        final User user = userHibernateDao.create(newUser);
-//
-//        entityManager.flush();
-//
-//        assertNotNull(user.getId());
-//        Assertions.assertEquals(InstanceProvider.USER_NEW_EMAIL, user.getEmail());
-//        Assertions.assertEquals(InstanceProvider.USER_NEW_USERNAME, user.getUsername());
-//        assertEquals(1,
-//                JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USER_TABLE,
-//                        String.format("email = '%s' AND username = '%s'", InstanceProvider.USER_NEW_EMAIL, InstanceProvider.USER_NEW_USERNAME)
-//                )
-//        );
-//    }
-//
-//    @Test
-//    @DisplayName("Create user with existing email should fail")
-//    public void createUserWithExistingEmail() {
-//        final User newUser = User.builder()
-//                .email(InstanceProvider.USER_1_EMAIL)
-//                .username(InstanceProvider.USER_NEW_USERNAME)
-//                .password("123456")
-//                .build();
-//
-//        assertThrows(EmailAlreadyExistsException.class,
-//                () -> userHibernateDao.create(newUser));
-//    }
-//
-//    @Test
-//    @DisplayName("Create user with existing username should fail")
-//    public void createUserWithExistingUsername() {
-//        final User newUser = User.builder()
-//                .email(InstanceProvider.USER_NEW_EMAIL)
-//                .username(InstanceProvider.USER_1_USERNAME)
-//                .password("123456")
-//                .build();
-//
-//        assertThrows(UsernameAlreadyExistsException.class,
-//                () -> userHibernateDao.create(newUser));
-//    }
-//
-//    @Test
-//    @DisplayName("Find user by id should success")
-//    public void findUserById() {
-//        final Optional<User> user = userHibernateDao.findById(InstanceProvider.USER_1_ID);
-//
-//        assertTrue(user.isPresent());
-//        Assertions.assertEquals(InstanceProvider.USER_1_ID, user.get().getId());
-//        Assertions.assertEquals(InstanceProvider.USER_1_EMAIL, user.get().getEmail());
-//        Assertions.assertEquals(InstanceProvider.USER_1_USERNAME, user.get().getUsername());
-//    }
-//
-//    @Test
-//    @DisplayName("Find user by id should return empty optional")
-//    public void findUserByIdNotFound() {
-//        final Optional<User> user = userHibernateDao.findById(100L);
-//
-//        assertTrue(user.isEmpty());
-//    }
-//
-//    @Test
-//    @DisplayName("Find all users should success and return 2 users")
-//    public void findAllUsers() {
-//        final List<User> users = userHibernateDao.findAll();
-//
-//        assertEquals(2, users.size());
-//    }
-//
-//    //TODO test update
-//
-//    @Test
-//    @DisplayName("Delete user 1 by id should success")
-//    public void deleteUserById() {
-//        userHibernateDao.deleteById(InstanceProvider.USER_1_ID);
-//
-//        entityManager.flush();
-//
-//        assertEquals(0,
-//                JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USER_TABLE,
-//                        String.format("id = %d", InstanceProvider.USER_1_ID)
-//                )
-//        );
-//    }
-//
-//    @Test
-//    @DisplayName("Delete user 1 should success")
-//    public void deleteUser() {
-//        User user = InstanceProvider.user1();
-//
-//        userHibernateDao.delete(user);
-//
-//        entityManager.flush();
-//
-//        assertEquals(0,
-//                JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, USER_TABLE,
-//                        String.format("id = %d", InstanceProvider.USER_1_ID)
-//                )
-//        );
-//    }
-//
-//    @Test
-//    @DisplayName("User 1 should exists")
-//    public void user1Exists() {
-//        final boolean exists = userHibernateDao.existsById(InstanceProvider.USER_1_ID);
-//
-//        assertTrue(exists);
-//    }
-//
-//    @Test
-//    @DisplayName("User 100 should not exist")
-//    public void user100NotExists() {
-//        final boolean exists = userHibernateDao.existsById(100L);
-//
-//        assertFalse(exists);
-//    }
-//
-//    @Test
-//    @DisplayName("Count users should return 2")
-//    public void countUsers() {
-//        final long count = userHibernateDao.count();
-//
-//        assertEquals(2, count);
-//    }
-//
-//    @Test
-//    @DisplayName("Find by email should return user 1")
-//    public void findByEmail() {
-//        final Optional<User> user = userHibernateDao.findByEmail(InstanceProvider.USER_1_EMAIL);
-//
-//        assertTrue(user.isPresent());
-//        Assertions.assertEquals(InstanceProvider.USER_1_ID, user.get().getId());
-//        Assertions.assertEquals(InstanceProvider.USER_1_EMAIL, user.get().getEmail());
-//        Assertions.assertEquals(InstanceProvider.USER_1_USERNAME, user.get().getUsername());
-//    }
-//
-//    @Test
-//    @DisplayName("Find by email should return empty optional")
-//    public void findByEmailNotFound() {
-//        final Optional<User> user = userHibernateDao.findByEmail(InstanceProvider.USER_NEW_EMAIL);
-//
-//        assertTrue(user.isEmpty());
-//    }
-//
-//    @Test
-//    @DisplayName("Find by username should return user 1")
-//    public void findByUsername() {
-//        final Optional<User> user = userHibernateDao.findByUsername(InstanceProvider.USER_1_USERNAME);
-//
-//        assertTrue(user.isPresent());
-//        Assertions.assertEquals(InstanceProvider.USER_1_ID, user.get().getId());
-//        Assertions.assertEquals(InstanceProvider.USER_1_EMAIL, user.get().getEmail());
-//        Assertions.assertEquals(InstanceProvider.USER_1_USERNAME, user.get().getUsername());
-//    }
-//
-//    @Test
-//    @DisplayName("Find by username should return empty optional")
-//    public void findByUsernameNotFound() {
-//        final Optional<User> user = userHibernateDao.findByUsername(InstanceProvider.USER_NEW_USERNAME);
-//
-//        assertTrue(user.isEmpty());
-//    }
-//}
+package ar.edu.itba.tesis.persistence;
+
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.UsernameAlreadyExistsException;
+import ar.edu.itba.tesis.models.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class UserHibernateDaoTest {
+
+    private final Long ID = 1L;
+    private final String EMAIL = "user@email.com";
+    private final String USERNAME = "username";
+
+    private final User user = getUser();
+
+    @InjectMocks
+    private UserHibernateDao userHibernateDao;
+
+    @Mock
+    private EntityManager entityManagerMock;
+    @Mock
+    private TypedQuery<User> typedQueryMock;
+    @Mock
+    private CriteriaQuery<User> criteriaQueryMock;
+    @Mock
+    private CriteriaBuilder criteriaBuilderMock;
+    @Mock
+    private Query queryMock;
+    @Mock
+    private TypedQuery<Long> queryLongMock;
+
+    @Test
+    @DisplayName("Create user should success")
+    public void testCreateUser() throws AlreadyExistsException {
+        when(entityManagerMock.createQuery(anyString(), eq(User.class))).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter(anyString(), any())).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
+
+        User result = userHibernateDao.create(user);
+
+        assertNotNull(user.getId());
+        assertEquals(ID, result.getId());
+        verify(entityManagerMock).persist(user);
+    }
+
+    @Test
+    @DisplayName("Create user with existing username should fail")
+    public void testCreateUserWithExistingEmail() {
+        final User newUser = new User();
+        newUser.setId(ID + 1);
+        newUser.setEmail(EMAIL);
+
+        when(entityManagerMock.createQuery(anyString(), eq(User.class))).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter(anyString(), any())).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
+
+        assertThrows(UsernameAlreadyExistsException.class,
+                () -> userHibernateDao.create(newUser));
+    }
+
+    @Test
+    @DisplayName("Find user by id should success")
+    public void testFindUserById() {
+        when(entityManagerMock.find(User.class, ID)).thenReturn(user);
+
+        final Optional<User> result = userHibernateDao.findById(ID);
+
+        assertTrue(result.isPresent());
+        Assertions.assertEquals(EMAIL, result.get().getEmail());
+    }
+
+    @Test
+    @DisplayName("Find user by id should return empty optional")
+    public void testFindUserByIdNotFound() {
+        final Optional<User> result = userHibernateDao.findById(ID);
+
+        assertTrue(result.isEmpty());
+        verify(entityManagerMock).find(User.class, ID);
+    }
+
+    @Test
+    @DisplayName("Find all users should success and return 1 user")
+    public void testFindAllUsers() {
+        when(entityManagerMock.getCriteriaBuilder()).thenReturn(criteriaBuilderMock);
+        when(criteriaBuilderMock.createQuery(User.class)).thenReturn(criteriaQueryMock);
+        when(entityManagerMock.createQuery(criteriaQueryMock)).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
+
+        final List<User> result = userHibernateDao.findAll();
+
+        assertEquals(1, result.size());
+        assertEquals(user, result.get(0));
+        verify(criteriaBuilderMock).createQuery(User.class);
+        verify(entityManagerMock).createQuery(criteriaQueryMock);
+    }
+
+    @Test
+    @DisplayName("Delete user by id should success")
+    public void testDeleteUserById() {
+        String query = "DELETE FROM users WHERE id = :id";
+        setUpMocksForDelete(query);
+
+        userHibernateDao.deleteById(ID);
+
+        verify(entityManagerMock).createNativeQuery(query);
+        verify(queryMock).setParameter("id", ID);
+        verify(queryMock).executeUpdate();
+    }
+
+    @Test
+    @DisplayName("Delete user should success")
+    public void testDeleteUser() {
+        String query = "DELETE FROM users WHERE id = :id";
+        setUpMocksForDelete(query);
+
+        userHibernateDao.delete(user);
+
+        verify(entityManagerMock).createNativeQuery(query);
+        verify(queryMock).setParameter("id", ID);
+        verify(queryMock).executeUpdate();
+    }
+
+    @Test
+    @DisplayName("User should exist")
+    public void testUserExists() {
+        when(entityManagerMock.find(User.class, ID)).thenReturn(user);
+
+        final boolean exists = userHibernateDao.existsById(ID);
+
+        assertTrue(exists);
+    }
+
+    @Test
+    @DisplayName("User should not exist")
+    public void testUserNotExists() {
+        final boolean exists = userHibernateDao.existsById(100L);
+
+        assertFalse(exists);
+    }
+
+    @Test
+    @DisplayName("Count users should return 10")
+    public void testCountUsers() {
+        String query = "SELECT COUNT(*) FROM User";
+        when(entityManagerMock.createQuery(query, Long.class)).thenReturn(queryLongMock);
+        when(queryLongMock.getSingleResult()).thenReturn(10L);
+
+        final long count = userHibernateDao.count();
+
+        assertEquals(10, count);
+        verify(entityManagerMock).createQuery(query, Long.class);
+        verify(queryLongMock).getSingleResult();
+    }
+
+    @Test
+    @DisplayName("Find by email should return user")
+    public void testFindUserByEmail() {
+        String query = "FROM User WHERE email = :email";
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("email", EMAIL)).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
+
+        final Optional<User> result = userHibernateDao.findByEmail(EMAIL);
+
+        assertTrue(result.isPresent());
+        Assertions.assertEquals(ID, result.get().getId());
+        Assertions.assertEquals(EMAIL, result.get().getEmail());
+    }
+
+    @Test
+    @DisplayName("Find by email should return empty optional")
+    public void testFindUserByEmailNotFound() {
+        String query = "FROM User WHERE email = :email";
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("email", EMAIL)).thenReturn(typedQueryMock);
+
+        final Optional<User> result = userHibernateDao.findByEmail(EMAIL);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Find by username should return user")
+    public void testFindUserByUsername() {
+        String query = "FROM User WHERE username = :username";
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("username", USERNAME)).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
+
+        final Optional<User> result = userHibernateDao.findByUsername(USERNAME);
+
+        assertTrue(result.isPresent());
+        Assertions.assertEquals(ID, result.get().getId());
+        Assertions.assertEquals(EMAIL, result.get().getEmail());
+        Assertions.assertEquals(USERNAME, result.get().getUsername());
+    }
+
+    @Test
+    @DisplayName("Find by username should return empty optional")
+    public void testFindUserByUsernameNotFound() {
+        String query = "FROM User WHERE username = :username";
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("username", USERNAME)).thenReturn(typedQueryMock);
+
+        final Optional<User> user = userHibernateDao.findByUsername(USERNAME);
+
+        assertTrue(user.isEmpty());
+    }
+
+    private User getUser() {
+        User user = new User();
+        user.setId(ID);
+        user.setEmail(EMAIL);
+        user.setUsername(USERNAME);
+        return user;
+    }
+
+    private void setUpMocksForDelete(String query) {
+        when(entityManagerMock.createNativeQuery(query)).thenReturn(queryMock);
+        when(queryMock.setParameter("id", ID)).thenReturn(queryMock);
+    }
+}
