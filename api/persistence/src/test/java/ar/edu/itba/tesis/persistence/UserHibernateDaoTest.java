@@ -8,6 +8,8 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,8 +54,11 @@ public class UserHibernateDaoTest {
     private Query queryMock;
     @Mock
     private TypedQuery<Long> queryLongMock;
+    @Mock
+    private Root<User> rootMock;
 
     @Test
+    @DisplayName("Create user should success")
     public void testCreateUser() throws AlreadyExistsException {
         setUpMocksForCreate();
 
