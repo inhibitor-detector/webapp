@@ -58,7 +58,9 @@ public class UserHibernateDaoTest {
 
     @Test
     public void testCreateUser() throws AlreadyExistsException {
-        setUpMocksForCreate();
+        when(entityManagerMock.createQuery(anyString(), eq(User.class))).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter(anyString(), any())).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
 
         User result = userHibernateDao.create(user);
 
@@ -73,7 +75,9 @@ public class UserHibernateDaoTest {
         newUser.setId(ID + 1);
         newUser.setEmail(EMAIL);
 
-        setUpMocksForCreate();
+        when(entityManagerMock.createQuery(anyString(), eq(User.class))).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter(anyString(), any())).thenReturn(typedQueryMock);
+        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
 
         assertThrows(UsernameAlreadyExistsException.class,
                 () -> userHibernateDao.create(newUser));
@@ -168,7 +172,8 @@ public class UserHibernateDaoTest {
     @Test
     public void testFindUserByEmail() {
         String query = "FROM User WHERE email = :email";
-        setUpEntityManagerMocks(query, "email", EMAIL);
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("email", EMAIL)).thenReturn(typedQueryMock);
         when(typedQueryMock.getResultList()).thenReturn(List.of(user));
 
         final Optional<User> result = userHibernateDao.findByEmail(EMAIL);
@@ -181,7 +186,8 @@ public class UserHibernateDaoTest {
     @Test
     public void testFindUserByEmailNotFound() {
         String query = "FROM User WHERE email = :email";
-        setUpEntityManagerMocks(query, "email", EMAIL);
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("email", EMAIL)).thenReturn(typedQueryMock);
 
         final Optional<User> result = userHibernateDao.findByEmail(EMAIL);
 
@@ -191,7 +197,8 @@ public class UserHibernateDaoTest {
     @Test
     public void testFindUserByUsername() {
         String query = "FROM User WHERE username = :username";
-        setUpEntityManagerMocks(query, "username", USERNAME);;
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("username", USERNAME)).thenReturn(typedQueryMock);
         when(typedQueryMock.getResultList()).thenReturn(List.of(user));
 
         final Optional<User> result = userHibernateDao.findByUsername(USERNAME);
@@ -205,7 +212,8 @@ public class UserHibernateDaoTest {
     @Test
     public void testFindUserByUsernameNotFound() {
         String query = "FROM User WHERE username = :username";
-        setUpEntityManagerMocks(query, "username", USERNAME);;
+        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
+        when(typedQueryMock.setParameter("username", USERNAME)).thenReturn(typedQueryMock);
 
         final Optional<User> user = userHibernateDao.findByUsername(USERNAME);
 
@@ -220,19 +228,8 @@ public class UserHibernateDaoTest {
         return user;
     }
 
-    private void setUpMocksForCreate() {
-        when(entityManagerMock.createQuery(anyString(), eq(User.class))).thenReturn(typedQueryMock);
-        when(typedQueryMock.setParameter(anyString(), any())).thenReturn(typedQueryMock);
-        when(typedQueryMock.getResultList()).thenReturn(List.of(user));
-    }
-
     private void setUpMocksForDelete(String query) {
         when(entityManagerMock.createNativeQuery(query)).thenReturn(queryMock);
         when(queryMock.setParameter("id", ID)).thenReturn(queryMock);
-    }
-
-    private void setUpEntityManagerMocks(String query, String parameter, String value) {
-        when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
-        when(typedQueryMock.setParameter(parameter, value)).thenReturn(typedQueryMock);
     }
 }
