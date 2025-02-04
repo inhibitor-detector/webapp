@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -70,16 +69,9 @@ class DetectorControllerTest {
 
     @Test
     public void testSaveDetector() throws NotFoundException, AlreadyExistsException {
-        ReflectionTestUtils.setField(detectorController, "uriInfo", uriInfoMock);
-
-        User owner = new User();
-        owner.setId(0L);
-
-        when(userServiceMock.findById(detector.getOwner().getId())).thenReturn(Optional.of(owner), Optional.of(owner));
+        setUpUriMocks();
+        when(userServiceMock.findById(detector.getOwner().getId())).thenReturn(Optional.of(getUser()), Optional.of(getUser()));
         when(detectorServiceMock.create(any(Detector.class))).thenReturn(detector);
-        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
-        when(uriBuilderMock.path(anyString())).thenReturn(uriBuilderMock);
-        when(uriBuilderMock.build()).thenReturn(URI.create("/detectors/1"));
 
         Response response = detectorController.saveDetector(detectorDto);
 
@@ -118,17 +110,26 @@ class DetectorControllerTest {
     }
 
     private Detector getDetector() {
-        User owner = new User();
-        owner.setId(0L);
-
         Detector detector = new Detector();
         detector.setId(ID);
-        detector.setOwner(owner);
-        detector.setUser(owner);
+        detector.setOwner(getUser());
+        detector.setUser(getUser());
         return detector;
     }
 
     private DetectorDto getDetectorDto() {
         return DetectorDto.fromDetector(detector);
+    }
+
+    private User getUser() {
+        User user = new User();
+        user.setId(0L);
+        return user;
+    }
+
+    private void setUpUriMocks() {
+        ReflectionTestUtils.setField(detectorController, "uriInfo", uriInfoMock);
+        when(uriInfoMock.getAbsolutePathBuilder()).thenReturn(uriBuilderMock);
+        when(uriBuilderMock.path(anyString())).thenReturn(uriBuilderMock);
     }
 }
