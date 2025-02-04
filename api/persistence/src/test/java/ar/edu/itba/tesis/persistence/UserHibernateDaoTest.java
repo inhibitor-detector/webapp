@@ -9,11 +9,13 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserHibernateDaoTest {
+class UserHibernateDaoTest {
 
     private final Long ID = 1L;
     private final String EMAIL = "user@email.com";
@@ -55,6 +57,11 @@ public class UserHibernateDaoTest {
     private TypedQuery<Long> queryLongMock;
     @Mock
     private Root<User> rootMock;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(userHibernateDao, "entityManager", entityManagerMock);
+    }
 
     @Test
     public void testCreateUser() throws AlreadyExistsException {
@@ -235,4 +242,5 @@ public class UserHibernateDaoTest {
         when(entityManagerMock.createQuery(query, User.class)).thenReturn(typedQueryMock);
         when(typedQueryMock.setParameter(parameter, value)).thenReturn(typedQueryMock);
     }
+
 }
