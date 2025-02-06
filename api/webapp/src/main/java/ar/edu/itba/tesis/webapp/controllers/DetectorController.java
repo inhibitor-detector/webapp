@@ -72,7 +72,6 @@ public class DetectorController {
                 create(Detector.builder()
                         .owner(ownerUser)
                         .user(user)
-                        // .isOnline(detectorDto.isOnline())
                         .lastHeartbeat(null)
                         .version(detectorDto.version())
                         .name(detectorDto.name())

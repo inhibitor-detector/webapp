@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS detectors
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     owner_id INT,
-    -- is_online bool default false not null,
     last_heartbeat TIMESTAMP,
     version varchar(10) default '1' not null,
     name varchar(30) not null,
