@@ -15,7 +15,6 @@ public record DetectorDto(
         @NotNull
         Long userId,
 
-        // @NotNull
         Boolean isOnline,
 
         @NotNull
@@ -32,7 +31,7 @@ public record DetectorDto(
     public static DetectorDto fromDetector(Detector detector) {
         boolean isOnline = false;
         LocalDateTime lastHeartbeat = detector.getLastHeartbeat();
-        if (lastHeartbeat != null && lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(150))) {
+        if (lastHeartbeat != null && lastHeartbeat.isAfter(LocalDateTime.now().minusSeconds(60))) {
             isOnline = true;
         }
 
@@ -40,7 +39,6 @@ public record DetectorDto(
                 detector.getId(),
                 detector.getOwner().getId(),
                 detector.getUser().getId(),
-                // detector.getIsOnline(),
                 isOnline,
                 detector.getVersion(),
                 detector.getName(),
