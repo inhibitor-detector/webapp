@@ -55,8 +55,6 @@ class UserHibernateDaoTest {
     private Query queryMock;
     @Mock
     private TypedQuery<Long> queryLongMock;
-    @Mock
-    private Root<User> rootMock;
 
     @BeforeEach
     void setUp() {

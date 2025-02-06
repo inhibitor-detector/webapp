@@ -23,7 +23,7 @@ public class AuthFacade {
         this.detectorService = detectorService;
     }
 
-    public UserDetails getAuthenticatedUserDetails(Authentication authentication) {
+    private UserDetails getAuthenticatedUserDetails(Authentication authentication) {
         if (!(authentication.getPrincipal() instanceof UserDetails)) {
             return null;
         }
