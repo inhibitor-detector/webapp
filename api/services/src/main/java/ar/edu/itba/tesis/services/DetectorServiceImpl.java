@@ -38,6 +38,13 @@ public class DetectorServiceImpl implements DetectorService {
 
     @Transactional(readOnly = true)
     @Override
+    public Optional<Detector> findByUserId(Long userId) {
+        return detectorDao.findByUserId(userId);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
     public List<Detector> findAll() {
         return detectorDao.findAll();
     }

@@ -1,5 +1,7 @@
 package ar.edu.itba.tesis.webapp.auth;
 
+import ar.edu.itba.tesis.models.Detector;
+import ar.edu.itba.tesis.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
 public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
 
@@ -37,12 +40,16 @@ public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
         final JwsHeader header = JwsHeader.with(SignatureAlgorithm.ES256).build();
         ZonedDateTime issuedDate = ZonedDateTime.now();
         ZonedDateTime expiresDate = issuedDate.plusSeconds(43200);
+        User user = authFacade.getAuthenticatedUser(authentication);
+        Detector detector = authFacade.getAuthenticatedDetector(authentication);
+        Long detectorId = detector != null ? detector.getId() : -1;
 
         final JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(authentication.getName())
                 .issuedAt(issuedDate.toInstant())
                 .expiresAt(expiresDate.toInstant())
-                .claim("userId", authFacade.getAuthenticatedUser(authentication).getId())
+                .claim("userId", user.getId())
+                .claim("detectorId", detectorId)
                 .build();
 
         final JwtEncoderParameters parameters = JwtEncoderParameters.from(header, claims);

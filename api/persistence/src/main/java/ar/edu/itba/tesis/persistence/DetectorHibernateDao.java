@@ -82,6 +82,22 @@ public class DetectorHibernateDao implements DetectorDao {
     }
 
     @Override
+    public Optional<Detector> findByUserId(Long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Detector> criteriaQuery = criteriaBuilder.createQuery(Detector.class);
+        Root<Detector> root = criteriaQuery.from(Detector.class);
+
+        criteriaQuery.select(root);
+
+        Predicate condition = criteriaBuilder.equal(root.get("user").get("id"), userId); // Reemplaza "propertyName" con el nombre real de la propiedad y "value" con el valor de filtro deseado
+        criteriaQuery.where(condition);
+
+        TypedQuery<Detector> query = entityManager.createQuery(criteriaQuery);
+
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
     public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {
         Detector user = findById(id).orElseThrow(() -> new DetectorNotFoundException(id));
         updateDetector(user, entity);
