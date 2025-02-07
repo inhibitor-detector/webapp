@@ -1,15 +1,5 @@
 package ar.edu.itba.tesis.services;
 
-import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
-import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
-import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
-import ar.edu.itba.tesis.models.Detector;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +8,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
+import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
+import ar.edu.itba.tesis.models.Detector;
 
 @ExtendWith(MockitoExtension.class)
 class DetectorServiceImplTest {
@@ -127,6 +127,15 @@ class DetectorServiceImplTest {
         detectorService.updateLastHeartbeat(ID, lastHeartbeat);
 
         verify(detectorDaoMock).updateLastHeartbeat(ID, lastHeartbeat);
+    }
+
+    @Test
+    public void testUpdateStatus() {
+        Integer status = 1;
+
+        detectorService.updateStatus(ID, status);
+
+        verify(detectorDaoMock).updateStatus(ID, status);
     }
 
     @Test

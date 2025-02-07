@@ -18,6 +18,9 @@ public record DetectorDto(
         Boolean isOnline,
 
         @NotNull
+        Integer status,
+
+        @NotNull
         String version,
 
         @NotNull
@@ -40,6 +43,7 @@ public record DetectorDto(
                 detector.getOwner().getId(),
                 detector.getUser().getId(),
                 isOnline,
+                detector.getStatus(),
                 detector.getVersion(),
                 detector.getName(),
                 detector.getDescription()

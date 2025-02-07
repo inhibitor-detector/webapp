@@ -35,6 +35,9 @@ public class Detector {
 
     @Column(name = "last_heartbeat")
     private LocalDateTime lastHeartbeat;
+
+    @Column(name = "status" , nullable = false)
+    private Integer status;
     
     @Column(name = "version", nullable = false)
     private String version;
@@ -75,6 +78,11 @@ public class Detector {
 
         public Detector.Builder lastHeartbeat(LocalDateTime lastHeartbeat) {
             detector.setLastHeartbeat(lastHeartbeat);
+            return this;
+        }
+
+        public Detector.Builder status(Integer status) {
+            detector.setStatus(status);
             return this;
         }
         

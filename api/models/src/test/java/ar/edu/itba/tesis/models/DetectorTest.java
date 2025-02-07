@@ -38,6 +38,13 @@ class DetectorTest {
     }
 
     @Test
+    public void testSetStatus() {
+        Integer status = 1;
+        detector.setStatus(status);
+        assertEquals(status, detector.getStatus());
+    }
+
+    @Test
     public void testSetVersion() {
         String version = "Detector version";
         detector.setVersion(version);

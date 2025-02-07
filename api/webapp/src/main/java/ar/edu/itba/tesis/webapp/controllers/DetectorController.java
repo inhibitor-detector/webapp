@@ -73,6 +73,7 @@ public class DetectorController {
                         .owner(ownerUser)
                         .user(user)
                         .lastHeartbeat(null)
+                        .status(detectorDto.status())
                         .version(detectorDto.version())
                         .name(detectorDto.name())
                         .description(detectorDto.description())
