@@ -54,6 +54,6 @@ insert into user_role values (3, 'DETECTOR');
 insert into user_role values (4, 'USER');
 insert into user_role values (5, 'DETECTOR');
 
-insert into detectors (user_id, owner_id, last_heartbeat, version, name, description) values (2,1,null,1.0,'Est 1','Estacionamiento 1. Atras de la columna 6H apuntando en direccion al mostrador');
-insert into detectors (user_id, owner_id, last_heartbeat, version, name, description) values (3,1,null,1.0,'Est 2','Al fondo atras de la maceta');
-insert into detectors (user_id, owner_id, last_heartbeat, version, name, description) values (5,4,null,1.0,'Est 1','Soy un detector del cliente 2');
+insert into detectors (user_id, owner_id, last_heartbeat, status, version, name, description) values (2,1,null,0,1.0,'Est 1','Estacionamiento 1. Atras de la columna 6H apuntando en direccion al mostrador');
+insert into detectors (user_id, owner_id, last_heartbeat, status, version, name, description) values (3,1,null,0,1.0,'Est 2','Al fondo atras de la maceta');
+insert into detectors (user_id, owner_id, last_heartbeat, status, version, name, description) values (5,4,null,0,1.0,'Est 1','Soy un detector del cliente 2');
