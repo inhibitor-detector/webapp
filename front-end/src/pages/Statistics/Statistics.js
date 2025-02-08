@@ -83,6 +83,7 @@ const SignalsChart = () => {
               }}
             />
             <YAxis
+              allowDecimals={false}
               label={{
                 value: 'Alertas',
                 angle: -90,
@@ -105,7 +106,7 @@ const processSignals = (signals, range) => {
     let timeLabel;
 
     if (range === 1) {
-      const interval = Math.floor(signalDate.getMinutes() / 15) * 15;
+      const interval = Math.floor(signalDate.getMinutes() / 5) * 5;
       timeLabel = `${signalDate.getHours().toString().padStart(2, '0')}:${interval.toString().padStart(2, '0')}`;
     } else {
       const hour = signalDate.getHours();
@@ -119,11 +120,11 @@ const processSignals = (signals, range) => {
   const now = new Date();
 
   if (range === 1) {
-    let roundedMinutes = Math.floor(now.getMinutes() / 15) * 15;
+    let roundedMinutes = Math.floor(now.getMinutes() / 5) * 5;
     const roundedTime = new Date(now.setMinutes(roundedMinutes, 0, 0));
     roundedTime.setHours(roundedTime.getHours() - 1);
 
-    for (let m = 0; m <= 3; m += 1) {
+    for (let m = 0; m <= 11; m += 1) {
       const intervalTime = new Date(roundedTime.getTime());
       intervalTime.setMinutes(roundedMinutes);
       const timeLabel = `${intervalTime.getHours().toString().padStart(2, '0')}:${intervalTime.getMinutes().toString().padStart(2, '0')}`;
@@ -131,7 +132,7 @@ const processSignals = (signals, range) => {
         time: timeLabel,
         count: signalsByTime[timeLabel] || 0
       });
-      roundedMinutes += 15;
+      roundedMinutes += 5;
     }
   } else {
     for (let i = 0; i < range; i++) {
