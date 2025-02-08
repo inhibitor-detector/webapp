@@ -89,7 +89,6 @@ public class SignalController {
 
         final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
 
-
         return Response
                 .created(uriInfo
                         .getAbsolutePathBuilder()

@@ -37,7 +37,8 @@ public class SignalServiceImpl implements SignalService {
         // We also update the detector last_heartbeat and status
         if (entity.getIsHeartbeat()) {
             detectorService.updateLastHeartbeat(detector_id, LocalDateTime.now());
-            detectorService.updateStatus(detector_id, 1); // TODO: translate error codes to status
+            System.out.println("Signal status: " + entity.getStatus());
+            detectorService.updateStatus(detector_id, entity.getStatus()); // WIP
         }
         return signalDao.create(entity);
     }

@@ -30,6 +30,9 @@ public class Signal {
     @Column(name = "acknowledged", nullable = false, columnDefinition = "boolean default false")
     private Boolean acknowledged = false; //default value
 
+    @Column(name = "status", nullable = false, columnDefinition = "integer default 0")
+    private Integer status; // bitmap: MEMORY_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
+
     /*
         Builder for Signal
      */
@@ -68,6 +71,11 @@ public class Signal {
 
         public Signal.Builder acknowledged(Boolean acknowledged) {
             signal.setAcknowledged(acknowledged != null ? acknowledged : false);
+            return this;
+        }
+
+        public Signal.Builder status(Integer status) {
+            signal.setStatus(status);
             return this;
         }
     }

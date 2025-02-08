@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS detectors
     user_id INT NOT NULL,
     owner_id INT,
     last_heartbeat TIMESTAMP,
-    status INT NOT NULL, -- bitmap: MEMORY_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
+    status INT NOT NULL default 0, -- bitmap: MEMORY_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
     version varchar(10) default '1' not null,
     name varchar(30) not null,
     description varchar(255),
