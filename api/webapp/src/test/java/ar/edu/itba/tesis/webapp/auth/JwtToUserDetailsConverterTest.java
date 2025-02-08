@@ -1,5 +1,6 @@
 package ar.edu.itba.tesis.webapp.auth;
 
+import ar.edu.itba.tesis.webapp.auth.exceptions.InvalidAuthenticationTokenException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +26,6 @@ import static org.mockito.Mockito.when;
 class JwtToUserDetailsConverterTest {
 
     private final String USERNAME = "username";
-    private final String ROLE_USER = "ROLE_USER";
 
     @InjectMocks
     private JwtToUserDetailsConverter converter;
@@ -56,5 +57,20 @@ class JwtToUserDetailsConverterTest {
         assertEquals(userDetailsMock, authenticationToken.getPrincipal());
         assertTrue(authenticationToken.getAuthorities().isEmpty());
         assertEquals("", authenticationToken.getCredentials());
+    }
+
+    @Test
+    public void testConvertThrowsExceptionNoExpirationDate() {
+        when(jwtMock.getExpiresAt()).thenReturn(null);
+
+        assertThrows(InvalidAuthenticationTokenException.class, () -> converter.convert(jwtMock));
+    }
+
+    @Test
+    public void convert_ShouldThrowException_WhenJwtHasNoIssueDate() {
+        when(jwtMock.getExpiresAt()).thenReturn(Instant.now());
+        when(jwtMock.getIssuedAt()).thenReturn(null);
+
+        assertThrows(InvalidAuthenticationTokenException.class, () -> converter.convert(jwtMock));
     }
 }
