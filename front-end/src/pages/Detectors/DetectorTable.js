@@ -25,6 +25,35 @@ const DetectorTable = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState({});
 
+  const decodeStatus = (status) => {
+    const ERROR_FLAGS = {
+      MEMORY_FAILED: 32,
+      YARD_FAILED: 16,
+      ANALYZER_FAILED: 8,
+      RFCAT_FAILED: 4,
+      FAILED: 2,
+      ACTIVE: 1
+    };
+  
+    const errors = [];
+  
+    if (status & ERROR_FLAGS.MEMORY_FAILED) errors.push("Fallo de memoria");
+    if (status & ERROR_FLAGS.YARD_FAILED) errors.push("Fallo de Yard");
+    if (status & ERROR_FLAGS.ANALYZER_FAILED) errors.push("Fallo del analyzer");
+    if (status & ERROR_FLAGS.RFCAT_FAILED) errors.push("Fallo de RFCAT");
+    if (status & ERROR_FLAGS.FAILED) errors.push("Falla general");
+  
+    if (errors.length > 0) {
+      return errors.map((error, index) => (
+        <Typography key={index} variant="body2" >
+          {error}
+        </Typography>
+      ));
+    }
+  
+    return "OK";
+  };
+
   const fetchAllData = useCallback(async () => {
     setLoading(true);
     let allDetectors = [];
@@ -194,11 +223,12 @@ const DetectorTable = () => {
                       <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Usuario</TableCell>
                     )}
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Activo</TableCell>
+                    <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Estado</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredDetectors.map((detector) => (
-                    <DetectorRow key={detector.id} detector={detector} users={users} userRole={userRole} />
+                    <DetectorRow key={detector.id} detector={detector} users={users} userRole={userRole} decodeStatus={decodeStatus} />
                   ))}
                 </TableBody>
               </Table>
@@ -220,7 +250,7 @@ const DetectorTable = () => {
   );
 };
 
-const DetectorRow = ({ detector, users, userRole }) => {
+const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
   const navigate = useNavigate();
 
   const handleClick = (event) => {
@@ -250,6 +280,7 @@ const DetectorRow = ({ detector, users, userRole }) => {
           <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
         )}
       </TableCell>
+      <TableCell sx={{ textAlign: 'center' }}>{decodeStatus(detector.status)}</TableCell>
     </TableRow>
   );
 };
