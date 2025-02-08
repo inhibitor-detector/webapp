@@ -58,6 +58,5 @@ public class CustomBasicAuthenticationFilter extends BasicAuthenticationFilter {
 
     private void addJwtToResponse(HttpServletResponse response, Jwt jwt) {
         response.addHeader("Authorization", "Bearer " + jwt.getTokenValue());
-        System.out.println("Bearer " + jwt.getTokenValue());
     }
 }

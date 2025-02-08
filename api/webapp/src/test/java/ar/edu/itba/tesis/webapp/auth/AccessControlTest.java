@@ -41,14 +41,14 @@ class AccessControlTest {
     }
 
     @Test
-    void testIsAuthenticatedUserByRole() {
+    public void testIsAuthenticatedUserByRole() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
         assertTrue(accessControl.isAuthenticatedUser(authentication, 2L));
     }
 
     @Test
-    void testNotAuthenticatedUser() {
+    public void testNotAuthenticatedUser() {
         user.setRoles(Collections.emptySet());
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -56,7 +56,7 @@ class AccessControlTest {
     }
 
     @Test
-    void testCanPostSignal() {
+    public void testCanPostSignal() {
         user.setRoles(Collections.singleton(Role.DETECTOR));
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -64,7 +64,7 @@ class AccessControlTest {
     }
 
     @Test
-    void testCantPostSignalWithoutAdminRole() {
+    public void testCantPostSignalWithoutAdminRole() {
         user.setRoles(Collections.emptySet());
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -72,14 +72,14 @@ class AccessControlTest {
     }
 
     @Test
-    void testCantPostSignalWithNullUser() {
+    public void testCantPostSignalWithNullUser() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(null);
 
         assertFalse(accessControl.canPostSignal(authentication));
     }
 
     @Test
-    void testCanPutSignal() {
+    public void testCanPutSignal() {
         user.setRoles(Collections.singleton(Role.DETECTOR));
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -87,21 +87,21 @@ class AccessControlTest {
     }
 
     @Test
-    void testCantPutSignal() {
+    public void testCantPutSignal() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(null);
 
         assertFalse(accessControl.canPutSignal(authentication));
     }
 
     @Test
-    void testCanPostSignalCheckDetectorId() {
+    public void testCanPostSignalCheckDetectorId() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
         assertTrue(accessControl.canPostSignalCheckDetectorId(authentication, detector));
     }
 
     @Test
-    void testCantPostSignalCheckDetectorIdWithDifferentUserId() {
+    public void testCantPostSignalCheckDetectorIdWithDifferentUserId() {
         user.setId(2L);
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -109,21 +109,21 @@ class AccessControlTest {
     }
 
     @Test
-    void testCantPostSignalCheckDetectorIdWithNullUser() {
+    public void testCantPostSignalCheckDetectorIdWithNullUser() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(null);
 
         assertFalse(accessControl.canPostSignalCheckDetectorId(authentication, detector));
     }
 
     @Test
-    void testIsAdminUser() {
+    public void testIsAdminUser() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
         assertTrue(accessControl.isAdminUser(authentication));
     }
 
     @Test
-    void testIsNotAdminUserWithoutAdminRole() {
+    public void testIsNotAdminUserWithoutAdminRole() {
         user.setRoles(Collections.emptySet());
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -131,21 +131,21 @@ class AccessControlTest {
     }
 
     @Test
-    void testIsNotAdminUserWithNullUser() {
+    public void testIsNotAdminUserWithNullUser() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(null);
 
         assertFalse(accessControl.isAdminUser(authentication));
     }
 
     @Test
-    void testCanAccessDetectorsByAdmin() {
+    public void testCanAccessDetectorsByAdmin() {
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
         assertTrue(accessControl.canAccessDetectors(authentication, null));
     }
 
     @Test
-    void testCanAccessDetectorsByOwnerId() {
+    public void testCanAccessDetectorsByOwnerId() {
         user.setRoles(Collections.emptySet());
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
@@ -153,7 +153,7 @@ class AccessControlTest {
         assertTrue(accessControl.canAccessDetectors(authentication, validQuery));
     }
     @Test
-    void testCantAccessDetectorsWithInvalidOwnerId() {
+    public void testCantAccessDetectorsWithInvalidOwnerId() {
         user.setRoles(Collections.emptySet());
         when(authFacadeMock.getAuthenticatedUser(authentication)).thenReturn(user);
 
