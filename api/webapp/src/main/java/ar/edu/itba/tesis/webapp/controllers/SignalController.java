@@ -163,6 +163,7 @@ public class SignalController {
                 .timestamp(parseAndValidate(signalDto.timestamp()))
                 .isHeartbeat(signalDto.isHeartbeat())
                 .acknowledged(signalDto.acknowledged())
+                .status(signalDto.status())
                 .build();
     }
 }
