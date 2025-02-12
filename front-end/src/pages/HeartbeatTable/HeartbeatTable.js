@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button, Box, Typography, CircularProgress } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { CheckCircleOutline } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import './HeartbeatTable.css'
+import { Box, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getSignals } from '../../api/SignalApi';
+import { useAuth } from '../../components/AuthContext';
+import './HeartbeatTable.css';
 
 const HeartbeatTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -18,17 +18,9 @@ const HeartbeatTable = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedDetector = searchParams.get('selectedDetector');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePages, setHasMorePages] = useState(true);
+  const [pagination, setPagination] = useState({ currentPage: 1, hasMorePages: true });
 
   const styles = {
-    container: {
-      flexGrow: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'relative',
-    },
     background: {
       position: 'absolute',
       top: 0,
@@ -39,12 +31,7 @@ const HeartbeatTable = () => {
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       opacity: 0.2,
-      zIndex: 0,
     },
-  };
-
-  const handleGoBack = () => {
-    window.history.back();
   };
 
   const fetchData = useCallback(async (page) => {
@@ -60,15 +47,8 @@ const HeartbeatTable = () => {
       }
       const response = await getSignals(params, token);
       if (response.status === 200) {
-        if (response.data.length > 0) {
-          setHeartbeats(response.data);
-          setCurrentPage(page);
-          setHasMorePages(response.data.length >= 10);
-        } else {
-          setHeartbeats([]);
-          setCurrentPage(1);
-          setHasMorePages(false);
-        }
+        setHeartbeats(response.data);
+        setPagination({ currentPage: page, hasMorePages: response.data.length >= 10 });
       }
     } catch (error) {
       console.error('Error:', error);
@@ -79,20 +59,14 @@ const HeartbeatTable = () => {
 
   useEffect(() => {
     fetchData(1);
-  }, [selectedDetector, fetchData]);
+  }, [fetchData]);
 
   const handleNextPage = () => {
-    if (hasMorePages) {
-      const nextPage = currentPage + 1;
-      fetchData(nextPage);
-    }
+    fetchData(pagination.currentPage + 1)
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      const prevPage = currentPage - 1;
-      fetchData(prevPage);
-    }
+    fetchData(pagination.currentPage - 1)
   };
 
   return (
@@ -100,15 +74,12 @@ const HeartbeatTable = () => {
       <div>
         <Button
           variant="contained"
-          onClick={handleGoBack}
+          onClick={() => window.history.back()}
           sx={{
             backgroundColor: '#8bc34a',
             color: 'white',
             '&:hover': {
               backgroundColor: '#8bc34a',
-            },
-            '& .MuiButton-startIcon': {
-              marginRight: '4px',
             },
           }}
           startIcon={<ArrowBackIcon />}
@@ -126,19 +97,15 @@ const HeartbeatTable = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Heartbeat</TableCell>
-                  <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>Tiempo</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>Heartbeat</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>Tiempo</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {heartbeats.map((data, index) => (
                   <TableRow key={index}>
-                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                      {data.isHeartbeat ? (
-                        <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
-                      ) : (
-                        <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
-                      )}
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
                       {formatDistanceToNow(new Date(data.timestamp), { addSuffix: true, locale: es })}
@@ -152,46 +119,34 @@ const HeartbeatTable = () => {
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
               position: 'fixed',
               bottom: 1,
               width: '100%',
-              backgroundColor: 'white',
               padding: '10px 0',
             }}
           >
-            <Button
-              onClick={handlePrevPage}
-              disabled={currentPage === 1}
-              className="custom-button"
-            >
+            <Button onClick={handlePrevPage} disabled={pagination.currentPage === 1} className="custom-button">
               <ArrowBackIosIcon
                 sx={{
                   fontSize: '20px',
-                  color: currentPage === 1 ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
+                  color: pagination.currentPage === 1 ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
                 }}
               />
             </Button>
-            <Button
-              onClick={handleNextPage}
-              disabled={!hasMorePages}
-              className="custom-button"
-            >
+            <Button onClick={handleNextPage} disabled={!pagination.hasMorePages} className="custom-button">
               <ArrowForwardIosIcon
                 sx={{
                   fontSize: '20px',
-                  color: !hasMorePages ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
+                  color: !pagination.hasMorePages ? 'rgba(139, 195, 74, 0.5)' : '#8bc34a',
                 }}
               />
             </Button>
           </Box>
         </div>
       ) : (
-        <Box sx={styles.container}>
+        <Box className="container-box">
           <div style={styles.background} />
-          <Typography variant="body1" sx={{
-            fontSize: '22px',
-          }}>
+          <Typography variant="body1" sx={{ fontSize: '22px' }}>
             No se detectaron señales
           </Typography>
         </Box>

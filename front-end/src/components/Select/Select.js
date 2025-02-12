@@ -20,7 +20,6 @@ export default function SelectOrder(props) {
         <InputLabel id="demo-simple-select-standard-label" className='font-size'>Ordenar Por</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
           value={order}
           onChange={handleChange}
           label="Ordenar Por"
