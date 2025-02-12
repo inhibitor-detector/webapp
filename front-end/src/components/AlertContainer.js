@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
+import { Button, Modal, Alert, Stack, Typography, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Typography } from '@mui/material';
-import Popup from './Popup';
-import Box from '@mui/material/Box';
 import CheckIcon from '@mui/icons-material/Check';
+import Popup from './Popup';
 import { updateSignal } from '../api/SignalApi';
 import { useSignal } from './SignalContext';
 
 const Notification = ({ open, onClose, detector, signal, token }) => {
-  const [popup, setPopup] = useState(null); 
+  const [popup, setPopup] = useState(null);
   const { setSignals } = useSignal();
 
   const handleClose = () => {
@@ -53,7 +48,7 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
           alignItems: 'center',
           justifyContent: 'center'
         }}
-        disableAutoFocus={true}
+        disableAutoFocus
       >
         <div style={{ position: 'relative', backgroundColor: 'red', padding: '20px', borderRadius: '5px' }}>
           <Button
@@ -113,7 +108,6 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
               </Button>
             </Box>
           </Box>
-
         </div>
       </Modal>
       <Popup popup={popup} selectedDetector={detector} onClose={handleClose} />

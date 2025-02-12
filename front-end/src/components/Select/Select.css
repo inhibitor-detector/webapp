@@ -1,15 +1,19 @@
-.css-n70jm4-MuiInputBase-root-MuiInput-root-MuiSelect-root::after {
-    border-bottom-color: #8bc34a !important;
-}
-
-.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root.Mui-focused{
-    color: #8bc34a !important;
-}
-
-.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected{
-    background-color: rgba(139, 195, 74, 0.15) !important;
-}
-
 .font-size {
     font-size: 12px !important;
+}
+
+.MuiInputBase-root:hover::after {
+    border-bottom: 2px solid black !important;
+}
+
+.MuiInputLabel-root.Mui-focused {
+    color: black !important;
+}
+
+.MuiInputBase-root:after {
+    border-bottom: 2px solid #8bc34a !important;
+}
+
+.MuiMenuItem-root.Mui-selected {
+    background-color: rgba(139, 195, 74, 0.2) !important;
 }
