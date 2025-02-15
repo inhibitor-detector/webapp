@@ -42,6 +42,9 @@ const DetectorTable = () => {
     if (status & ERROR_FLAGS.ANALYZER_FAILED) errors.push("Fallo del analyzer");
     if (status & ERROR_FLAGS.RFCAT_FAILED) errors.push("Fallo de RFCAT");
     if (status & ERROR_FLAGS.FAILED) errors.push("Falla general");
+    if(errors.length === 0) {
+      if (status & ERROR_FLAGS.ACTIVE) errors.push("OK");
+    }
   
     if (errors.length > 0) {
       return errors.map((error, index) => (
@@ -51,7 +54,7 @@ const DetectorTable = () => {
       ));
     }
   
-    return "OK";
+    return "-";
   };
 
   const fetchAllData = useCallback(async () => {
