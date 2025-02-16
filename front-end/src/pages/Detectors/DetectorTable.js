@@ -5,7 +5,7 @@ import DashboardCard from '../../layouts/DashboardCard';
 import { useAuth } from '../../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField, Box, CircularProgress } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import './DetectorTable.css';
 import DoneIcon from "@mui/icons-material/Done";
@@ -13,6 +13,8 @@ import BlockIcon from "@mui/icons-material/Block";
 import DevicesIcon from "@mui/icons-material/Devices";
 import { getDetectors } from '../../api/DetectorApi';
 import { getUserById } from '../../api/UserApi';
+import LoadingBox from '../../components/LoadingBox';
+import Title from '../../components/Title';
 
 const DetectorTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -122,16 +124,7 @@ const DetectorTable = () => {
   return (
     <div>
       <ResponsiveAppBar />
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <Typography
-          variant="h4"
-          style={{
-            fontWeight: 'bold',
-          }}
-        >
-          Detectores
-        </Typography>
-      </div>
+      <Title title={'Detectores'}/>
       <DashboardCard stats={[
         {
           label: "Total Activos",
@@ -153,9 +146,7 @@ const DetectorTable = () => {
         },
       ]} />
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-          <CircularProgress sx={{ color: '#8bc34a' }} />
-        </Box>
+        <LoadingBox/>
       ) : (detectors.length === 0 ? (
         <Typography
           variant="h6"

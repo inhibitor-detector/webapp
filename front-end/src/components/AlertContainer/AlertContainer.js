@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Button, Modal, Alert, Stack, Typography, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import Popup from './Popup';
-import { updateSignal } from '../api/SignalApi';
-import { useSignal } from './SignalContext';
+import Popup from '../Popup';
+import { updateSignal } from '../../api/SignalApi';
+import { useSignal } from '../SignalContext';
+import './AlertContainer.css'
 
 const Notification = ({ open, onClose, detector, signal, token }) => {
   const [popup, setPopup] = useState(null);
@@ -43,67 +44,35 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
       <Modal
         open={open}
         onClose={onClose}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        className='modal'
         disableAutoFocus
       >
-        <div style={{ position: 'relative', backgroundColor: 'red', padding: '20px', borderRadius: '5px' }}>
+        <div className='modal-container'>
           <Button
             variant="contained"
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '8px',
-              right: '8px',
-              borderRadius: '50%',
-              minWidth: 'auto',
-              padding: 0,
-              backgroundColor: 'grey',
-            }}
+            className='close-button'
           >
-            <CloseIcon style={{ color: 'white' }} />
+            <CloseIcon className='close-icon' />
           </Button>
-          <Typography
-            style={{
-              textAlign: 'center',
-              padding: '20px',
-              color: 'white',
-              fontSize: 30
-            }}
-          >
+          <Typography className='title'>
             ¡ALERTA!
           </Typography>
-          <Typography
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              fontSize: 24
-            }}
-          >
+          <Typography className='message'>
             Inhibidor detectado
           </Typography>
           <Box textAlign='center'>
-            <Button onClick={handleClick}
-              style={{
-                color: 'white',
-                textDecoration: 'underline',
-              }}
-            >
+            <Button onClick={handleClick} className='link-button'>
               Detector
             </Button>
-            <Box textAlign="center">
+            <Box>
               <Button
                 variant="contained"
                 color="success"
                 onClick={() => handleVerify(signal.id)}
-                style={{
-                  margin: '5px',
-                }}
+                className='verify-button'
               >
-                <CheckIcon style={{ marginRight: '5px' }} />
+                <CheckIcon className='check-icon' />
                 Verificado
               </Button>
             </Box>

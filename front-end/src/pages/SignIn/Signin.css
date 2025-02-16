@@ -1,16 +1,35 @@
 .textField .MuiOutlinedInput-root.Mui-focused fieldset {
-    border-color: #8bc34a;
-  }
-  
-  .textField .MuiInputLabel-root.Mui-focused {
-    color: #8bc34a;
-  }
-  
-  .boton {
-    background-color: #8bc34a;
-  }
-  
-  .boton :hover {
-    background-color: #689f38;
-  }
-  
+  border-color: #8bc34a;
+}
+
+.textField .MuiInputLabel-root.Mui-focused {
+  color: #8bc34a;
+}
+
+.boton {
+  background-color: #8bc34a;
+}
+
+.boton :hover {
+  background-color: #689f38;
+}
+
+.MuiBox-root.box-container {
+  margin-top: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button.sign-in-button {
+  background-color: #8bc34a;
+  margin-top: 8px;
+}
+
+.error-message {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  color: red;
+  justify-content: center;
+}

@@ -10,9 +10,18 @@ export default function SelectOrder(props) {
   const [order, setOrder] = React.useState('');
 
   const handleChange = (event) => {
-    setOrder(event.target.value);
-    props.setOrderType(event.target.value);
+    const selectedOrder = event.target.value;
+    setOrder(selectedOrder);
+    props.setOrderType(selectedOrder);
   };
+
+  const orderOptions = [
+    { value: '', label: '-' },
+    { value: 'Id Ascendente', label: 'Id Ascendente' },
+    { value: 'Id Descendente', label: 'Id Descendente' },
+    { value: 'Activo', label: 'Activado' },
+    { value: 'Desactivado', label: 'Desactivado' }
+  ];
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -25,13 +34,11 @@ export default function SelectOrder(props) {
           label="Ordenar Por"
           className='font-size'
         >
-          <MenuItem value="">
-            <em>-</em>
-          </MenuItem>
-          <MenuItem value={'Id Ascendente'} className='font-size'>Id Ascendente</MenuItem>
-          <MenuItem value={'Id Descendente'} className='font-size'>Id Descendente</MenuItem>
-          <MenuItem value={'Activo'} className='font-size'>Activado</MenuItem>
-          <MenuItem value={'Desactivado'} className='font-size'>Desactivado</MenuItem>
+          {orderOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value} className='font-size'>
+              {option.label}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>

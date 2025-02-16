@@ -29,3 +29,17 @@
   align-items: center;
   position: relative;
 }
+
+button.back-button {
+  background-color: #8bc34a;
+  color: white;
+}
+
+.box-arrows {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 1px;
+  width: 100%;
+  padding: 10px 0;
+}

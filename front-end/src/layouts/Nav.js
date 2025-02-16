@@ -1,17 +1,7 @@
+import { AccountCircle as AccountCircleIcon } from '@mui/icons-material';
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import { Link, useLocation } from "react-router-dom";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from '../components/AuthContext';
 
 const pages = ['Detectores', 'Alertas', 'Estadisticas'];
@@ -23,9 +13,6 @@ function ResponsiveAppBar() {
   const { logout } = useAuth();
   const location = useLocation();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -44,20 +31,9 @@ function ResponsiveAppBar() {
   return (
     <AppBar position="static" sx={{ backgroundColor: '#8bc34a' }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: { md: 'none' } }}>
             <Menu
-              id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
@@ -70,14 +46,11 @@ function ResponsiveAppBar() {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link style={{ textDecoration: "none", color: "black" }} to={`/${page}`}>
+                  <Typography>
+                    <Link to={`/${page}`}>
                       {page}
                     </Link>
                   </Typography>
@@ -86,11 +59,11 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>
             {pages.map((page) => {
               const isActive = location.pathname.includes(page);
               return (
-                <Link key={page} style={{ textDecoration: "none", color: "white" }} to={`/${page}`}>
+                <Link key={page} to={`/${page}`}>
                   <Box sx={{ position: 'relative' }}>
                     <Button onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white' }}>
                       {page}
@@ -111,15 +84,14 @@ function ResponsiveAppBar() {
               );
             })}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
+          <Box>
             <Tooltip>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AccountCircleIcon style={{ fontSize: 40, color: 'white' }} />
+                <AccountCircleIcon style={{ fontSize: 38, color: 'white' }} />
               </IconButton>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',

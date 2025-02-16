@@ -2,7 +2,7 @@ import { CheckCircleOutline } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { Box, Button, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { getSignals } from '../../api/SignalApi';
 import { useAuth } from '../../components/AuthContext';
 import './HeartbeatTable.css';
+import LoadingBox from '../../components/LoadingBox';
 
 const HeartbeatTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -39,7 +40,7 @@ const HeartbeatTable = () => {
     try {
       let params = {
         detectorId: selectedDetector,
-        page: page,
+        page,
         isHeartbeat: true
       };
       if (!userRole.includes('ADMIN')) {
@@ -61,12 +62,8 @@ const HeartbeatTable = () => {
     fetchData(1);
   }, [fetchData]);
 
-  const handleNextPage = () => {
-    fetchData(pagination.currentPage + 1)
-  };
-
-  const handlePrevPage = () => {
-    fetchData(pagination.currentPage - 1)
+  const handlePageChange = (next) => {
+    fetchData(pagination.currentPage + (next ? 1 : -1));
   };
 
   return (
@@ -75,22 +72,14 @@ const HeartbeatTable = () => {
         <Button
           variant="contained"
           onClick={() => window.history.back()}
-          sx={{
-            backgroundColor: '#8bc34a',
-            color: 'white',
-            '&:hover': {
-              backgroundColor: '#8bc34a',
-            },
-          }}
+          className='back-button'
           startIcon={<ArrowBackIcon />}
         >
           Volver
         </Button>
       </div>
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-          <CircularProgress sx={{ color: '#8bc34a' }} />
-        </Box>
+        <LoadingBox />
       ) : heartbeats.length > 0 ? (
         <div>
           <TableContainer component={Paper} sx={{ flexGrow: 1 }}>
@@ -115,17 +104,8 @@ const HeartbeatTable = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              position: 'fixed',
-              bottom: 1,
-              width: '100%',
-              padding: '10px 0',
-            }}
-          >
-            <Button onClick={handlePrevPage} disabled={pagination.currentPage === 1} className="custom-button">
+          <Box className='box-arrows'>
+            <Button onClick={() => handlePageChange(false)} disabled={pagination.currentPage === 1} className="custom-button">
               <ArrowBackIosIcon
                 sx={{
                   fontSize: '20px',
@@ -133,7 +113,7 @@ const HeartbeatTable = () => {
                 }}
               />
             </Button>
-            <Button onClick={handleNextPage} disabled={!pagination.hasMorePages} className="custom-button">
+            <Button onClick={() => handlePageChange(true)} disabled={!pagination.hasMorePages} className="custom-button">
               <ArrowForwardIosIcon
                 sx={{
                   fontSize: '20px',

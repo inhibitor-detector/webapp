@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AlertContainer from './AlertContainer';
+import AlertContainer from './AlertContainer/AlertContainer';
 import { useAuth } from './AuthContext';
 import { getSignals } from '../api/SignalApi';
 import { getDetectorById } from '../api/DetectorApi';
@@ -8,9 +8,7 @@ import { useSignal } from './SignalContext';
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
   const { userRole, userId, token, logout } = useAuth();
-  const [lastId, setLastId] = useState(
-    () => Number(localStorage.getItem('lastId')) || -1
-  );
+  const [lastId, setLastId] = useState(() => Number(localStorage.getItem('lastId')) || -1);
   const [signal, setSignal] = useState([]);
   const [detector, setDetector] = useState([]);
   const { addSignal, updateSignals } = useSignal();

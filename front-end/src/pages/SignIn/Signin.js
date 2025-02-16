@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import './Signin.css';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../components/AuthContext';
-import Paper from '@mui/material/Paper';
-import { jwtDecode } from 'jwt-decode';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
+import ErrorIcon from '@mui/icons-material/Error';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import ErrorIcon from '@mui/icons-material/Error';
-import { getUserById, authenticateUser } from '../../api/UserApi';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { jwtDecode } from 'jwt-decode';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authenticateUser, getUserById } from '../../api/UserApi';
+import { useAuth } from '../../components/AuthContext';
+import './Signin.css';
 
 const defaultTheme = createTheme();
 
@@ -29,7 +29,6 @@ export default function SignIn() {
   const saveRoles = async (token, userId) => {
     const userData = await getUserById(userId, token);
     saveUserRole(userData.roles);
-    localStorage.setItem('role', userData.roles);
   };
 
   const handleSubmit = async (event) => {
@@ -44,7 +43,6 @@ export default function SignIn() {
         await saveRoles(token, decodedToken.userId);
         saveToken(token);
         localStorage.setItem('token', token);
-        localStorage.setItem('userId', decodedToken.userId);
         navigate("/Detectores");
       }
     } catch (error) {
@@ -52,18 +50,17 @@ export default function SignIn() {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit(event);
+    }
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
-        >
+        <Box className='box-container'>
           <Paper elevation={3} sx={{ padding: 4, border: '1px solid #8bc34a' }}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
               <img src="/logo.png" alt="" style={{ width: '100px', height: '100px', alignSelf: 'center' }} />
@@ -71,12 +68,11 @@ export default function SignIn() {
             <Typography component="h1" variant="h5" sx={{ textAlign: 'center' }}>
               Detector Inhibidores
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }} onKeyDown={handleKeyPress}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="username"
                 label="Usuario"
                 name="username"
                 autoComplete="username"
@@ -90,39 +86,28 @@ export default function SignIn() {
                 name="password"
                 label="Contraseña"
                 type={showPassword ? 'text' : 'password'}
-                id="password"
                 autoComplete="current-password"
                 className='textField'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }
                 }}
               />
               {errorMessage && (
-                <Typography variant="body2" color="red" align="center" sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                <Typography variant="body2" className="error-message">
                   <ErrorIcon sx={{ fontSize: 'inherit', marginRight: '0.5em' }} /> {errorMessage}
                 </Typography>
               )}
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{
-                  backgroundColor: '#8bc34a',
-                  '&:hover': {
-                    backgroundColor: '#689f38',
-                  },
-                  mt: 2
-                }}
-              >
+              <Button type="submit" fullWidth variant="contained" className='sign-in-button'>
                 Iniciar Sesión
               </Button>
             </Box>
