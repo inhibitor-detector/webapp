@@ -67,8 +67,6 @@ const Notification = ({ open, onClose, detector, signal, token }) => {
             </Button>
             <Box>
               <Button
-                variant="contained"
-                color="success"
                 onClick={() => handleVerify(signal.id)}
                 className='verify-button'
               >

@@ -44,7 +44,10 @@ button.link-button {
 }
 
 button.verify-button {
+    background-color: green !important;
+    color: white !important;
     margin: 15px;
+    text-transform: uppercase !important;
 }
 
 .check-icon {

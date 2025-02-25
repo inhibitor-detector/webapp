@@ -115,7 +115,7 @@ const SignalTable = () => {
                         <Box display="inline-flex" alignItems="center">
                           <HighlightOff sx={{ color: 'red', fontSize: 16 }} />
                           <Button
-                            className='verify-button'
+                            className='verify-button-table'
                             size="small"
                             onClick={() => handleVerify(signal.id)}
                           >

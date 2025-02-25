@@ -7,7 +7,7 @@ const DashboardCard = ({ stats }) => {
     <Box margin={1}>
       <Grid2 container>
         {stats.map((stat, index) => (
-          <Grid2 key={index} size={4}>
+          <Grid2 key={index} size={3}>
             <Paper
               elevation={0}
               sx={{

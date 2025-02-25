@@ -107,7 +107,7 @@ const processSignals = (signals, range) => {
     let timeLabel;
 
     if (range === 1) {
-      const interval = Math.floor(signalDate.getMinutes() / 5) * 5;
+      const interval = Math.ceil(signalDate.getMinutes() / 5) * 5;
       timeLabel = `${signalDate.getHours().toString().padStart(2, '0')}:${interval.toString().padStart(2, '0')}`;
     } else {
       const hour = signalDate.getHours();
@@ -121,7 +121,7 @@ const processSignals = (signals, range) => {
   const now = new Date();
 
   if (range === 1) {
-    let roundedMinutes = Math.floor(now.getMinutes() / 5) * 5;
+    let roundedMinutes = Math.ceil(now.getMinutes() / 5) * 5;
     const roundedTime = new Date(now.setMinutes(roundedMinutes, 0, 0));
     roundedTime.setHours(roundedTime.getHours() - 1);
 

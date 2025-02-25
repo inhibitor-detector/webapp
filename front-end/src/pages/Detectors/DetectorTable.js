@@ -1,20 +1,21 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import SelectOrder from '../../components/Select/Select';
-import ResponsiveAppBar from '../../layouts/Nav';
-import DashboardCard from '../../layouts/DashboardCard';
-import { useAuth } from '../../components/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircleOutline, HighlightOff } from '@mui/icons-material';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TextField } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import './DetectorTable.css';
-import DoneIcon from "@mui/icons-material/Done";
+import { CheckCircleOutline, HighlightOff, RemoveCircleOutline } from '@mui/icons-material';
 import BlockIcon from "@mui/icons-material/Block";
 import DevicesIcon from "@mui/icons-material/Devices";
+import DoneIcon from "@mui/icons-material/Done";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import SearchIcon from '@mui/icons-material/Search';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getDetectors } from '../../api/DetectorApi';
 import { getUserById } from '../../api/UserApi';
+import { useAuth } from '../../components/AuthContext';
 import LoadingBox from '../../components/LoadingBox';
+import SelectOrder from '../../components/Select/Select';
 import Title from '../../components/Title';
+import DashboardCard from '../../layouts/DashboardCard';
+import ResponsiveAppBar from '../../layouts/Nav';
+import './DetectorTable.css';
 
 const DetectorTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -22,6 +23,7 @@ const DetectorTable = () => {
   const [orderType, setOrderType] = useState('');
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResultsMessage, setSearchResultsMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -36,18 +38,18 @@ const DetectorTable = () => {
       FAILED: 2,
       ACTIVE: 1
     };
-  
+
     const errors = [];
-  
+
     if (status & ERROR_FLAGS.MEMORY_FAILED) errors.push("Fallo de memoria");
     if (status & ERROR_FLAGS.YARD_FAILED) errors.push("Fallo de Yard");
     if (status & ERROR_FLAGS.ANALYZER_FAILED) errors.push("Fallo del analyzer");
     if (status & ERROR_FLAGS.RFCAT_FAILED) errors.push("Fallo de RFCAT");
     if (status & ERROR_FLAGS.FAILED) errors.push("Falla general");
-    if(errors.length === 0) {
+    if (errors.length === 0) {
       if (status & ERROR_FLAGS.ACTIVE) errors.push("OK");
     }
-  
+
     if (errors.length > 0) {
       return errors.map((error, index) => (
         <Typography key={index} variant="body2" >
@@ -55,7 +57,7 @@ const DetectorTable = () => {
         </Typography>
       ));
     }
-  
+
     return "-";
   };
 
@@ -99,7 +101,8 @@ const DetectorTable = () => {
       }
       allDetectors.sort((a, b) => a.id - b.id);
       setDetectors(allDetectors);
-      setActiveCount(allDetectors.filter(detector => detector.isOnline).length);
+      setFailedCount(allDetectors.filter(detector => detector.isOnline && (detector.status !== 1)).length);
+      setActiveCount(allDetectors.filter(detector => detector.isOnline && detector.status === 1).length);
       setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
       if (userRole && userRole.includes('ADMIN')) {
         const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
@@ -156,13 +159,19 @@ const DetectorTable = () => {
   return (
     <div>
       <ResponsiveAppBar />
-      <Title title={'Detectores'}/>
+      <Title title={'Detectores'} />
       <DashboardCard stats={[
         {
           label: "Total Activos",
           value: activeCount,
           icon: <DoneIcon />,
           backgroundColor: "#66BB6A",
+        },
+        {
+          label: "Total Activos con Fallas",
+          value: failedCount,
+          icon: <ReportProblemIcon />,
+          backgroundColor: "#FFD54F",
         },
         {
           label: "Total Inactivos",
@@ -172,13 +181,13 @@ const DetectorTable = () => {
         },
         {
           label: "Total Detectores",
-          value: activeCount + inactiveCount,
+          value: activeCount + inactiveCount + failedCount,
           icon: <DevicesIcon />,
           backgroundColor: "#42A5F5",
         },
       ]} />
       {loading ? (
-        <LoadingBox/>
+        <LoadingBox />
       ) : (detectors.length === 0 ? (
         <Typography
           variant="h6"
@@ -267,11 +276,16 @@ const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
       {userRole.includes('ADMIN') && (
         <TableCell sx={{ textAlign: 'center' }}>{users[detector.ownerId] || 'Cargando...'}</TableCell>
       )}
-      <TableCell onClick={(event) => handleClick(event)} sx={{ textAlign: 'center', cursor: 'pointer' }}>
-        {detector.isOnline ? (
-          <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
+      <TableCell
+        onClick={(event) => handleClick(event)}
+        sx={{ textAlign: "center", cursor: "pointer" }}
+      >
+        {detector.isOnline && detector.status === 1 ? (
+          <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
+        ) : !detector.isOnline ? (
+          <HighlightOff sx={{ color: "red", fontSize: 18 }} />
         ) : (
-          <HighlightOff sx={{ color: 'red', fontSize: 18 }} />
+          <RemoveCircleOutline sx={{ color: "#FFD54F", fontSize: 18 }} />
         )}
       </TableCell>
       <TableCell sx={{ textAlign: 'center' }}>{decodeStatus(detector.status)}</TableCell>

@@ -4,7 +4,7 @@
     text-align: center;
 }
 
-button.verify-button {
+button.verify-button-table {
     margin-left: 8px;
     color: red;
     text-transform: none;
@@ -14,7 +14,7 @@ button.verify-button {
     background-color: transparent;
 }
 
-button.verify-button:hover {
+button.verify-button-table:hover {
     background-color: transparent;
     border-color: darkred;
 }
