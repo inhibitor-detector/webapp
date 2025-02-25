@@ -121,7 +121,7 @@ const processSignals = (signals, range) => {
   const now = new Date();
 
   if (range === 1) {
-    let roundedMinutes = Math.ceil(now.getMinutes() / 5) * 5;
+    let roundedMinutes = Math.ceil(now.getMinutes() / 5) * 5 + 5;
     const roundedTime = new Date(now.setMinutes(roundedMinutes, 0, 0));
     roundedTime.setHours(roundedTime.getHours() - 1);
 
