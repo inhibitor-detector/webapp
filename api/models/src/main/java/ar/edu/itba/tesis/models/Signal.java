@@ -1,11 +1,20 @@
 package ar.edu.itba.tesis.models;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "signals")
@@ -29,6 +38,9 @@ public class Signal {
 
     @Column(name = "acknowledged", nullable = false, columnDefinition = "boolean default false")
     private Boolean acknowledged = false; //default value
+
+    @Transient
+    private Integer status; // bitmap: MEMORY_FAILED - YARD_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
 
     /*
         Builder for Signal
@@ -68,6 +80,11 @@ public class Signal {
 
         public Signal.Builder acknowledged(Boolean acknowledged) {
             signal.setAcknowledged(acknowledged != null ? acknowledged : false);
+            return this;
+        }
+
+        public Signal.Builder status(Integer status) {
+            signal.setStatus(status);
             return this;
         }
     }

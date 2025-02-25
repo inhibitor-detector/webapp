@@ -10,5 +10,6 @@ import ar.edu.itba.tesis.models.Detector;
 public interface DetectorDao extends CrudOperations<Detector, Long> {
     List<Detector> findByOwnerIdPaginated(Integer page, Integer pageSize, Long ownerId);
     void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat);
+    void updateStatus(Long id, Integer status);
     Optional<Detector> findByUserId(Long userId);
 }

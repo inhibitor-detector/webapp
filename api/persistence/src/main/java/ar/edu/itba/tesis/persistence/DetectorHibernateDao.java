@@ -140,4 +140,12 @@ public class DetectorHibernateDao implements DetectorDao {
                 .setParameter("id", id)
                 .executeUpdate();
     }
+
+    @Override
+    public void updateStatus(Long id, Integer newStatus) {
+        entityManager.createNativeQuery("UPDATE detectors SET status = :newStatus WHERE id = :id")
+                .setParameter("newStatus", newStatus)
+                .setParameter("id", id)
+                .executeUpdate();
+    }
 }

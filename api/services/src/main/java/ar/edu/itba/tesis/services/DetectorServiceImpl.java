@@ -79,6 +79,12 @@ public class DetectorServiceImpl implements DetectorService {
 
     @Transactional
     @Override
+    public void updateStatus(Long id, Integer status) {
+        detectorDao.updateStatus(id, status);
+    }
+
+    @Transactional
+    @Override
     public void deleteById(Long id) {
         detectorDao.deleteById(id);
     }

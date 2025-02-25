@@ -89,7 +89,6 @@ public class SignalController {
 
         final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
 
-
         return Response
                 .created(uriInfo
                         .getAbsolutePathBuilder()
@@ -164,6 +163,7 @@ public class SignalController {
                 .timestamp(parseAndValidate(signalDto.timestamp()))
                 .isHeartbeat(signalDto.isHeartbeat())
                 .acknowledged(signalDto.acknowledged())
+                .status(signalDto.status())
                 .build();
     }
 }

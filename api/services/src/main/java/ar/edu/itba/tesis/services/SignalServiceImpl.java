@@ -33,9 +33,12 @@ public class SignalServiceImpl implements SignalService {
         if (entity.getAcknowledged() == null) {
             entity.setAcknowledged(false);
         }
-        // We also update the detector last_heartbeat
+        Long detector_id = entity.getDetector().getId();
+        // We also update the detector last_heartbeat and status
         if (entity.getIsHeartbeat()) {
-            detectorService.updateLastHeartbeat(entity.getDetector().getId(), LocalDateTime.now());
+            detectorService.updateLastHeartbeat(detector_id, LocalDateTime.now());
+            System.out.println("Signal status: " + entity.getStatus());
+            detectorService.updateStatus(detector_id, entity.getStatus()); // WIP
         }
         return signalDao.create(entity);
     }
