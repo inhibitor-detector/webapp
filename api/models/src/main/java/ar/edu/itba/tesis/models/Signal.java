@@ -40,7 +40,7 @@ public class Signal {
     private Boolean acknowledged = false; //default value
 
     @Transient
-    private Integer status; // bitmap: MEMORY_FAILED - YARD_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
+    private Integer status; // bitmap: FIRST_HEARTBEAT - MEMORY_FAILED - YARD_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
 
     /*
         Builder for Signal
