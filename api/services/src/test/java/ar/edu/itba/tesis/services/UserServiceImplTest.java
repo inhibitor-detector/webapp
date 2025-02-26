@@ -30,6 +30,7 @@ class UserServiceImplTest {
     private final Long ID = 1L;
     private final String EMAIL = "user@email.com";
     private final String USERNAME = "username";
+    private final String PASSWORD = "password";
 
     private final User user = getUser();
 
@@ -43,13 +44,13 @@ class UserServiceImplTest {
 
     @Test
     public void testCreateUser() throws AlreadyExistsException {
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn(PASSWORD);
         when(userDaoMock.create(any(User.class))).thenReturn(user);
 
         User createdUser = userService.create(user);
 
         assertNotNull(createdUser);
-        assertEquals("encodedPassword", createdUser.getPassword());
+        assertEquals(PASSWORD, createdUser.getPassword());
         verify(userDaoMock).create(user);
     }
 
@@ -98,13 +99,13 @@ class UserServiceImplTest {
 
     @Test
     public void testUpdateUser() throws NotFoundException, AlreadyExistsException {
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(passwordEncoder.encode(anyString())).thenReturn(PASSWORD);
         when(userDaoMock.update(eq(ID), any(User.class))).thenReturn(user);
 
         User updatedUser = userService.update(ID, user);
 
         assertNotNull(updatedUser);
-        assertEquals("encodedPassword", updatedUser.getPassword());
+        assertEquals(PASSWORD, updatedUser.getPassword());
         verify(userDaoMock).update(eq(ID), any(User.class));
     }
 
@@ -167,7 +168,7 @@ class UserServiceImplTest {
         user.setId(ID);
         user.setEmail(EMAIL);
         user.setUsername(USERNAME);
-        user.setPassword("12345678");
+        user.setPassword(PASSWORD);
         return user;
     }
 }

@@ -1,22 +1,14 @@
 package ar.edu.itba.tesis.webapp.auth;
 
-import ar.edu.itba.tesis.interfaces.service.DetectorService;
-import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Role;
 import ar.edu.itba.tesis.models.User;
-import jakarta.servlet.http.HttpServletRequest;
-import org.glassfish.jersey.server.ParamException;
-import org.hibernate.QueryParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.function.Supplier;
 
 /**
  * <a href="https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#_migrating_expressions">migrating_expressions</a>

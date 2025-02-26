@@ -1,11 +1,19 @@
 package ar.edu.itba.tesis.models;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "detectors")
@@ -25,10 +33,11 @@ public class Detector {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // @Column(name = "is_online", nullable = false)
-    // private Boolean isOnline;
     @Column(name = "last_heartbeat")
     private LocalDateTime lastHeartbeat;
+
+    @Column(name = "status" , nullable = false)
+    private Integer status;
     
     @Column(name = "version", nullable = false)
     private String version;
@@ -66,14 +75,17 @@ public class Detector {
             detector.setUser(user);
             return this;
         }
-        // public Detector.Builder isOnline(Boolean isOnline) {
-        //     detector.setIsOnline(isOnline);
-        //     return this;
-        // }
+
         public Detector.Builder lastHeartbeat(LocalDateTime lastHeartbeat) {
             detector.setLastHeartbeat(lastHeartbeat);
             return this;
         }
+
+        public Detector.Builder status(Integer status) {
+            detector.setStatus(status);
+            return this;
+        }
+        
         public Detector.Builder version(String version) {
             detector.setVersion(version);
             return this;

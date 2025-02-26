@@ -19,8 +19,8 @@ const Popup = ({ popup, selectedDetector, onClose }) => {
             }}
         >
         {selectedDetector && (
-          <div style={{ padding: '20px' }}>
-            <h3>Detalle</h3>
+          <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif'}}>
+            <h3  style={{ textDecoration: 'underline' }}>Detalle</h3>
             <p>Id: {selectedDetector.id}</p>
             <p>Nombre: {selectedDetector.name}</p>
             <p>Estado: {selectedDetector.isOnline ? 'Activo' : 'Inactivo'}</p>

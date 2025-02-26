@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box, Typography, Grid, Paper } from "@mui/material";
+import { Box, Typography, Grid2, Paper } from "@mui/material";
 
 const DashboardCard = ({ stats }) => {
 
   return (
     <Box margin={1}>
-      <Grid container spacing={0}>
+      <Grid2 container>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid2 key={index} size={3}>
             <Paper
               elevation={0}
               sx={{
@@ -41,9 +41,9 @@ const DashboardCard = ({ stats }) => {
                 </Typography>
               </Box>
             </Paper>
-          </Grid>
+          </Grid2>
         ))}
-      </Grid>
+      </Grid2>
     </Box>
   );
 };

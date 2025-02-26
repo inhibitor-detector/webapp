@@ -1,7 +1,6 @@
 package ar.edu.itba.tesis.webapp.auth;
 
 
-import ar.edu.itba.tesis.webapp.auth.exceptions.ExpiredAuthenticationTokenException;
 import ar.edu.itba.tesis.webapp.auth.exceptions.InvalidAuthenticationTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -13,9 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.time.ZonedDateTime;
 
 @Component
 public class JwtToUserDetailsConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {

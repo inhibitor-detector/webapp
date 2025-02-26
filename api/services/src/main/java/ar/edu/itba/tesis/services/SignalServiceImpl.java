@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.SignalDao;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.interfaces.service.EmailService;
 import ar.edu.itba.tesis.interfaces.service.SignalService;
 import ar.edu.itba.tesis.models.Signal;
@@ -20,11 +21,13 @@ public class SignalServiceImpl implements SignalService {
 
     private final SignalDao signalDao;
     private final EmailService emailService;
+    private final DetectorService detectorService;
 
     @Autowired
-    public SignalServiceImpl(SignalDao heartbeatDao, EmailService emailService) {
+    public SignalServiceImpl(SignalDao heartbeatDao, EmailService emailService, DetectorService detectorService) {
         this.signalDao = heartbeatDao;
         this.emailService = emailService;
+        this.detectorService = detectorService;
     }
 
     @Transactional
@@ -33,17 +36,20 @@ public class SignalServiceImpl implements SignalService {
         if (entity.getAcknowledged() == null) {
             entity.setAcknowledged(false);
         }
-        Signal createdSignal = signalDao.create(entity);
+        Long detector_id = entity.getDetector().getId();
+        // We also update the detector last_heartbeat and status
+        if (entity.getIsHeartbeat()) {
+            detectorService.updateLastHeartbeat(detector_id, LocalDateTime.now());
+            System.out.println("Signal status: " + entity.getStatus());
+            detectorService.updateStatus(detector_id, entity.getStatus()); // WIP
 
-        // Send email notification if it's not a heartbeat
-        if (!entity.getIsHeartbeat()) {
             String ownerEmail = entity.getDetector().getOwner().getEmail();
             String detectorName = entity.getDetector().getName();
             String timestamp = entity.getTimestamp().toString();
             emailService.sendInhibitionDetectedEmail(ownerEmail, detectorName, timestamp);
+
         }
-        
-        return createdSignal;
+        return signalDao.create(entity);
     }
 
     @Transactional(readOnly = true)
@@ -103,6 +109,7 @@ public class SignalServiceImpl implements SignalService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<Signal> findByTime(LocalDateTime startTime, LocalDateTime endTime, Long ownerId) {
         return signalDao.findByTime(startTime, endTime, ownerId);
     }

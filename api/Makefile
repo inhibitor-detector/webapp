@@ -17,3 +17,11 @@ start:
 stop:
 	@echo "Stoppings..."
 	docker-compose down
+
+start-local:
+	@echo "Pulling latest images..."
+	docker-compose up -d db
+	@echo "Rebuilding api..."
+	mvn clean package
+	@echo "Running api..."
+	java -jar webapp/target/webapp-1.0-SNAPSHOT.jar

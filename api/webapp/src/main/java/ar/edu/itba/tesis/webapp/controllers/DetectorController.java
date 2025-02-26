@@ -1,24 +1,33 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
-import ar.edu.itba.tesis.interfaces.service.DetectorService;
-import ar.edu.itba.tesis.interfaces.service.UserService;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
+import ar.edu.itba.tesis.interfaces.service.UserService;
 import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.User;
 import ar.edu.itba.tesis.webapp.dtos.DetectorDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 @Path("/detectors")
 public class DetectorController {
@@ -40,10 +49,6 @@ public class DetectorController {
                                  @Min(1) @Max(100) @DefaultValue("10") @QueryParam("pageSize") final Integer pageSize,
                                  @Min(0) @DefaultValue("0") @QueryParam("ownerId") final Long ownerId) {
         final List<Detector> detectors = detectorService.findAllPaginated(page, pageSize, ownerId);
-
-        System.out.println("hola");
-        System.out.println(detectors);
-        System.out.println(DetectorDto.fromDetectors(detectors));
 
         if (detectors.isEmpty()) {
             return Response
@@ -67,8 +72,8 @@ public class DetectorController {
                 create(Detector.builder()
                         .owner(ownerUser)
                         .user(user)
-                        // .isOnline(detectorDto.isOnline())
                         .lastHeartbeat(null)
+                        .status(detectorDto.status())
                         .version(detectorDto.version())
                         .name(detectorDto.name())
                         .description(detectorDto.description())

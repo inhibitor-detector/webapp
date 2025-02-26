@@ -11,6 +11,8 @@ import { updateSignal } from '../../api/SignalApi';
 import { getDetectorById } from '../../api/DetectorApi';
 import Button from '@mui/material/Button';
 import { useSignal } from '../../components/SignalContext';
+import './SignalTable.css'
+import Title from '../../components/Title';
 
 const SignalTable = () => {
   const { token } = useAuth();
@@ -64,16 +66,7 @@ const SignalTable = () => {
     <div>
       <ResponsiveAppBar />
       <div style={{ paddingTop: '20px', maxWidth: '95%', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Typography
-            variant="h4"
-            style={{
-              fontWeight: 'bold',
-            }}
-          >
-            Alertas
-          </Typography>
-        </div>
+        <Title title={'Alertas'} />
         <DashboardCard stats={[{
           label: "Total Alertas",
           value: signals.length,
@@ -95,14 +88,14 @@ const SignalTable = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Detector</TableCell>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Horario</TableCell>
-                  <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Estado</TableCell>
+                  <TableCell className='table-title'>Detector</TableCell>
+                  <TableCell className='table-title'>Horario</TableCell>
+                  <TableCell className='table-title'>Estado</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {signals.map(signal => (
-                  <TableRow key={signal.id} sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}>
+                  <TableRow key={signal.id}>
                     <TableCell
                       sx={{ textAlign: 'center', cursor: 'pointer' }}
                       onClick={(event) => handleClick(event, signal.detectorId)}
@@ -122,19 +115,7 @@ const SignalTable = () => {
                         <Box display="inline-flex" alignItems="center">
                           <HighlightOff sx={{ color: 'red', fontSize: 16 }} />
                           <Button
-                            sx={{
-                              marginLeft: '8px',
-                              color: 'red',
-                              textTransform: 'none',
-                              fontSize: 12,
-                              padding: '4px 8px',
-                              borderColor: 'red',
-                              '&:hover': {
-                                backgroundColor: 'transparent',
-                                borderColor: 'darkred',
-                              },
-                            }}
-                            variant="outlined"
+                            className='verify-button-table'
                             size="small"
                             onClick={() => handleVerify(signal.id)}
                           >

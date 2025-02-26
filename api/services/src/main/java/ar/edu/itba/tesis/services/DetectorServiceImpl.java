@@ -1,5 +1,6 @@
 package ar.edu.itba.tesis.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,6 @@ import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
 import ar.edu.itba.tesis.interfaces.persistence.DetectorDao;
 import ar.edu.itba.tesis.interfaces.service.DetectorService;
 import ar.edu.itba.tesis.models.Detector;
-
-import java.time.LocalDateTime;
 
 @Service
 public class DetectorServiceImpl implements DetectorService {
@@ -36,6 +35,13 @@ public class DetectorServiceImpl implements DetectorService {
     public Optional<Detector> findById(Long id) {
         return detectorDao.findById(id);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Detector> findByUserId(Long userId) {
+        return detectorDao.findByUserId(userId);
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -62,8 +68,6 @@ public class DetectorServiceImpl implements DetectorService {
     @Transactional
     @Override
     public Detector update(Long id, Detector entity) throws NotFoundException, AlreadyExistsException {
-        System.out.println("Updating detector with id: " + id);
-        System.out.println("getLastHeartbeat: " + entity.getLastHeartbeat());
         return detectorDao.update(id, entity);
     }
 
@@ -71,6 +75,12 @@ public class DetectorServiceImpl implements DetectorService {
     @Override
     public void updateLastHeartbeat(Long id, LocalDateTime lastHeartbeat) {
         detectorDao.updateLastHeartbeat(id, lastHeartbeat);
+    }
+
+    @Transactional
+    @Override
+    public void updateStatus(Long id, Integer status) {
+        detectorDao.updateStatus(id, status);
     }
 
     @Transactional

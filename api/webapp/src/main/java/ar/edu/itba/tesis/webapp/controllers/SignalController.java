@@ -89,11 +89,6 @@ public class SignalController {
 
         final Signal signal = signalService.create(buildNewSignal(signalDto, detector));
 
-        // We also update the detector last_heartbeat
-        if (signalDto.isHeartbeat()) {
-            detectorService.updateLastHeartbeat(detector.getId(), LocalDateTime.now());
-        }
-
         return Response
                 .created(uriInfo
                         .getAbsolutePathBuilder()
@@ -168,6 +163,7 @@ public class SignalController {
                 .timestamp(parseAndValidate(signalDto.timestamp()))
                 .isHeartbeat(signalDto.isHeartbeat())
                 .acknowledged(signalDto.acknowledged())
+                .status(signalDto.status())
                 .build();
     }
 }

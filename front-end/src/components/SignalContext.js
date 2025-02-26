@@ -51,7 +51,7 @@ export const SignalProvider = ({ children }) => {
   }, [fetchAllSignals]);
 
   const addSignal = (newSignal) => {
-    setSignals((prevSignals) => [...prevSignals, newSignal]);
+    setSignals((prevSignals) => [newSignal, ...prevSignals]);
   };
 
   const updateSignals = (newSignals) => {

@@ -2,6 +2,8 @@ package ar.edu.itba.tesis.services;
 
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.NotFoundException;
+import ar.edu.itba.tesis.interfaces.service.DetectorService;
+import ar.edu.itba.tesis.models.Detector;
 import ar.edu.itba.tesis.models.Signal;
 import ar.edu.itba.tesis.persistence.SignalHibernateDao;
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,7 @@ class SignalServiceImplTest {
 
     @Mock
     private SignalHibernateDao signalDaoMock;
+    @Mock private DetectorService detectorServiceMock;
 
     @Test
     public void testCreateSignal() throws AlreadyExistsException {
@@ -156,9 +159,14 @@ class SignalServiceImplTest {
     }
 
     private Signal getSignal() {
+        Detector detector = new Detector();
+        detector.setId(ID);
+
         Signal signal = new Signal();
         signal.setId(ID);
         signal.setAcknowledged(false);
+        signal.setIsHeartbeat(false);
+        signal.setDetector(detector);
         return signal;
     }
 }

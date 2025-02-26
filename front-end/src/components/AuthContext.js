@@ -16,10 +16,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const saveUserRole = (role) => {
+    localStorage.setItem('role', role);
     setUserRole(role);
   };
 
   const saveUserId = (id) => {
+    localStorage.setItem('userId', id);
     setUserId(id);
   };
 
@@ -29,6 +31,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userId');
     localStorage.removeItem('lastId');
     setToken(null);
+    setUserRole(null);
+    setUserId(null);
     navigate("/");
   };
 

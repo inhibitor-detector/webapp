@@ -1,16 +1,13 @@
 package ar.edu.itba.tesis.models;
 
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 class DetectorTest {
@@ -33,19 +30,18 @@ class DetectorTest {
         assertEquals(userMock, detector.getUser());
     }
 
-    // @Test
-    // public void testSetIsOnline() {
-    //     detector.setIsOnline(true);
-    //     assertTrue(detector.getIsOnline());
-
-    //     detector.setIsOnline(false);
-    //     assertFalse(detector.getIsOnline());
-    // }
     @Test
     public void testSetLastHeartbeat() {
         LocalDateTime lastHeartbeat = LocalDateTime.now();
         detector.setLastHeartbeat(lastHeartbeat);
         assertEquals(lastHeartbeat, detector.getLastHeartbeat());
+    }
+
+    @Test
+    public void testSetStatus() {
+        Integer status = 1;
+        detector.setStatus(status);
+        assertEquals(status, detector.getStatus());
     }
 
     @Test

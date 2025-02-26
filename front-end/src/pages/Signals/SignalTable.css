@@ -1,0 +1,20 @@
+.MuiTableCell-root.table-title {
+    color: #8bc34a;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+button.verify-button-table {
+    margin-left: 8px;
+    color: red;
+    text-transform: none;
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid red;
+    background-color: transparent;
+}
+
+button.verify-button-table:hover {
+    background-color: transparent;
+    border-color: darkred;
+}

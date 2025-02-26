@@ -2,6 +2,9 @@
 
 This project is a front end developed with React. Below are the steps to set up the development environment.
 
+## Requirements 📋
+- Node.js 22
+
 ### Instalation
 
 In the project directory front-end, you can run:
