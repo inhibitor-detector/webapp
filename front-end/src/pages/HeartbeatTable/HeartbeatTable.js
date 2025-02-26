@@ -3,14 +3,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { format } from 'date-fns';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getSignals } from '../../api/SignalApi';
 import { useAuth } from '../../components/AuthContext';
-import './HeartbeatTable.css';
 import LoadingBox from '../../components/LoadingBox';
+import './HeartbeatTable.css';
 
 const HeartbeatTable = () => {
   const { token, userRole, userId } = useAuth();
@@ -87,7 +86,7 @@ const HeartbeatTable = () => {
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ textAlign: 'center' }}>Heartbeat</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>Tiempo</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>Horario</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -97,7 +96,7 @@ const HeartbeatTable = () => {
                       <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                      {formatDistanceToNow(new Date(data.timestamp), { addSuffix: true, locale: es })}
+                      {format(new Date(data.timestamp), 'dd/MM/yyyy HH:mm:ss')}
                     </TableCell>
                   </TableRow>
                 ))}

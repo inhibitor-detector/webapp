@@ -54,7 +54,7 @@ const SignalsChart = () => {
   return (
     <div>
       <ResponsiveAppBar />
-      <Title title={'Estadisticas'}/>
+      <Title title={'Inhibiciones'}/>
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'center', borderColor: 'red' }}>
         <Select value={range} onChange={(event) => setRange(event.target.value)}
           sx={{
@@ -65,7 +65,6 @@ const SignalsChart = () => {
         >
           <MenuItem value={24}>Últimas 24 horas</MenuItem>
           <MenuItem value={12}>Últimas 12 horas</MenuItem>
-          <MenuItem value={6}>Últimas 6 horas</MenuItem>
           <MenuItem value={1}>Última hora</MenuItem>
         </Select>
       </Box>

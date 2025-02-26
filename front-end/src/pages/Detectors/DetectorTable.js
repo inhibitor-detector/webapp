@@ -4,7 +4,7 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import DoneIcon from "@mui/icons-material/Done";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SearchIcon from '@mui/icons-material/Search';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box } from '@mui/material';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDetectors } from '../../api/DetectorApi';
@@ -280,13 +280,29 @@ const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
         onClick={(event) => handleClick(event)}
         sx={{ textAlign: "center", cursor: "pointer" }}
       >
-        {detector.isOnline && detector.status === 1 ? (
-          <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
-        ) : !detector.isOnline ? (
-          <HighlightOff sx={{ color: "red", fontSize: 18 }} />
-        ) : (
-          <RemoveCircleOutline sx={{ color: "#FFD54F", fontSize: 18 }} />
-        )}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            backgroundColor: "rgba(200, 200, 200, 0.3)",
+            margin: "auto",
+            "&:hover": {
+              backgroundColor: "rgba(150, 150, 150, 0.5)",
+            },
+          }}
+        >
+          {detector.isOnline && detector.status === 1 ? (
+            <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
+          ) : !detector.isOnline ? (
+            <HighlightOff sx={{ color: "red", fontSize: 18 }} />
+          ) : (
+            <RemoveCircleOutline sx={{ color: "#FFD54F", fontSize: 18 }} />
+          )}
+        </Box>
       </TableCell>
       <TableCell sx={{ textAlign: 'center' }}>{decodeStatus(detector.status)}</TableCell>
     </TableRow>
