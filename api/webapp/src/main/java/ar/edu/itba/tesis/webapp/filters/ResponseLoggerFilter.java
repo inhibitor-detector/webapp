@@ -19,7 +19,6 @@ public class ResponseLoggerFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Format: "METHOD PATH: STATUS"
         logger.info("{} {}: {}", request.getMethod(), request.getRequestURI(), HttpStatus.resolve(response.getStatus()));
         filterChain.doFilter(request, response);
     }

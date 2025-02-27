@@ -151,26 +151,18 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                // Set session management to stateless
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // Set exception handlers
                 .exceptionHandling(e -> e
-                        // Set unauthorized requests exception handler
                         .authenticationEntryPoint(authenticationEntryPoint())
-                        // Set forbidden requests exception handler
                         .accessDeniedHandler(accessDeniedHandler())
                 )
 
-                // Disable CSRF
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // Enable CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // Set permissions on endpoints
                 .authorizeHttpRequests(authorize -> authorize
-                        /* /users */
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/users", HttpMethod.POST.toString()),
                                 new AntPathRequestMatcher("/users", HttpMethod.GET.toString())
@@ -180,7 +172,6 @@ public class SecurityConfiguration {
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.GET.toString()),
                                 new AntPathRequestMatcher("/users/{id:\\d+}/**", HttpMethod.DELETE.toString())
                         )).access((authentication, context) -> new AuthorizationDecision(accessControl.isAuthenticatedUser(authentication.get(), Long.parseLong(context.getVariables().get("id")))))
-                        /* /signals  */
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/signals", HttpMethod.POST.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canPostSignal(authentication.get()))))
@@ -189,7 +180,6 @@ public class SecurityConfiguration {
                                 new AntPathRequestMatcher("/signals", HttpMethod.GET.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canAccessDetectors(authentication.get(), context.getRequest().getQueryString()))))
 
-                        /* /detectors  */
                         .requestMatchers(new OrRequestMatcher(
                                 new AntPathRequestMatcher("/detectors", HttpMethod.GET.toString())
                         )).access(((authentication, context) -> new AuthorizationDecision(accessControl.canAccessDetectors(authentication.get(), context.getRequest().getQueryString()))))
@@ -200,7 +190,6 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/**").permitAll())
 
-                // Add Basic & JWT Authentication filters
                 .addFilter(basicAuthenticationFilter(http))
                 .addFilter(bearerTokenAuthenticationFilter(http))
 

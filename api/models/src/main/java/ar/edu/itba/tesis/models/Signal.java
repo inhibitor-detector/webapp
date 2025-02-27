@@ -37,14 +37,11 @@ public class Signal {
     private Boolean isHeartbeat;
 
     @Column(name = "acknowledged", nullable = false, columnDefinition = "boolean default false")
-    private Boolean acknowledged = false; //default value
+    private Boolean acknowledged = false;
 
     @Column(name = "status", nullable = false)
-    private Integer status; // bitmap: FIRST_HEARTBEAT - MEMORY_FAILED - YARD_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
+    private Integer status;
 
-    /*
-        Builder for Signal
-     */
     public static Signal.Builder builder() {
         return new Signal.Builder();
     }

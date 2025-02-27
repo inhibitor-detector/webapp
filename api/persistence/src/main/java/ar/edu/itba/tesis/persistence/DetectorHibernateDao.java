@@ -71,7 +71,7 @@ public class DetectorHibernateDao implements DetectorDao {
 
         criteriaQuery.select(root);
 
-        Predicate condition = criteriaBuilder.equal(root.get("owner").get("id"), ownerId); // Reemplaza "propertyName" con el nombre real de la propiedad y "value" con el valor de filtro deseado
+        Predicate condition = criteriaBuilder.equal(root.get("owner").get("id"), ownerId);
         criteriaQuery.where(condition);
 
         TypedQuery<Detector> query = entityManager.createQuery(criteriaQuery);
@@ -89,7 +89,7 @@ public class DetectorHibernateDao implements DetectorDao {
 
         criteriaQuery.select(root);
 
-        Predicate condition = criteriaBuilder.equal(root.get("user").get("id"), userId); // Reemplaza "propertyName" con el nombre real de la propiedad y "value" con el valor de filtro deseado
+        Predicate condition = criteriaBuilder.equal(root.get("user").get("id"), userId);
         criteriaQuery.where(condition);
 
         TypedQuery<Detector> query = entityManager.createQuery(criteriaQuery);

@@ -31,7 +31,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-//                .disabled(!user.isEnabled()) // TODO spring da vuelta el valor en el builder y termina siendo enabled en vez de disabled (raro)
                 .authorities(getAuthorities(user))
                 .build();
     }

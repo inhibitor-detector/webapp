@@ -39,7 +39,6 @@ public class AccessControl {
         return user != null;
     }
 
-    // Method for Signal controller, checks that the detector user is the same as the detectorId in the body
     public boolean canPostSignalCheckDetectorId(Authentication authentication, Detector detector) {
         final User user = authFacade.getAuthenticatedUser(authentication);
         return user != null && user.getId().equals(detector.getUser().getId());
@@ -55,7 +54,7 @@ public class AccessControl {
         if (user == null) return false;
         if (user.getRoles().contains(Role.ADMIN)) return true;
 
-        if (queryString == null) return false; // Only ADMIN can access all detectors
+        if (queryString == null) return false;
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://localhost?" + queryString);
         MultiValueMap<String, String> queryParams = builder.build().getQueryParams();

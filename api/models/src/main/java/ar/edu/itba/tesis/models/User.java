@@ -77,7 +77,6 @@ public class User {
 
         public Builder() {
             user = new User();
-            // Set default values
             user.setEnabled(false);
             user.setCreatedAt(LocalDateTime.now());
         }

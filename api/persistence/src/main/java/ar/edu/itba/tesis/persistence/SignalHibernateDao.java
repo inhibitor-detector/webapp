@@ -69,7 +69,6 @@ public class SignalHibernateDao implements SignalDao {
         Root<Signal> root = criteriaQuery.from(Signal.class);
 
         criteriaQuery.select(root);
-        // Sets where SQL clauses if they exist
         setWhereClauses(criteriaBuilder, criteriaQuery, root, ownerId, detectorId, isHeartbeat, acknowledged);
 
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("timestamp")));
@@ -117,19 +116,18 @@ public class SignalHibernateDao implements SignalDao {
         // TODO Update heartbeat
     }
 
-    // Aux methods
     private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean acknowledged) {
-        Predicate ownerIdCondition = criteriaBuilder.conjunction(); // Always returns true
+        Predicate ownerIdCondition = criteriaBuilder.conjunction();
         if (ownerId != 0) {
             ownerIdCondition = criteriaBuilder.equal(root.get("detector").get("owner").get("id"), ownerId);
         }
-        Predicate detectorIdCondition = criteriaBuilder.conjunction(); // Always returns true
+        Predicate detectorIdCondition = criteriaBuilder.conjunction();
 
         if (detectorId != 0) {
             detectorIdCondition = criteriaBuilder.equal(root.get("detector").get("id"), detectorId);
         }
 
-        Predicate isHeartbeatCondition = criteriaBuilder.conjunction(); // Always returns true
+        Predicate isHeartbeatCondition = criteriaBuilder.conjunction();
         if (isHeartbeat != null) {
             isHeartbeatCondition = criteriaBuilder.equal(root.get("isHeartbeat"), isHeartbeat);
         }
