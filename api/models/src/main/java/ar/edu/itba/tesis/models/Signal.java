@@ -39,7 +39,7 @@ public class Signal {
     @Column(name = "acknowledged", nullable = false, columnDefinition = "boolean default false")
     private Boolean acknowledged = false; //default value
 
-    @Transient
+    @Column(name = "status", nullable = false)
     private Integer status; // bitmap: FIRST_HEARTBEAT - MEMORY_FAILED - YARD_FAILED - ANALYZER_FAILED - RFCAT_FAILED - FAILED - ACTIVE
 
     /*

@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS signals
 (
     id SERIAL PRIMARY KEY,
     detector_id INT NOT NULL,
+    status INT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     is_heartbeat boolean NOT NULL,
     acknowledged boolean NOT NULL DEFAULT false,
