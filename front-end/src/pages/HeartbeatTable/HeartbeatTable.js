@@ -1,4 +1,4 @@
-import { CheckCircleOutline } from '@mui/icons-material';
+import { CheckCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { getSignals } from '../../api/SignalApi';
 import { useAuth } from '../../components/AuthContext';
 import LoadingBox from '../../components/LoadingBox';
+import { decodeStatus } from '../../components/utils/decodeStatus.js';
 import './HeartbeatTable.css';
 
 const HeartbeatTable = () => {
@@ -87,16 +88,24 @@ const HeartbeatTable = () => {
                 <TableRow>
                   <TableCell sx={{ textAlign: 'center' }}>Heartbeat</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>Horario</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>Estado</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {heartbeats.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell sx={{ textAlign: 'center' }}>
-                      <CheckCircleOutline sx={{ color: 'green', fontSize: 18 }} />
+                      {data.status === 1 ? (
+                        <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
+                      ) : (
+                        <RemoveCircleOutline sx={{ color: "#FFD54F", fontSize: 18 }} />
+                      )}
                     </TableCell>
                     <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
                       {format(new Date(data.timestamp), 'dd/MM/yyyy HH:mm:ss')}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      {decodeStatus(data.status)}
                     </TableCell>
                   </TableRow>
                 ))}

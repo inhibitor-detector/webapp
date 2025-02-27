@@ -4,9 +4,11 @@ import { useAuth } from './AuthContext';
 import { getSignals } from '../api/SignalApi';
 import { getDetectorById } from '../api/DetectorApi';
 import { useSignal } from './SignalContext';
+import ErrorContainer from './ErrorContainer/ErrorContainer';
 
 const InhibitionDetected = () => {
   const [open, setOpen] = useState(false);
+  const [openError, setOpenError] = useState(false);
   const { userRole, userId, token, logout } = useAuth();
   const [lastId, setLastId] = useState(() => Number(localStorage.getItem('lastId')) || -1);
   const [signal, setSignal] = useState([]);
@@ -14,9 +16,9 @@ const InhibitionDetected = () => {
   const { addSignal, updateSignals } = useSignal();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const getNewSignals = async () => {
+  const getNewSignals = async (isHeartbeat) => {
     try {
-      let params = { isHeartbeat: false };
+      let params = { isHeartbeat };
       if (userRole && !userRole.includes('ADMIN')) {
         params.ownerId = userId;
       }
@@ -43,18 +45,29 @@ const InhibitionDetected = () => {
   };
 
   const checkForNewSignals = async () => {
-    const data = await getNewSignals();
-    if (data && data.length > 0) {
-      const actualId = Math.max(...data.map(signal => signal.id));
+    const normalSignals = await getNewSignals(false);
+    const heartbeatSignals = await getNewSignals(true);
+  
+    const allSignals = [...(normalSignals || []), ...(heartbeatSignals || [])];
+  
+    if (allSignals.length > 0) {
+      const actualId = Math.max(...allSignals.map(signal => signal.id));
       if (actualId !== lastId) {
-        setOpen(true);
+        const newSignal = allSignals.find(signal => signal.id === actualId);
+  
+        if (newSignal.isHeartbeat === true && newSignal.status !== 1 && newSignal.status !== 0) {
+          setOpenError(true);
+        } else if(newSignal.isHeartbeat === false){
+          setOpen(true);
+        }
+  
         setLastId(actualId);
-        setSignal(data[0]);
-        addSignal(data[0]);
+        setSignal(newSignal);
+        addSignal(newSignal);
         localStorage.setItem('lastId', actualId);
-
+  
         try {
-          const detectorResponse = await getDetectorById(data[0].detectorId, token);
+          const detectorResponse = await getDetectorById(newSignal.detectorId, token);
           if (detectorResponse.status === 200) {
             setDetector(detectorResponse.data);
           }
@@ -97,9 +110,14 @@ const InhibitionDetected = () => {
     setOpen(false);
   };
 
+  const handleCloseError = () => {
+    setOpenError(false);
+  };
+
   return (
     <div>
       <AlertContainer open={open} onClose={handleClose} detector={detector} signal={signal} token={token}/>
+      <ErrorContainer open={openError} onClose={handleCloseError} detector={detector} signal={signal} token={token}/>
     </div>
   );
 };

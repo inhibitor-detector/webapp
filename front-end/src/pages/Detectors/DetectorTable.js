@@ -4,8 +4,8 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import DoneIcon from "@mui/icons-material/Done";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SearchIcon from '@mui/icons-material/Search';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Box } from '@mui/material';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDetectors } from '../../api/DetectorApi';
 import { getUserById } from '../../api/UserApi';
@@ -13,6 +13,7 @@ import { useAuth } from '../../components/AuthContext';
 import LoadingBox from '../../components/LoadingBox';
 import SelectOrder from '../../components/Select/Select';
 import Title from '../../components/Title';
+import { decodeStatus } from '../../components/utils/decodeStatus.js';
 import DashboardCard from '../../layouts/DashboardCard';
 import ResponsiveAppBar from '../../layouts/Nav';
 import './DetectorTable.css';
@@ -29,40 +30,9 @@ const DetectorTable = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState({});
 
-  const decodeStatus = (status) => {
-    const ERROR_FLAGS = {
-      MEMORY_FAILED: 32,
-      YARD_FAILED: 16,
-      ANALYZER_FAILED: 8,
-      RFCAT_FAILED: 4,
-      FAILED: 2,
-      ACTIVE: 1
-    };
-
-    const errors = [];
-
-    if (status & ERROR_FLAGS.MEMORY_FAILED) errors.push("Fallo de memoria");
-    if (status & ERROR_FLAGS.YARD_FAILED) errors.push("Fallo de Yard");
-    if (status & ERROR_FLAGS.ANALYZER_FAILED) errors.push("Fallo del analyzer");
-    if (status & ERROR_FLAGS.RFCAT_FAILED) errors.push("Fallo de RFCAT");
-    if (status & ERROR_FLAGS.FAILED) errors.push("Falla general");
-    if (errors.length === 0) {
-      if (status & ERROR_FLAGS.ACTIVE) errors.push("OK");
-    }
-
-    if (errors.length > 0) {
-      return errors.map((error, index) => (
-        <Typography key={index} variant="body2" >
-          {error}
-        </Typography>
-      ));
-    }
-
-    return "-";
-  };
+  const detectorsRef = useRef([]);
 
   const fetchAllData = useCallback(async () => {
-    setLoading(true);
     let allDetectors = [];
     let page = 1;
     let hasMore = true;
@@ -100,13 +70,14 @@ const DetectorTable = () => {
         }
       }
       allDetectors.sort((a, b) => a.id - b.id);
-      setDetectors(allDetectors);
-      setFailedCount(allDetectors.filter(detector => detector.isOnline && (detector.status !== 1)).length);
-      setActiveCount(allDetectors.filter(detector => detector.isOnline && detector.status === 1).length);
-      setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
-      if (userRole && userRole.includes('ADMIN')) {
-        const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
-        await fetchUsers(userIds);
+
+      if (JSON.stringify(allDetectors) !== JSON.stringify(detectorsRef.current)) {
+        detectorsRef.current = allDetectors;
+        setDetectors(allDetectors);
+        if (userRole && userRole.includes('ADMIN')) {
+          const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
+          await fetchUsers(userIds);
+        }
       }
     } catch (error) {
       console.error('Error fetching detectors:', error);
@@ -115,14 +86,16 @@ const DetectorTable = () => {
   }, [token, userRole, userId]);
 
   useEffect(() => {
-    fetchAllData();
-    const intervalId = setInterval(() => {
-      fetchAllData();
-    }, 60000);
+    setFailedCount(detectors.filter(detector => detector.isOnline && detector.status !== 1).length);
+    setActiveCount(detectors.filter(detector => detector.isOnline && detector.status === 1).length);
+    setInactiveCount(detectors.filter(detector => !detector.isOnline).length);
+  }, [detectors]);
 
-    return () => {
-      clearInterval(intervalId);
-    };
+  useEffect(() => {
+    setLoading(true);
+    fetchAllData();
+    const intervalId = setInterval(fetchAllData, 5000);
+    return () => clearInterval(intervalId);
   }, [fetchAllData]);
 
   const sortedDetectors = useMemo(() => {
