@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"  # Exponer el puerto de la base de datos
     volumes:
-      - ./persistence/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./api/persistence/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - app_network
     restart: always
@@ -34,7 +34,18 @@ services:
     networks:
       - app_network
     restart: always
-  
+
+  frontend:
+    image: tataabancens/detector-frontend:1.0.4  # Usa la imagen que subiste a Docker Hub
+    container_name: inhibitor-detector-frontend
+    depends_on:
+      - app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app_network
 
 networks:
   app_network:
