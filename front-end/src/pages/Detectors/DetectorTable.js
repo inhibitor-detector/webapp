@@ -5,7 +5,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDetectors } from '../../api/DetectorApi';
 import { getUserById } from '../../api/UserApi';
@@ -30,8 +30,9 @@ const DetectorTable = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState({});
 
+  const detectorsRef = useRef([]);
+
   const fetchAllData = useCallback(async () => {
-    setLoading(true);
     let allDetectors = [];
     let page = 1;
     let hasMore = true;
@@ -69,13 +70,14 @@ const DetectorTable = () => {
         }
       }
       allDetectors.sort((a, b) => a.id - b.id);
-      setDetectors(allDetectors);
-      setFailedCount(allDetectors.filter(detector => detector.isOnline && (detector.status !== 1)).length);
-      setActiveCount(allDetectors.filter(detector => detector.isOnline && detector.status === 1).length);
-      setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
-      if (userRole && userRole.includes('ADMIN')) {
-        const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
-        await fetchUsers(userIds);
+
+      if (JSON.stringify(allDetectors) !== JSON.stringify(detectorsRef.current)) {
+        detectorsRef.current = allDetectors;
+        setDetectors(allDetectors);
+        if (userRole && userRole.includes('ADMIN')) {
+          const userIds = [...new Set(allDetectors.map(detector => detector.ownerId))];
+          await fetchUsers(userIds);
+        }
       }
     } catch (error) {
       console.error('Error fetching detectors:', error);
@@ -84,14 +86,16 @@ const DetectorTable = () => {
   }, [token, userRole, userId]);
 
   useEffect(() => {
-    fetchAllData();
-    const intervalId = setInterval(() => {
-      fetchAllData();
-    }, 60000);
+    setFailedCount(detectors.filter(detector => detector.isOnline && detector.status !== 1).length);
+    setActiveCount(detectors.filter(detector => detector.isOnline && detector.status === 1).length);
+    setInactiveCount(detectors.filter(detector => !detector.isOnline).length);
+  }, [detectors]);
 
-    return () => {
-      clearInterval(intervalId);
-    };
+  useEffect(() => {
+    setLoading(true);
+    fetchAllData();
+    const intervalId = setInterval(fetchAllData, 5000);
+    return () => clearInterval(intervalId);
   }, [fetchAllData]);
 
   const sortedDetectors = useMemo(() => {
