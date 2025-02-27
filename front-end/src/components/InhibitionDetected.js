@@ -55,7 +55,7 @@ const InhibitionDetected = () => {
       if (actualId !== lastId) {
         const newSignal = allSignals.find(signal => signal.id === actualId);
   
-        if (newSignal.isHeartbeat === true && newSignal.status !== 1 && newSignal.status !== 0) {
+        if (newSignal.isHeartbeat === true && newSignal.status !== 1 && newSignal.status !== 0 && newSignal.status !== 65) {
           setOpenError(true);
         } else if(newSignal.isHeartbeat === false){
           setOpen(true);

@@ -95,7 +95,7 @@ const HeartbeatTable = () => {
                 {heartbeats.map((data, index) => (
                   <TableRow key={index}>
                     <TableCell sx={{ textAlign: 'center' }}>
-                      {data.status === 1 ? (
+                      {data.status === 1 || data.status === 65 ? (
                         <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
                       ) : (
                         <RemoveCircleOutline sx={{ color: "#FFD54F", fontSize: 18 }} />

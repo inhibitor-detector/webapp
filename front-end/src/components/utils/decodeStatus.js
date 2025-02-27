@@ -3,6 +3,7 @@ import {Typography} from "@mui/material";
 
 export const decodeStatus = (status) => {
   const ERROR_FLAGS = {
+    FIRST_HEARTBEAT: 64,
     MEMORY_FAILED: 32,
     YARD_FAILED: 16,
     ANALYZER_FAILED: 8,
@@ -13,6 +14,7 @@ export const decodeStatus = (status) => {
 
   const errors = [];
 
+  if (status & ERROR_FLAGS.FIRST_HEARTBEAT) errors.push("Primer Heartbeat");
   if (status & ERROR_FLAGS.MEMORY_FAILED) errors.push("Fallo de memoria");
   if (status & ERROR_FLAGS.YARD_FAILED) errors.push("Fallo de Yard");
   if (status & ERROR_FLAGS.ANALYZER_FAILED) errors.push("Fallo del analyzer");
