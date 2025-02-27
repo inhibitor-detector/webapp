@@ -52,9 +52,7 @@ const DetectorTable = () => {
 
     if (errors.length > 0) {
       return errors.map((error, index) => (
-        <Typography key={index} variant="body2" >
-          {error}
-        </Typography>
+        <Typography key={index} variant="body2">{error}</Typography>
       ));
     }
 
@@ -101,7 +99,7 @@ const DetectorTable = () => {
       }
       allDetectors.sort((a, b) => a.id - b.id);
       setDetectors(allDetectors);
-      setFailedCount(allDetectors.filter(detector => detector.isOnline && (detector.status !== 1)).length);
+      setFailedCount(allDetectors.filter(detector => detector.isOnline && detector.status !== 1).length);
       setActiveCount(allDetectors.filter(detector => detector.isOnline && detector.status === 1).length);
       setInactiveCount(allDetectors.filter(detector => !detector.isOnline).length);
       if (userRole && userRole.includes('ADMIN')) {
@@ -114,16 +112,44 @@ const DetectorTable = () => {
     setLoading(false);
   }, [token, userRole, userId]);
 
+  // Fetch inicial (solo al montar el componente)
   useEffect(() => {
     fetchAllData();
-    const intervalId = setInterval(() => {
-      fetchAllData();
-    }, 60000);
+  }, [fetchAllData]);
+
+  // Conexión SSE para recibir actualizaciones en tiempo real
+  useEffect(() => {
+    const eventSource = new EventSource('http://localhost:8001/detectors/stream');
+    eventSource.addEventListener('detectorCreated', (event) => {
+      const newDetector = JSON.parse(event.data);
+      console.log("Evento SSE recibido:", newDetector);
+      // Evitar duplicados (por si acaso)
+      setDetectors(prev => {
+        if (prev.some(detector => detector.id === newDetector.id)) return prev;
+        const updated = [...prev, newDetector];
+        updated.sort((a, b) => a.id - b.id);
+        return updated;
+      });
+      // Actualizamos contadores según corresponda
+      if (newDetector.isOnline && newDetector.status === 1) {
+        setActiveCount(prev => prev + 1);
+      }
+      if (!newDetector.isOnline) {
+        setInactiveCount(prev => prev + 1);
+      }
+      if (newDetector.isOnline && newDetector.status !== 1) {
+        setFailedCount(prev => prev + 1);
+      }
+    });
+
+    eventSource.onerror = (err) => {
+      console.error('Error en SSE:', err);
+    };
 
     return () => {
-      clearInterval(intervalId);
+      eventSource.close();
     };
-  }, [fetchAllData]);
+  }, []);
 
   const sortedDetectors = useMemo(() => {
     let sorted = [...detectors];
@@ -146,11 +172,7 @@ const DetectorTable = () => {
 
   useEffect(() => {
     if (searchTerm.trim() !== '') {
-      if (filteredDetectors.length === 0) {
-        setSearchResultsMessage('No se encontraron resultados');
-      } else {
-        setSearchResultsMessage('');
-      }
+      setSearchResultsMessage(filteredDetectors.length === 0 ? 'No se encontraron resultados' : '');
     } else {
       setSearchResultsMessage('');
     }
@@ -161,43 +183,15 @@ const DetectorTable = () => {
       <ResponsiveAppBar />
       <Title title={'Detectores'} />
       <DashboardCard stats={[
-        {
-          label: "Total Activos",
-          value: activeCount,
-          icon: <DoneIcon />,
-          backgroundColor: "#66BB6A",
-        },
-        {
-          label: "Total Activos con Fallas",
-          value: failedCount,
-          icon: <ReportProblemIcon />,
-          backgroundColor: "#FFD54F",
-        },
-        {
-          label: "Total Inactivos",
-          value: inactiveCount,
-          icon: <BlockIcon />,
-          backgroundColor: "#EF5350",
-        },
-        {
-          label: "Total Detectores",
-          value: activeCount + inactiveCount + failedCount,
-          icon: <DevicesIcon />,
-          backgroundColor: "#42A5F5",
-        },
+        { label: "Total Activos", value: activeCount, icon: <DoneIcon />, backgroundColor: "#66BB6A" },
+        { label: "Total Activos con Fallas", value: failedCount, icon: <ReportProblemIcon />, backgroundColor: "#FFD54F" },
+        { label: "Total Inactivos", value: inactiveCount, icon: <BlockIcon />, backgroundColor: "#EF5350" },
+        { label: "Total Detectores", value: activeCount + inactiveCount + failedCount, icon: <DevicesIcon />, backgroundColor: "#42A5F5" },
       ]} />
       {loading ? (
         <LoadingBox />
-      ) : (detectors.length === 0 ? (
-        <Typography
-          variant="h6"
-          sx={{
-            textAlign: 'center',
-            padding: '20px',
-          }}
-        >
-          No hay detectores
-        </Typography>
+      ) : detectors.length === 0 ? (
+        <Typography variant="h6" sx={{ textAlign: 'center', padding: '20px' }}>No hay detectores</Typography>
       ) : (
         <div style={{ maxWidth: '95%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
@@ -207,18 +201,15 @@ const DetectorTable = () => {
               size="small"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                endAdornment: <SearchIcon />,
-              }}
+              InputProps={{ endAdornment: <SearchIcon /> }}
             />
           </div>
           <SelectOrder setOrderType={setOrderType} style={{ marginBottom: "10px" }} />
-
           {!searchResultsMessage && (
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
-                  <TableRow >
+                  <TableRow>
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Id</TableCell>
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Nombre</TableCell>
                     <TableCell sx={{ color: '#8bc34a', fontSize: '1.1rem', textAlign: 'center' }}>Ubicación</TableCell>
@@ -230,25 +221,20 @@ const DetectorTable = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredDetectors.map((detector) => (
+                  {filteredDetectors.map(detector => (
                     <DetectorRow key={detector.id} detector={detector} users={users} userRole={userRole} decodeStatus={decodeStatus} />
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>)}
+            </TableContainer>
+          )}
           {searchResultsMessage && (
-            <Typography
-              style={{
-                textAlign: 'center',
-                padding: '10px',
-                color: 'grey'
-              }}
-            >
+            <Typography style={{ textAlign: 'center', padding: '10px', color: 'grey' }}>
               {searchResultsMessage}
             </Typography>
           )}
         </div>
-      ))}
+      )}
     </div>
   );
 };
@@ -256,19 +242,13 @@ const DetectorTable = () => {
 const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
   const navigate = useNavigate();
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     navigate(`/Heartbeats?selectedDetector=${detector.id}`);
   };
 
   return (
-    <TableRow sx={{
-      backgroundColor: detector.isOnline ? '' : 'rgba(255, 0, 0, 0.1)',
-    }}
-    >
-      <TableCell
-        onClick={(event) => handleClick(event, 0)}
-        sx={{ textAlign: 'center', color: 'black' }}
-      >
+    <TableRow sx={{ backgroundColor: detector.isOnline ? '' : 'rgba(255, 0, 0, 0.1)' }}>
+      <TableCell onClick={handleClick} sx={{ textAlign: 'center', color: 'black' }}>
         {detector.id}
       </TableCell>
       <TableCell sx={{ textAlign: 'center' }}>{detector.name}</TableCell>
@@ -276,10 +256,7 @@ const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
       {userRole.includes('ADMIN') && (
         <TableCell sx={{ textAlign: 'center' }}>{users[detector.ownerId] || 'Cargando...'}</TableCell>
       )}
-      <TableCell
-        onClick={(event) => handleClick(event)}
-        sx={{ textAlign: "center", cursor: "pointer" }}
-      >
+      <TableCell onClick={handleClick} sx={{ textAlign: "center", cursor: "pointer" }}>
         <Box
           sx={{
             display: "flex",
@@ -290,9 +267,7 @@ const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
             borderRadius: "50%",
             backgroundColor: "rgba(200, 200, 200, 0.3)",
             margin: "auto",
-            "&:hover": {
-              backgroundColor: "rgba(150, 150, 150, 0.5)",
-            },
+            "&:hover": { backgroundColor: "rgba(150, 150, 150, 0.5)" },
           }}
         >
           {detector.isOnline && detector.status === 1 ? (

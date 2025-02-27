@@ -40,6 +40,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jersey</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-sse</artifactId>
+      <version>3.1.0</version> <!-- Ajustar versión según sea necesario -->
+    </dependency>
+
 
     <!-- Security     -->
     <dependency>

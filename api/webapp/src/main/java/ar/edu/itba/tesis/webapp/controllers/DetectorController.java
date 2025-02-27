@@ -1,8 +1,14 @@
 package ar.edu.itba.tesis.webapp.controllers;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.glassfish.jersey.media.sse.EventOutput;
+import org.glassfish.jersey.media.sse.OutboundEvent;
+import org.glassfish.jersey.media.sse.SseFeature;
 
 import ar.edu.itba.tesis.interfaces.exceptions.AlreadyExistsException;
 import ar.edu.itba.tesis.interfaces.exceptions.DetectorNotFoundException;
@@ -37,6 +43,8 @@ public class DetectorController {
     @Context
     private UriInfo uriInfo;
 
+    private static final Set<EventOutput> subscribers = new CopyOnWriteArraySet<>();
+
     @Autowired
     public DetectorController(DetectorService detectorService, UserService userService) {
         this.detectorService = detectorService;
@@ -65,19 +73,39 @@ public class DetectorController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveDetector(@Valid DetectorDto detectorDto) throws NotFoundException, AlreadyExistsException {
-        final User ownerUser = userService.findById(detectorDto.ownerId()).orElseThrow(() -> new DetectorNotFoundException(detectorDto.ownerId()));
-        final User user = userService.findById(detectorDto.userId()).orElseThrow(() -> new DetectorNotFoundException(detectorDto.userId()));
+        final User ownerUser = userService.findById(detectorDto.ownerId())
+                .orElseThrow(() -> new DetectorNotFoundException(detectorDto.ownerId()));
+        final User user = userService.findById(detectorDto.userId())
+                .orElseThrow(() -> new DetectorNotFoundException(detectorDto.userId()));
 
-        final Detector detector = detectorService.
-                create(Detector.builder()
-                        .owner(ownerUser)
-                        .user(user)
-                        .lastHeartbeat(null)
-                        .status(detectorDto.status())
-                        .version(detectorDto.version())
-                        .name(detectorDto.name())
-                        .description(detectorDto.description())
-                        .build());
+        final Detector detector = detectorService.create(Detector.builder()
+                .owner(ownerUser)
+                .user(user)
+                .lastHeartbeat(null)
+                .status(detectorDto.status())
+                .version(detectorDto.version())
+                .name(detectorDto.name())
+                .description(detectorDto.description())
+                .build());
+
+        OutboundEvent event = new OutboundEvent.Builder()
+                .name("detectorCreated")
+                .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                .data(DetectorDto.fromDetector(detector))
+                .build();
+
+        for (EventOutput eo : subscribers) {
+            try {
+                eo.write(event);
+            } catch (IOException e) {
+                try {
+                    eo.close();
+                } catch (IOException ex) {
+                    System.out.println("Error");
+                }
+                subscribers.remove(eo);
+            }
+        }
 
         return Response
                 .created(uriInfo
@@ -92,7 +120,8 @@ public class DetectorController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDetector(@PathParam("id") Long id) throws NotFoundException {
-        final Detector detector = detectorService.findById(id).orElseThrow(() -> new DetectorNotFoundException(id));
+        final Detector detector = detectorService.findById(id)
+                .orElseThrow(() -> new DetectorNotFoundException(id));
         return Response
                 .ok(DetectorDto.fromDetector(detector))
                 .build();
@@ -118,4 +147,12 @@ public class DetectorController {
                 .build();
     }
 
+    @GET
+    @Path("/stream")
+    @Produces(SseFeature.SERVER_SENT_EVENTS)
+    public EventOutput subscribeToStream() {
+        EventOutput eventOutput = new EventOutput();
+        subscribers.add(eventOutput);
+        return eventOutput;
+    }
 }
