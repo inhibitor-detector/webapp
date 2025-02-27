@@ -117,7 +117,7 @@ const InhibitionDetected = () => {
   return (
     <div>
       <AlertContainer open={open} onClose={handleClose} detector={detector} signal={signal} token={token}/>
-      <ErrorContainer open={openError} onClose={handleCloseError} detector={detector} signal={signal} token={token}/>
+      <ErrorContainer open={openError} onClose={handleCloseError} detector={detector}/>
     </div>
   );
 };

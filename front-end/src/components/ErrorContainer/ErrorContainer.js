@@ -3,8 +3,9 @@ import { Alert, Box, Button, Modal, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import Popup from '../Popup';
 import './ErrorContainer.css';
+import decodeStatus from '../utils/decodeStatus';
 
-const ErrorContainer = ({ open, onClose, detector, signal, token }) => {
+const ErrorContainer = ({ open, onClose, detector }) => {
   const [popup, setPopup] = useState(null);
 
   const handleClose = () => {
@@ -40,7 +41,10 @@ const ErrorContainer = ({ open, onClose, detector, signal, token }) => {
             ¡Error!
           </Typography>
           <Typography className='message'>
-            Se detecto una falla en: 
+            Se detectaron fallas en el detector:
+          </Typography>
+          <Typography className='message'>
+            {decodeStatus(detector.status)}
           </Typography>
           <Box textAlign='center'>
             <Button onClick={handleClick} className='link-button'>
