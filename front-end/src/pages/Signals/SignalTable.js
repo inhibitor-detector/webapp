@@ -62,6 +62,12 @@ const SignalTable = () => {
     }
   };
 
+  // Filter signals to only include those where isHeartbeat is false
+  const filteredSignals = signals.filter(signal => !signal.isHeartbeat);
+  
+  // Log the filtered signals to the console
+  console.log(filteredSignals);
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -69,11 +75,11 @@ const SignalTable = () => {
         <Title title={'Alertas'} />
         <DashboardCard stats={[{
           label: "Total Alertas",
-          value: signals.length,
+          value: filteredSignals.length,
           icon: <NotificationsActiveIcon />,
           backgroundColor: "#EF5350",
         }]} />
-        {signals.length === 0 ? (
+        {filteredSignals.length === 0 ? (
           <Typography
             variant="h6"
             sx={{
@@ -94,7 +100,7 @@ const SignalTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {signals.map(signal => (
+                {filteredSignals.map(signal => (
                   <TableRow key={signal.id}>
                     <TableCell
                       sx={{ textAlign: 'center', cursor: 'pointer' }}
