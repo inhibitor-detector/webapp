@@ -62,11 +62,7 @@ const SignalTable = () => {
     }
   };
 
-  // Filter signals to only include those where isHeartbeat is false
   const filteredSignals = signals.filter(signal => !signal.isHeartbeat);
-  
-  // Log the filtered signals to the console
-  console.log(filteredSignals);
 
   return (
     <div>
