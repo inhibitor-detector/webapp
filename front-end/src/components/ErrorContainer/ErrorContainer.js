@@ -43,7 +43,7 @@ const ErrorContainer = ({ open, onClose, detector }) => {
           <Typography className='message'>
             Se detectaron fallas en el detector:
           </Typography>
-          <Typography className='message'>
+          <Typography className='message' component="div">
             {decodeStatus(detector.status)}
           </Typography>
           <Box textAlign='center'>
