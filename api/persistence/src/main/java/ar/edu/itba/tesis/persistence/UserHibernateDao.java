@@ -84,7 +84,7 @@ public class UserHibernateDao implements UserDao {
         return findById(id).isPresent();
     }
 
-    // TODO
+
     @Override
     public long count() {
         return entityManager.createQuery("SELECT COUNT(*) FROM User", Long.class)

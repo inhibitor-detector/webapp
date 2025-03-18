@@ -43,8 +43,6 @@ public class UserController {
                     .build();
         }
 
-        // TODO: Set links to previous and next page
-
         return Response
                 .ok(UserDto.fromUsers(users))
                 .build();

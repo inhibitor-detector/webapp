@@ -1,4 +1,4 @@
-# Comando para construir y subir la imagen TODO: Geti this into one file
+# Comando para construir y subir la imagen
 API_IMAGE_NAME = tataabancens/detector-api
 API_TAG = 1.0.4
 

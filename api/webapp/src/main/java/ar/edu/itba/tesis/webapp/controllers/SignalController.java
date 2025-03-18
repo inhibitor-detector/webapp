@@ -72,7 +72,6 @@ public class SignalController {
                     .noContent()
                     .build();
         }
-        // TODO: Set links to proper pages
         return Response
                 .ok(SignalDto.fromSignals(signals))
                 .build();

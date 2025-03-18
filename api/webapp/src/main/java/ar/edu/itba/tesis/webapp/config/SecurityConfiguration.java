@@ -127,7 +127,6 @@ public class SecurityConfiguration {
     @Bean
     public BearerTokenAuthenticationFilter bearerTokenAuthenticationFilter(HttpSecurity http) throws Exception {
         final AuthenticationManager authenticationManager = authenticationManager(http);
-        // TODO implement custom BearerTokenAuthenticationEntryPoint or AuthenticationFailureHandler
         BearerTokenAuthenticationFilter filter = new BearerTokenAuthenticationFilter(authenticationManager);
         filter.setAuthenticationEntryPoint(authenticationEntryPoint());
         return filter;

@@ -27,7 +27,7 @@ public class DetectorHibernateDao implements DetectorDao {
 
     @Override
     public Detector create(Detector entity) {
-        entityManager.persist(entity); // TODO: Validate user_id unique
+        entityManager.persist(entity);
         return entity;
     }
 
@@ -122,7 +122,6 @@ public class DetectorHibernateDao implements DetectorDao {
         return findById(id).isPresent();
     }
 
-    // TODO
     @Override
     public long count() {
         return entityManager.createQuery("SELECT COUNT(*) FROM Detector", Long.class)
@@ -130,7 +129,7 @@ public class DetectorHibernateDao implements DetectorDao {
     }
 
     private void updateDetector(Detector user, Detector newValues) {
-        // TODO Update detector
+
     }
 
     @Override

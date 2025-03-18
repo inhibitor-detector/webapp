@@ -61,7 +61,6 @@ public class DetectorServiceImpl implements DetectorService {
         // owenerId == 0  checks if it is default value
         if (ownerId == 0) return detectorDao.findAllPaginated(page, pageSize);
 
-        // TODO: Validate that de ownerId belongs to a owner user
         return detectorDao.findByOwnerIdPaginated(page, pageSize, ownerId);
     }
 

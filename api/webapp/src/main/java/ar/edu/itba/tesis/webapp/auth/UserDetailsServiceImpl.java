@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userService.findByUsername(username).orElseThrow(() -> new BadCredentialsException("Bad credentials")); // TODO throw custom exception
+        final User user = userService.findByUsername(username).orElseThrow(() -> new BadCredentialsException("Bad credentials"));
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
