@@ -105,7 +105,6 @@ public class SignalHibernateDao implements SignalDao {
         return findById(id).isPresent();
     }
 
-    // TODO
     @Override
     public long count() {
         return entityManager.createQuery("SELECT COUNT(*) FROM Signal", Long.class)
@@ -113,7 +112,7 @@ public class SignalHibernateDao implements SignalDao {
     }
 
     private void updateHeartbeat(Signal user, Signal newValues) {
-        // TODO Update heartbeat
+
     }
 
     private void setWhereClauses(CriteriaBuilder criteriaBuilder, CriteriaQuery<Signal> criteriaQuery, Root<Signal> root, Long ownerId, Long detectorId, Boolean isHeartbeat, Boolean acknowledged) {
