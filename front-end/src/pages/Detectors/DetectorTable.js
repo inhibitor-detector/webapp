@@ -268,7 +268,7 @@ const DetectorRow = ({ detector, users, userRole, decodeStatus }) => {
             },
           }}
         >
-          {detector.isOnline && detector.status === 1 ? (
+          {detector.isOnline && (detector.status === 1 || detector.status === 65 )? (
             <CheckCircleOutline sx={{ color: "green", fontSize: 18 }} />
           ) : !detector.isOnline ? (
             <HighlightOff sx={{ color: "red", fontSize: 18 }} />
