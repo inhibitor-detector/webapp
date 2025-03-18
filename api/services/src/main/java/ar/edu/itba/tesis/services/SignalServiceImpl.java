@@ -40,13 +40,12 @@ public class SignalServiceImpl implements SignalService {
         if (entity.getIsHeartbeat()) {
             detectorService.updateLastHeartbeat(detector_id, LocalDateTime.now());
             System.out.println("Signal status: " + entity.getStatus());
-            detectorService.updateStatus(detector_id, entity.getStatus()); // WIP
-
+            detectorService.updateStatus(detector_id, entity.getStatus());
+        } else {
             String ownerEmail = entity.getDetector().getOwner().getEmail();
             String detectorName = entity.getDetector().getName();
             String timestamp = entity.getTimestamp().toString();
             emailService.sendInhibitionDetectedEmail(ownerEmail, detectorName, timestamp);
-
         }
         return signalDao.create(entity);
     }
