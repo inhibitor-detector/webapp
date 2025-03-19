@@ -21,6 +21,8 @@ services:
   app:
     image: tataabancens/detector-api:1.0.4  # Usa la imagen que subiste a Docker Hub
     container_name: inhibitor-detector-api
+    volumes:
+      - ./application.properties:/app/webapp/api/webapp/src/main/resources/application.properties
     depends_on:
       - db
     environment:
@@ -29,6 +31,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=123123123
       - SERVER_PORT=8001
       - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CONFIG_LOCATION=/app/webapp/api/application.properties
     ports:
       - "8001:8001"  # Exponer el puerto de la aplicación en el host
     networks:
