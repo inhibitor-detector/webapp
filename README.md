@@ -24,3 +24,9 @@ This will generate 3 Docker Containers, exposing different ports:
   - The Database, on port localhost:5432
 - `inhibitor-detector-frontend`
   - The Frontend, on port localhost:3000
+
+## Email feature
+
+When running make start it will automatically prompt the user with the instructions to configure email
+
+Then when an inhibition is detected the user will send an email to the configured receptors of each detector

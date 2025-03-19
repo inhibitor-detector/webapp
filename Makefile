@@ -17,7 +17,7 @@ deploy:
 	@echo "Subiendo la imagen a Docker Hub..."
 	docker push $(FRONTED_IMAGE_NAME):$(FRONTEND_TAG)
 
-start:
+start: config_email
 	@echo "Pulling latest images..."
 	docker-compose pull
 	@echo "Rebuilding containers..."
@@ -34,3 +34,8 @@ start-local:
 	mvn clean package
 	@echo "Running api..."
 	java -jar webapp/target/webapp-1.0-SNAPSHOT.jar
+
+config_email:
+	@chmod +x ./scripts/config_email.sh  # Dar permisos de ejecución si no los tiene
+	@./scripts/config_email.sh
+
