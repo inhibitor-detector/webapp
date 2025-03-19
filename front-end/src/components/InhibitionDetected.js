@@ -100,7 +100,7 @@ const InhibitionDetected = () => {
 
     const interval = setInterval(() => {
       checkForNewSignals();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line

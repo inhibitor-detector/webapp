@@ -94,7 +94,7 @@ const DetectorTable = () => {
   useEffect(() => {
     setLoading(true);
     fetchAllData();
-    const intervalId = setInterval(fetchAllData, 5000);
+    const intervalId = setInterval(fetchAllData, 2000);
     return () => clearInterval(intervalId);
   }, [fetchAllData]);
 
